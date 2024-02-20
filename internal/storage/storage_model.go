@@ -1,8 +1,11 @@
 package storage
 
 import (
+	"SQL/internal/database"
 	"bytes"
 	"compress/gzip"
+	"encoding/gob"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -76,7 +79,7 @@ func getCurrentFileNumber(storagePath string) (uint, error) {
 }
 
 // StoreData 将数据存储到指定位置
-func (sm *StorageManager) StoreData(data []byte) (StorageLocation, error) {
+func (sm *StorageManager) StoreData(data database.KeyValuePair) (StorageLocation, error) {
 	// 压缩数据
 	compressedData, err := compressData(data)
 	if err != nil {
@@ -131,12 +134,21 @@ func (sm *StorageManager) StoreData(data []byte) (StorageLocation, error) {
 }
 
 // compressData 压缩数据
-func compressData(data []byte) ([]byte, error) {
+func compressData(data database.KeyValuePair) ([]byte, error) {
+
+	// 使用 gob 包将结构体编码为字节切片
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	if err := encoder.Encode(data); err != nil {
+		fmt.Println("Error:", err)
+		return nil, err
+	}
+
 	var compressedData bytes.Buffer
 	gzipWriter := gzip.NewWriter(&compressedData)
 
 	// 写入数据
-	_, err := gzipWriter.Write(data)
+	_, err := gzipWriter.Write(buffer.Bytes())
 	if err != nil {
 		gzipWriter.Close()
 		return nil, err
