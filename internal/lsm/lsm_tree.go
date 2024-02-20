@@ -25,19 +25,32 @@ type LSMTree struct {
 	maxDiskLevels    uint16
 }
 
-// NewLSMTree 创建一个新的 LSM 树
-func NewLSMTree(maxActiveSize, maxDiskTableSize, initialLevelCapacity uint32) *LSMTree {
-	lsm := &LSMTree{
+// 初始化 LSMTree
+func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
+	maxSkipLists := uint16(4)  // 第一个层级的跳表数量
+	maxDiskLevels := uint16(7) // 最多的磁盘层级数量
+
+	tree := &LSMTree{
+		activeMemTable:   NewSkipList(16),
+		readOnlyMemTable: NewSkipList(16),
+		diskLevels:       make([]*Level, maxDiskLevels),
 		maxActiveSize:    maxActiveSize,
 		maxDiskTableSize: maxDiskTableSize,
+		maxSkipLists:     maxSkipLists,
+		maxDiskLevels:    maxDiskLevels,
 	}
-	// 初始化活跃内存表
-	lsm.activeMemTable = NewSkipList(16)
-	// 初始化只读内存表
-	lsm.readOnlyMemTable = NewSkipList(16)
-	// 初始化磁盘级别
-	lsm.diskLevels = []*Level{{SkipLists: make([]*SkipList, 0, initialLevelCapacity), SkipListCount: 0}}
-	return lsm
+
+	// 初始化每个层级的跳表数量
+	skipLists := maxSkipLists
+	for i := uint16(0); i < maxDiskLevels; i++ {
+		tree.diskLevels[i] = &Level{
+			SkipLists:     make([]*SkipList, skipLists),
+			SkipListCount: skipLists,
+		}
+		skipLists *= 4 // 每个层级的跳表数量按4的幂级增加
+	}
+
+	return tree
 }
 
 // 在LSM树中插入数据
@@ -60,33 +73,40 @@ func (lsm *LSMTree) convertActiveToReadOnly() {
 	lsm.readOnlyMemTable = lsm.activeMemTable
 	lsm.activeMemTable = NewSkipList(16) // 重新初始化活跃内存表
 }
-
-// 将只读表的内容写入磁盘的最上一层
 func (lsm *LSMTree) writeReadOnlyToDisk() {
 	lsm.mu.Lock()
 	defer lsm.mu.Unlock()
 
-	level := 0 // 获取当前磁盘级别的索引
+	// 存储只读表到第一层
+	lsm.storeReadOnlyToLevel(lsm.readOnlyMemTable, 0)
 
-	// 检查当前层级是否能够容纳新的跳表
-	if lsm.diskLevels[level].SkipListCount >= lsm.maxSkipLists {
-		// 如果最上面一层已满，找到第一个非满的层级
-		for i := 0; i < len(lsm.diskLevels); i++ {
-			if lsm.diskLevels[i].SkipListCount < lsm.maxSkipLists {
-				level = i
-				break
-			}
-		}
+	// 清空只读内存表
+	lsm.readOnlyMemTable = nil
+}
 
-		// 如果所有层级都已满，则新增一层
-		if lsm.diskLevels[level].SkipListCount >= lsm.maxSkipLists {
-			lsm.addNewDiskLevel(level)
-		}
+func (lsm *LSMTree) storeReadOnlyToLevel(skipList *SkipList, levelIndex int) {
+	// 检查指定层是否已满
+	if lsm.diskLevels[levelIndex].SkipListCount >= lsm.maxSkipLists {
+		// 如果已满，先将该层的某个表移动到下一层
+		lsm.moveSkipListDown(levelIndex)
 	}
 
-	// 存储只读表到当前或新增的层级
-	lsm.diskLevels[level].SkipLists = append(lsm.diskLevels[level].SkipLists, lsm.readOnlyMemTable)
-	lsm.diskLevels[level].SkipListCount++
+	// 将只读表存储到指定层
+	lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists, skipList)
+	lsm.diskLevels[levelIndex].SkipListCount++
+}
+
+func (lsm *LSMTree) moveSkipListDown(levelIndex int) {
+	// 随机选择一个表移动到下一层
+	randomIndex := rand.Intn(int(lsm.maxSkipLists))
+	selectedSkipList := lsm.diskLevels[levelIndex].SkipLists[randomIndex]
+
+	// 存储选定的跳表到下一层
+	nextLevelIndex := levelIndex + 1
+	lsm.storeReadOnlyToLevel(selectedSkipList, nextLevelIndex)
+
+	// 从当前层中移除选定的跳表
+	lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists[:randomIndex], lsm.diskLevels[levelIndex].SkipLists[randomIndex+1:]...)
 }
 
 // 检查当前层级是否能够容纳新的跳表
@@ -99,11 +119,6 @@ func (lsm *LSMTree) canCurrentLevelAccommodate() bool {
 func (lsm *LSMTree) storeReadOnlyMemTable(level int) {
 	lsm.diskLevels[level-1].SkipLists = append(lsm.diskLevels[level-1].SkipLists, lsm.readOnlyMemTable)
 	lsm.diskLevels[level-1].SkipListCount++
-}
-
-// 增加一个新的磁盘层级
-func (lsm *LSMTree) addNewDiskLevel(level int) {
-	lsm.diskLevels = append(lsm.diskLevels, &Level{})
 }
 
 // 将某个跳表存储到下一层级
