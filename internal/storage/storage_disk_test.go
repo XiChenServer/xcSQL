@@ -78,7 +78,8 @@ func generateTestData(size int) []database.KeyValuePair {
 
 		// 返回生成的随机 KeyValuePair 结构体实例
 		one := database.KeyValuePair{
-			KvType: &database.KvType{
+			DataMeta: &database.DataMeta{
+				TTL:       ttl,
 				Key:       key,
 				Value:     value,
 				Extra:     extra,
@@ -86,7 +87,6 @@ func generateTestData(size int) []database.KeyValuePair {
 				ValueSize: uint32(len(value)),
 				ExtraSize: uint32(len(extra)),
 			},
-			TTL:             ttl,
 			Version:         version,
 			CreateTime:      createTime,
 			UpdateTime:      updateTime,

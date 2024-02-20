@@ -32,7 +32,7 @@ type SkipList struct {
 
 // 新建一个跳表
 func NewSkipListLevel() *SkipList {
-	return NewSkipList(3) // 初始化一个最大层数为 3 的跳表
+	return NewSkipList(16) // 初始化一个最大层数为 3 的跳表
 }
 
 // 初始化跳表
