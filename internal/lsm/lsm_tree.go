@@ -2,14 +2,15 @@ package lsm
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"math/rand"
 	"os"
 	"sync"
 )
 
-// Level 表示 LSM 树中的一个层级，包含该层级的跳表集合
-type Level struct {
+// LevelInfo 表示 LSM 树中的一个层级，包含该层级的跳表集合
+type LevelInfo struct {
 	SkipLists             []*SkipList // 该层级的跳表集合
 	SkipListCount         uint16      // 该层级的跳表数量
 	LevelMaxKey           []byte      // 该层级的最大键
@@ -22,7 +23,7 @@ type LSMTree struct {
 	mu               sync.RWMutex // 用于保护内存表的读写
 	activeMemTable   *SkipList    // 活跃的内存表，跳表作为索引
 	readOnlyMemTable *SkipList    // 只读的内存表，跳表作为索引
-	diskLevels       []*Level     // 磁盘级别，存储已经持久化的数据，每个层级有多个跳表
+	diskLevels       []*LevelInfo // 磁盘级别，存储已经持久化的数据，每个层级有多个跳表
 	maxActiveSize    uint32       // 活跃内存表的最大大小
 	maxDiskTableSize uint32       // 磁盘表的最大大小
 	maxSkipLists     uint16       // 每个层级的最大跳表数量
@@ -37,7 +38,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 	tree := &LSMTree{
 		activeMemTable:   NewSkipList(16),
 		readOnlyMemTable: NewSkipList(16),
-		diskLevels:       make([]*Level, maxDiskLevels),
+		diskLevels:       make([]*LevelInfo, maxDiskLevels),
 		maxActiveSize:    maxActiveSize,
 		maxDiskTableSize: maxDiskTableSize,
 		maxSkipLists:     maxSkipLists,
@@ -49,7 +50,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 	for i := uint16(0); i < maxDiskLevels; i++ {
 		// 为每个层级的 SkipLists 切片预分配空间
 		skipListSlice := make([]*SkipList, skipLists)
-		tree.diskLevels[i] = &Level{
+		tree.diskLevels[i] = &LevelInfo{
 			SkipLists:             skipListSlice,
 			SkipListCount:         0,
 			LevelMaxSkipListCount: skipLists,
@@ -59,8 +60,6 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 
 	return tree
 }
-
-// 在LSM树中插入数据
 func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 	lsm.mu.Lock()
 	defer lsm.mu.Unlock()
@@ -72,7 +71,12 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 	}
 
 	// 插入数据到活跃内存表
-	lsm.activeMemTable.Insert(key, value)
+	// 在插入时创建新的键值对副本，确保每个跳表保存的是独立的数据
+	valueCopy := &DataInfo{
+		DataMeta:        value.DataMeta,
+		StorageLocation: value.StorageLocation,
+	}
+	lsm.activeMemTable.Insert(key, valueCopy)
 }
 
 // 将活跃内存表转换为只读表
@@ -92,22 +96,44 @@ func (lsm *LSMTree) writeReadOnlyToDisk() {
 	//lsm.readOnlyMemTable = nil
 }
 func (lsm *LSMTree) storeReadOnlyToFirstLevel(skipList *SkipList) {
-	// 检查第一层是否已满
-	if lsm.diskLevels[0].SkipListCount >= lsm.diskLevels[0].LevelMaxSkipListCount {
-		// 如果第一层已满，先将第一层的某个表移动到第二层
-		moved := lsm.moveSkipListDown(0)
+	// 遍历磁盘级别，为每个层级创建新的跳表实例并复制数据
+	for levelIndex := 0; levelIndex < len(lsm.diskLevels); levelIndex++ {
+		// 创建新的只读表副本
+		readOnlyCopy := NewSkipList(16)
+		skipList.ForEach(func(key []byte, value *DataInfo) bool {
+			valueCopy := &DataInfo{
+				DataMeta:        value.DataMeta,
+				StorageLocation: value.StorageLocation,
+			}
+			readOnlyCopy.Insert(key, valueCopy)
+			return true
+		})
 
-		// 如果成功移动了跳表，则在第一层存储只读表
-		if moved {
-			lsm.diskLevels[0].SkipLists[lsm.diskLevels[0].SkipListCount] = skipList
-			lsm.diskLevels[0].SkipListCount++
+		// 创建新的跳表实例
+		newSkipList := NewSkipList(16)
+
+		// 遍历只读表副本中的所有键值对，并插入到新的跳表中
+		readOnlyCopy.ForEach(func(key []byte, value *DataInfo) bool {
+			valueCopy := &DataInfo{
+				DataMeta:        value.DataMeta,
+				StorageLocation: value.StorageLocation,
+			}
+			newSkipList.Insert(key, valueCopy)
+			return true
+		})
+
+		// 检查当前层级是否已满
+		if lsm.diskLevels[levelIndex].SkipListCount < lsm.diskLevels[levelIndex].LevelMaxSkipListCount {
+			// 如果当前层级未满，则将新的跳表实例存储到该层级
+			lsm.diskLevels[levelIndex].SkipLists[lsm.diskLevels[levelIndex].SkipListCount] = newSkipList
+			lsm.diskLevels[levelIndex].SkipListCount++
+
+			// 更新层级的最大和最小键
+			lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], newSkipList)
+
 			return
 		}
 	}
-
-	// 如果第一层未满，则直接在第一层存储只读表
-	lsm.diskLevels[0].SkipLists[lsm.diskLevels[0].SkipListCount] = skipList
-	lsm.diskLevels[0].SkipListCount++
 }
 
 func (lsm *LSMTree) moveSkipListDown(levelIndex int) bool {
@@ -132,6 +158,10 @@ func (lsm *LSMTree) moveSkipListDown(levelIndex int) bool {
 		lsm.diskLevels[nextLevelIndex].SkipLists[lsm.diskLevels[nextLevelIndex].SkipListCount] = selectedSkipList
 		lsm.diskLevels[nextLevelIndex].SkipListCount++
 
+		// 更新当前层级的最大和最小键
+		lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], selectedSkipList)
+		//lsm.updateLevelMinMaxKeys(lsm.diskLevels[nextLevelIndex], selectedSkipList)
+
 		// 从当前层级的跳表中移除选定的跳表
 		lsm.diskLevels[levelIndex].SkipLists[randomIndex] = lsm.diskLevels[levelIndex].SkipLists[skipListCount-1]
 		lsm.diskLevels[levelIndex].SkipLists[skipListCount-1] = nil // 避免内存泄漏
@@ -143,8 +173,6 @@ func (lsm *LSMTree) moveSkipListDown(levelIndex int) bool {
 	// 如果下一层已满，则递归调用 moveSkipListDown 函数，尝试将跳表移动到更下一层
 	return lsm.moveSkipListDown(nextLevelIndex)
 }
-
-// 将磁盘上的所有数据打印并保存到文件
 func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 	lsm.mu.RLock()
 	defer lsm.mu.RUnlock()
@@ -171,12 +199,17 @@ func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 					writer.WriteString(line)
 					return true
 				})
+
+				// 打印跳表的最大和最小键
+				writer.WriteString(fmt.Sprintf("SkipList %d, MaxKey: %s, MinKey: %s\n", skipListIndex, string(skipList.SkipListInfo.MaxKey), string(skipList.SkipListInfo.MinKey)))
 			}
 		}
+
+		// 打印当前层级的最大和最小键
+		writer.WriteString(fmt.Sprintf("Level %d, MaxKey: %s, MinKey: %s\n", levelIndex, string(level.LevelMaxKey), string(level.LevelMinKey)))
 	}
 
 	return nil
-
 }
 
 // 在程序退出时将活跃表保存到磁盘
@@ -184,4 +217,24 @@ func (lsm *LSMTree) SaveActiveToDiskOnExit() {
 	lsm.readOnlyMemTable = lsm.activeMemTable
 	// 在程序退出时保存活跃表到磁盘
 	defer lsm.writeReadOnlyToDisk()
+}
+func (lsm *LSMTree) updateLevelMinMaxKeys(currentLevel *LevelInfo, selectedSkipList *SkipList) {
+	// 获取跳表的最小键和最大键
+	minKey := selectedSkipList.SkipListInfo.MinKey
+	maxKey := selectedSkipList.SkipListInfo.MaxKey
+
+	// 如果跳表为空，则直接返回
+	if minKey == nil || maxKey == nil {
+		return
+	}
+
+	// 如果当前层级的最小键为空或者跳表的最小键小于当前层级的最小键，则更新最小键
+	if len(currentLevel.LevelMinKey) == 0 || bytes.Compare(minKey, currentLevel.LevelMinKey) < 0 {
+		currentLevel.LevelMinKey = minKey
+	}
+
+	// 如果当前层级的最大键为空或者跳表的最大键大于当前层级的最大键，则更新最大键
+	if len(currentLevel.LevelMaxKey) == 0 || bytes.Compare(maxKey, currentLevel.LevelMaxKey) > 0 {
+		currentLevel.LevelMaxKey = maxKey
+	}
 }

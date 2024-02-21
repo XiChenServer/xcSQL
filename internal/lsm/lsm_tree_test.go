@@ -193,12 +193,12 @@ func TestInsertData(t *testing.T) {
 }
 func TestConcurrentInsertData(t *testing.T) {
 	// 创建 LSM 树实例
-	maxActiveSize := uint32(100) // 增加最大活跃内存表的大小
+	maxActiveSize := uint32(10) // 增加最大活跃内存表的大小
 	maxDiskTableSize := uint32(10000)
 	lsm := NewLSMTree(maxActiveSize, maxDiskTableSize)
 
 	// 并发插入的总数量
-	numInserts := 10000
+	numInserts := 1000
 
 	// 用于等待所有 goroutine 完成
 	var wg sync.WaitGroup

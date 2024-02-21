@@ -24,13 +24,18 @@ type SkipListNode struct {
 	DataInfo *DataInfo
 	Next     []*SkipListNode // 指向下一个节点的指针数组
 }
+type SkipListInfo struct {
+	MaxKey []byte // 这个表最大的键
+	MinKey []byte // 这个表最小的键
+}
 
 // 跳表结构
 type SkipList struct {
-	Head     *SkipListNode // 头节点
-	MaxLevel int16         // 最大层数
-	Size     uint32        // 跳表中节点数量
-	mu       sync.RWMutex  // 用于保护并发访问
+	Head         *SkipListNode // 头节点
+	MaxLevel     int16         // 最大层数
+	Size         uint32        // 跳表中节点数量
+	mu           sync.RWMutex  // 用于保护并发访问
+	SkipListInfo *SkipListInfo // 表中的一些信息
 }
 
 // 新建一个跳表
@@ -45,10 +50,15 @@ func NewSkipList(maxLevel int16) *SkipList {
 		DataInfo: nil,
 		Next:     make([]*SkipListNode, maxLevel),
 	}
+	skipListInfo := &SkipListInfo{
+		MaxKey: nil,
+		MinKey: nil,
+	}
 	return &SkipList{
-		Head:     head,
-		MaxLevel: maxLevel,
-		Size:     0,
+		Head:         head,
+		MaxLevel:     maxLevel,
+		Size:         0,
+		SkipListInfo: skipListInfo,
 	}
 }
 
@@ -59,6 +69,17 @@ func (sl *SkipList) Insert(key []byte, value *DataInfo) {
 	existingNode := sl.Search(key)
 	sl.mu.Lock()
 	defer sl.mu.Unlock()
+	if sl.Size == 0 {
+		sl.SkipListInfo.MaxKey = key
+		sl.SkipListInfo.MinKey = key
+	}
+	if bytes.Compare(key, sl.SkipListInfo.MaxKey) > 0 {
+		sl.SkipListInfo.MaxKey = key
+	}
+	if bytes.Compare(key, sl.SkipListInfo.MinKey) < 0 {
+		sl.SkipListInfo.MaxKey = key
+	}
+
 	if existingNode != nil {
 		// 如果键已经存在，更新相应的值
 		existingNode.DataInfo = value
@@ -166,4 +187,28 @@ func (sl *SkipList) ForEach(f func(key []byte, value *DataInfo) bool) {
 		}
 		node = node.Next[0]
 	}
+}
+func (sl *SkipList) Max() []byte {
+	if sl.Head == nil {
+		return nil // 如果跳表为空，则返回 nil
+	}
+
+	current := sl.Head
+	for i := sl.Size - 1; i >= 0; i-- {
+		for current.Next[i] != nil {
+			current = current.Next[i] // 向右移动到当前层的最右边节点
+		}
+	}
+	return current.Key // 返回当前层的最右边节点的键
+}
+func (sl *SkipList) Min() []byte {
+	if sl.Head == nil {
+		return nil // 如果跳表为空，则返回 nil
+	}
+
+	current := sl.Head
+	for current.Next[0] != nil {
+		current = current.Next[0] // 一直向前移动到第一个节点
+	}
+	return current.Key // 返回第一个节点的键
 }
