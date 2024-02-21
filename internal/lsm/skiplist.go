@@ -3,8 +3,11 @@ package lsm
 import (
 	"SQL/internal/database"
 	"SQL/internal/storage"
+	"bufio"
 	"bytes"
 	"math/rand"
+	"os"
+	"strconv"
 	"sync"
 )
 
@@ -51,6 +54,7 @@ func NewSkipList(maxLevel int16) *SkipList {
 
 // 在跳表中插入节点
 func (sl *SkipList) Insert(key []byte, value *DataInfo) {
+
 	// 检查待插入的键是否已经存在
 	existingNode := sl.Search(key)
 	sl.mu.Lock()
@@ -89,6 +93,8 @@ func (sl *SkipList) Insert(key []byte, value *DataInfo) {
 			newNode.Next[i] = update[i].Next[i]
 			update[i].Next[i] = newNode
 		}
+		// 添加日志输出以便调试
+		//log.Printf("Inserted newNode at level %d, update[%d].Next length: %d\n", i, i, len(update[i].Next))
 	}
 
 	// 增加跳表的大小
@@ -119,4 +125,45 @@ func (sl *SkipList) randomLevel() int {
 		level++
 	}
 	return level
+}
+
+// 将跳表中的所有数据打印并保存到文件
+func (sl *SkipList) PrintToFile(filePath string) error {
+	sl.mu.RLock()
+	defer sl.mu.RUnlock()
+
+	// 打开文件准备写入
+	file, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// 使用 bufio.Writer 提高写入性能
+	writer := bufio.NewWriter(file)
+	defer writer.Flush()
+
+	// 遍历跳表中的所有节点并写入文件
+	node := sl.Head.Next[0] // 跳过头节点
+	for node != nil {
+		line := "Key: " + string(node.Key) + ", Value: " + string(node.DataInfo.Value) + ", Extra: " + string(node.DataInfo.Extra) + ", TTL: " + strconv.FormatInt(int64(node.DataInfo.TTL.Seconds()), 10) + "\n"
+		writer.WriteString(line)
+		node = node.Next[0]
+	}
+
+	return nil
+}
+
+// 遍历跳表中的每个节点，并对每个节点执行指定的操作
+func (sl *SkipList) ForEach(f func(key []byte, value *DataInfo) bool) {
+	sl.mu.RLock()
+	defer sl.mu.RUnlock()
+
+	node := sl.Head.Next[0]
+	for node != nil {
+		if !f(node.Key, node.DataInfo) {
+			break
+		}
+		node = node.Next[0]
+	}
 }
