@@ -76,7 +76,7 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 		DataMeta:        value.DataMeta,
 		StorageLocation: value.StorageLocation,
 	}
-	lsm.activeMemTable.Insert(key, valueCopy)
+	lsm.activeMemTable.InsertInOrder(key, valueCopy)
 }
 
 // 将活跃内存表转换为只读表
@@ -105,7 +105,7 @@ func (lsm *LSMTree) storeReadOnlyToFirstLevel(skipList *SkipList) {
 				DataMeta:        value.DataMeta,
 				StorageLocation: value.StorageLocation,
 			}
-			readOnlyCopy.Insert(key, valueCopy)
+			readOnlyCopy.InsertInOrder(key, valueCopy)
 			return true
 		})
 
@@ -118,7 +118,7 @@ func (lsm *LSMTree) storeReadOnlyToFirstLevel(skipList *SkipList) {
 				DataMeta:        value.DataMeta,
 				StorageLocation: value.StorageLocation,
 			}
-			newSkipList.Insert(key, valueCopy)
+			newSkipList.InsertInOrder(key, valueCopy)
 			return true
 		})
 

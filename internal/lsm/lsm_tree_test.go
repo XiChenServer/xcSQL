@@ -152,6 +152,7 @@ func TestLSMTree1_InsertConcurrentInsert(t *testing.T) {
 	lsm.SaveActiveToDiskOnExit()
 	lsm.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
 }
+
 func TestInsertData(t *testing.T) {
 	// 创建 LSM 树实例
 	maxActiveSize := uint32(10000) // 增加最大活跃内存表的大小
@@ -209,7 +210,7 @@ func TestConcurrentInsertData(t *testing.T) {
 		go func(i int) {
 			defer wg.Done() // 表示当前 goroutine 已完成
 
-			key := []byte(fmt.Sprintf("key%d", i))
+			key := []byte(generateRandomKey())
 			value := &DataInfo{
 				DataMeta: database.DataMeta{
 					Key:       key,

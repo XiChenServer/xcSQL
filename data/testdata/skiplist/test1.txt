@@ -1,5 +1,5 @@
-Key: key5, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 23m12s, FileName: data.txt, Offset: 500, Size: 100
-Key: key3, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 11m28s, FileName: data.txt, Offset: 300, Size: 100
+Key: ONh7Xw7VuD, Value: value80, Extra: extra80, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 41m11s, FileName: data.txt, Offset: 8000, Size: 100
+keyMax: zlkbR4kUBe, keyMin: 0xF0uDfDPfe: 4, ValueSize: 6, ExtraSize: 6, TTL: 11m28s, FileName: data.txt, Offset: 300, Size: 100
 Key: key1, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 20m4s, FileName: data.txt, Offset: 100, Size: 100
 Key: key99, Value: value99, Extra: extra99, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 41m18s, FileName: data.txt, Offset: 9900, Size: 100
 Key: key0, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 2m31s, FileName: data.txt, Offset: 0, Size: 100
@@ -398,3 +398,184 @@ Key: b95XaRDodI, Value: value70, Extra: extra70, KeySize: 5, ValueSize: 7, Extra
 Key: ACpG0jz4cL, Value: value79, Extra: extra79, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 26m28s, FileName: data.txt, Offset: 7900, Size: 100
 Key: kJ7TSq6C4k, Value: value67, Extra: extra67, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 41m27s, FileName: data.txt, Offset: 6700, Size: 100
 Key: YcdksnFqK6, Value: value24, Extra: extra24, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 50m51s, FileName: data.txt, Offset: 2400, Size: 100
+Key: KuINSUj0pG, Value: value2, Extra: extra2, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 39m33s, FileName: data.txt, Offset: 200, Size: 100
+Key: x1OJ2jcLbn, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 45m32s, FileName: data.txt, Offset: 0, Size: 100
+Key: HBp0hZZrYg, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 56m2s, FileName: data.txt, Offset: 100, Size: 100
+Key: HTQTuUUzW8, Value: value22, Extra: extra22, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 49m27s, FileName: data.txt, Offset: 2200, Size: 100
+Key: TxuDdMtdBH, Value: value48, Extra: extra48, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 15m45s, FileName: data.txt, Offset: 4800, Size: 100
+Key: xumDseN3GI, Value: value12, Extra: extra12, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 19m21s, FileName: data.txt, Offset: 1200, Size: 100
+Key: Du2W7k3RKu, Value: value68, Extra: extra68, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 1m44s, FileName: data.txt, Offset: 6800, Size: 100
+Key: Syr2aLMkaT, Value: value23, Extra: extra23, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 58m0s, FileName: data.txt, Offset: 2300, Size: 100
+Key: o4uIT780LU, Value: value13, Extra: extra13, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 3s, FileName: data.txt, Offset: 1300, Size: 100
+Key: End9DwAsWn, Value: value49, Extra: extra49, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 54m57s, FileName: data.txt, Offset: 4900, Size: 100
+Key: 5qjVGPSUV1, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 58m40s, FileName: data.txt, Offset: 300, Size: 100
+Key: Kzu7lRQRWo, Value: value99, Extra: extra99, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 27m6s, FileName: data.txt, Offset: 9900, Size: 100
+Key: fKCXm9qTYU, Value: value24, Extra: extra24, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 18m41s, FileName: data.txt, Offset: 2400, Size: 100
+Key: zJoVtoHrll, Value: value50, Extra: extra50, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 23m19s, FileName: data.txt, Offset: 5000, Size: 100
+Key: bNXwkZUQVW, Value: value14, Extra: extra14, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 33m9s, FileName: data.txt, Offset: 1400, Size: 100
+Key: s1nO39JkBZ, Value: value4, Extra: extra4, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 10m45s, FileName: data.txt, Offset: 400, Size: 100
+Key: D8VbnKfh5f, Value: value51, Extra: extra51, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 19m4s, FileName: data.txt, Offset: 5100, Size: 100
+Key: AMhPnBMoBc, Value: value69, Extra: extra69, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 26m33s, FileName: data.txt, Offset: 6900, Size: 100
+Key: 3O5ttsScHT, Value: value25, Extra: extra25, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 24m7s, FileName: data.txt, Offset: 2500, Size: 100
+Key: iJ1ANChwJC, Value: value15, Extra: extra15, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 19m18s, FileName: data.txt, Offset: 1500, Size: 100
+Key: Zt5ZMKWFT8, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 13m39s, FileName: data.txt, Offset: 500, Size: 100
+Key: IeM2RgDEci, Value: value52, Extra: extra52, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 23m59s, FileName: data.txt, Offset: 5200, Size: 100
+Key: RmFaSIVcIz, Value: value53, Extra: extra53, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 16m54s, FileName: data.txt, Offset: 5300, Size: 100
+Key: dkeN0lAMjf, Value: value70, Extra: extra70, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 10m59s, FileName: data.txt, Offset: 7000, Size: 100
+Key: YisMrAhkwL, Value: value26, Extra: extra26, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 2m29s, FileName: data.txt, Offset: 2600, Size: 100
+Key: wKLOGVFFX9, Value: value16, Extra: extra16, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 3m9s, FileName: data.txt, Offset: 1600, Size: 100
+Key: whq7GZrIns, Value: value6, Extra: extra6, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 10m55s, FileName: data.txt, Offset: 600, Size: 100
+Key: GeQ2TaiEDs, Value: value54, Extra: extra54, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 33m28s, FileName: data.txt, Offset: 5400, Size: 100
+Key: dea2A2PLGY, Value: value71, Extra: extra71, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 51m50s, FileName: data.txt, Offset: 7100, Size: 100
+Key: pHWzhbVogD, Value: value27, Extra: extra27, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 24m34s, FileName: data.txt, Offset: 2700, Size: 100
+Key: o592MmkWB9, Value: value7, Extra: extra7, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 48m21s, FileName: data.txt, Offset: 700, Size: 100
+Key: J9OgAe2TWf, Value: value55, Extra: extra55, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 31m12s, FileName: data.txt, Offset: 5500, Size: 100
+Key: nV2Z6dpGSw, Value: value20, Extra: extra20, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 5m40s, FileName: data.txt, Offset: 2000, Size: 100
+Key: SWQBFqfbOD, Value: value72, Extra: extra72, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 44m27s, FileName: data.txt, Offset: 7200, Size: 100
+Key: gXwb6787X9, Value: value56, Extra: extra56, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 1m25s, FileName: data.txt, Offset: 5600, Size: 100
+Key: sFTJZhhBN7, Value: value8, Extra: extra8, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 24m54s, FileName: data.txt, Offset: 800, Size: 100
+Key: HST53BwuwX, Value: value28, Extra: extra28, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 42m7s, FileName: data.txt, Offset: 2800, Size: 100
+Key: 7NvP30YqGB, Value: value21, Extra: extra21, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 5m29s, FileName: data.txt, Offset: 2100, Size: 100
+Key: aBPBUA8Od6, Value: value19, Extra: extra19, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 22m34s, FileName: data.txt, Offset: 1900, Size: 100
+Key: rQAyGYLxpX, Value: value73, Extra: extra73, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 8m56s, FileName: data.txt, Offset: 7300, Size: 100
+Key: 5ZUnyys7Ow, Value: value57, Extra: extra57, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 23m2s, FileName: data.txt, Offset: 5700, Size: 100
+Key: Sb5wZHqpm8, Value: value9, Extra: extra9, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 19m11s, FileName: data.txt, Offset: 900, Size: 100
+Key: 4DOGGP3KBz, Value: value39, Extra: extra39, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 22m26s, FileName: data.txt, Offset: 3900, Size: 100
+Key: 6gjXIzxUrI, Value: value10, Extra: extra10, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 48m29s, FileName: data.txt, Offset: 1000, Size: 100
+Key: V22EZlarFz, Value: value17, Extra: extra17, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 34m41s, FileName: data.txt, Offset: 1700, Size: 100
+Key: RhMsvIycSB, Value: value74, Extra: extra74, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 13m40s, FileName: data.txt, Offset: 7400, Size: 100
+Key: vleM2UTayT, Value: value58, Extra: extra58, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 23m16s, FileName: data.txt, Offset: 5800, Size: 100
+Key: ZpNy4ePfte, Value: value11, Extra: extra11, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 41m52s, FileName: data.txt, Offset: 1100, Size: 100
+Key: 6ZdqTmQRTH, Value: value40, Extra: extra40, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 5m34s, FileName: data.txt, Offset: 4000, Size: 100
+Key: wHzY6rJbAi, Value: value18, Extra: extra18, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 21m4s, FileName: data.txt, Offset: 1800, Size: 100
+Key: gJOPQGpY7h, Value: value86, Extra: extra86, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 20m56s, FileName: data.txt, Offset: 8600, Size: 100
+Key: V7eoQVZbEC, Value: value87, Extra: extra87, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 2m58s, FileName: data.txt, Offset: 8700, Size: 100
+Key: mEIObPub5p, Value: value80, Extra: extra80, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 58m59s, FileName: data.txt, Offset: 8000, Size: 100
+Key: R4cJbgp9xD, Value: value59, Extra: extra59, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 54m57s, FileName: data.txt, Offset: 5900, Size: 100
+Key: s2NtQiHXEH, Value: value41, Extra: extra41, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 17m27s, FileName: data.txt, Offset: 4100, Size: 100
+Key: WVPvDEm53F, Value: value33, Extra: extra33, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 21m58s, FileName: data.txt, Offset: 3300, Size: 100
+Key: uS8XScyhha, Value: value81, Extra: extra81, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 21m15s, FileName: data.txt, Offset: 8100, Size: 100
+Key: 4UZ09fsMgI, Value: value75, Extra: extra75, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 11m8s, FileName: data.txt, Offset: 7500, Size: 100
+Key: zCUiVENNUj, Value: value88, Extra: extra88, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 13m56s, FileName: data.txt, Offset: 8800, Size: 100
+Key: DtOWxx7cZ6, Value: value60, Extra: extra60, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 52m2s, FileName: data.txt, Offset: 6000, Size: 100
+Key: yyAOe3cic6, Value: value42, Extra: extra42, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 40m42s, FileName: data.txt, Offset: 4200, Size: 100
+Key: OVwIeMGfQY, Value: value29, Extra: extra29, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 33m20s, FileName: data.txt, Offset: 2900, Size: 100
+Key: MyRgEwhviI, Value: value82, Extra: extra82, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 16m23s, FileName: data.txt, Offset: 8200, Size: 100
+Key: aw2FIC2jL5, Value: value76, Extra: extra76, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 46m5s, FileName: data.txt, Offset: 7600, Size: 100
+Key: YMwW93QMkA, Value: value89, Extra: extra89, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 21m33s, FileName: data.txt, Offset: 8900, Size: 100
+Key: YDEvnHijnv, Value: value61, Extra: extra61, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 27m36s, FileName: data.txt, Offset: 6100, Size: 100
+Key: E0CcHhaY0c, Value: value43, Extra: extra43, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 41m41s, FileName: data.txt, Offset: 4300, Size: 100
+Key: 5FFG94netW, Value: value30, Extra: extra30, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 1m27s, FileName: data.txt, Offset: 3000, Size: 100
+Key: 7Zwh00v6EF, Value: value77, Extra: extra77, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 32m51s, FileName: data.txt, Offset: 7700, Size: 100
+Key: VBEtRNIzPJ, Value: value83, Extra: extra83, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 17m20s, FileName: data.txt, Offset: 8300, Size: 100
+Key: 8IM4Dofn66, Value: value90, Extra: extra90, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 50m3s, FileName: data.txt, Offset: 9000, Size: 100
+Key: n3eFfzhex6, Value: value62, Extra: extra62, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 41m11s, FileName: data.txt, Offset: 6200, Size: 100
+Key: HKmSbdmBjj, Value: value44, Extra: extra44, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 7m57s, FileName: data.txt, Offset: 4400, Size: 100
+Key: yUtuNkMGIX, Value: value31, Extra: extra31, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 18m40s, FileName: data.txt, Offset: 3100, Size: 100
+Key: HiLDuV3KZa, Value: value78, Extra: extra78, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 38m26s, FileName: data.txt, Offset: 7800, Size: 100
+Key: mgjC1soJYe, Value: value84, Extra: extra84, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 32m47s, FileName: data.txt, Offset: 8400, Size: 100
+Key: 8n1eRaMKUV, Value: value91, Extra: extra91, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 35m36s, FileName: data.txt, Offset: 9100, Size: 100
+Key: ViAiUcPV4G, Value: value45, Extra: extra45, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 58m56s, FileName: data.txt, Offset: 4500, Size: 100
+Key: v65ZV5MZfm, Value: value63, Extra: extra63, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 37m29s, FileName: data.txt, Offset: 6300, Size: 100
+Key: Z5DfIwmyRs, Value: value38, Extra: extra38, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 6m14s, FileName: data.txt, Offset: 3800, Size: 100
+Key: WjEk7ZFmdo, Value: value79, Extra: extra79, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 4m4s, FileName: data.txt, Offset: 7900, Size: 100
+Key: qjDgMDGBGc, Value: value92, Extra: extra92, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 14m50s, FileName: data.txt, Offset: 9200, Size: 100
+Key: 2hzXnmtCOu, Value: value32, Extra: extra32, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 20m49s, FileName: data.txt, Offset: 3200, Size: 100
+Key: SNqGodFhqZ, Value: value46, Extra: extra46, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 38m41s, FileName: data.txt, Offset: 4600, Size: 100
+Key: gUuZI744dx, Value: value64, Extra: extra64, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 22m4s, FileName: data.txt, Offset: 6400, Size: 100
+Key: Ay78RtKi2s, Value: value93, Extra: extra93, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 23m8s, FileName: data.txt, Offset: 9300, Size: 100
+Key: MlfPzjuYx2, Value: value47, Extra: extra47, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 41m33s, FileName: data.txt, Offset: 4700, Size: 100
+Key: ma19GPaxvy, Value: value96, Extra: extra96, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 18m26s, FileName: data.txt, Offset: 9600, Size: 100
+Key: Wl9K4Hg3Y2, Value: value35, Extra: extra35, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 5m5s, FileName: data.txt, Offset: 3500, Size: 100
+Key: 40aB7wmJlh, Value: value36, Extra: extra36, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 43m59s, FileName: data.txt, Offset: 3600, Size: 100
+Key: 4Fa2hWBkfn, Value: value65, Extra: extra65, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 15m28s, FileName: data.txt, Offset: 6500, Size: 100
+Key: iseWmkwjkn, Value: value97, Extra: extra97, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 5m54s, FileName: data.txt, Offset: 9700, Size: 100
+Key: JBlmVQdjbh, Value: value94, Extra: extra94, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 26m33s, FileName: data.txt, Offset: 9400, Size: 100
+Key: vNQazO9D4m, Value: value95, Extra: extra95, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 17m35s, FileName: data.txt, Offset: 9500, Size: 100
+Key: aohkWEkqE1, Value: value34, Extra: extra34, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 11m2s, FileName: data.txt, Offset: 3400, Size: 100
+Key: bhbCyIBIc6, Value: value85, Extra: extra85, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 15m53s, FileName: data.txt, Offset: 8500, Size: 100
+Key: vsEWrq2ah5, Value: value37, Extra: extra37, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 34m6s, FileName: data.txt, Offset: 3700, Size: 100
+Key: qdYrjEonCi, Value: value66, Extra: extra66, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 25m36s, FileName: data.txt, Offset: 6600, Size: 100
+Key: rMmf4rxUqM, Value: value67, Extra: extra67, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 54m22s, FileName: data.txt, Offset: 6700, Size: 100
+Key: fsUtXg8QgR, Value: value98, Extra: extra98, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 30m11s, FileName: data.txt, Offset: 9800, Size: 100
+Key: 0PbljWtHST, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 2m34s, FileName: data.txt, Offset: 500, Size: 100
+Key: yKNG908J9a, Value: value2, Extra: extra2, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 53m58s, FileName: data.txt, Offset: 200, Size: 100
+Key: hSIPqZrZzR, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 55m10s, FileName: data.txt, Offset: 0, Size: 100
+Key: wUpLPiLe4d, Value: value8, Extra: extra8, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 22m10s, FileName: data.txt, Offset: 800, Size: 100
+Key: OJVkXSTAFU, Value: value9, Extra: extra9, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 6m45s, FileName: data.txt, Offset: 900, Size: 100
+Key: 40Eded0Y3M, Value: value4, Extra: extra4, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 36m52s, FileName: data.txt, Offset: 400, Size: 100
+Key: G75SsYBkMR, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 33m52s, FileName: data.txt, Offset: 300, Size: 100
+Key: R4D5qg3kXn, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 13m31s, FileName: data.txt, Offset: 100, Size: 100
+Key: fzrnKlDqk3, Value: value6, Extra: extra6, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 9m45s, FileName: data.txt, Offset: 600, Size: 100
+Key: 0TRTRtzSx4, Value: value7, Extra: extra7, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 28m1s, FileName: data.txt, Offset: 700, Size: 100
+Key: wucQB0okwf, Value: value9, Extra: extra9, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 47m32s, FileName: data.txt, Offset: 900, Size: 100
+Key: lNdhEBSRy6, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 46m53s, FileName: data.txt, Offset: 100, Size: 100
+Key: B8BXLxCIh9, Value: value6, Extra: extra6, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 7m39s, FileName: data.txt, Offset: 600, Size: 100
+Key: LCwYRKMTLG, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 16m34s, FileName: data.txt, Offset: 0, Size: 100
+Key: EavExvSHCn, Value: value7, Extra: extra7, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 25m39s, FileName: data.txt, Offset: 700, Size: 100
+Key: iZz79VaYAQ, Value: value4, Extra: extra4, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 24m25s, FileName: data.txt, Offset: 400, Size: 100
+Key: KT4C6oXXNT, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 52m18s, FileName: data.txt, Offset: 500, Size: 100
+Key: nEYpdgKUTZ, Value: value8, Extra: extra8, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 21m41s, FileName: data.txt, Offset: 800, Size: 100
+Key: alHcxfTpbl, Value: value2, Extra: extra2, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 47m12s, FileName: data.txt, Offset: 200, Size: 100
+Key: RwaaSIiBYZ, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 24m5s, FileName: data.txt, Offset: 300, Size: 100
+Key: arK7rR7Gsa, Value: value9, Extra: extra9, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 41m42s, FileName: data.txt, Offset: 900, Size: 100
+keyMax: arK7rR7Gsa, keyMin: pqTv4ngySmKey: S6cN2jVz8n, Value: value6, Extra: extra6, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 29m39s, FileName: data.txt, Offset: 600, Size: 100
+keyMax: arK7rR7Gsa, keyMin: pqTv4ngySmKey: vCk1Uu2INg, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 51m47s, FileName: data.txt, Offset: 300, Size: 100
+keyMax: arK7rR7Gsa, keyMin: pqTv4ngySmKey: JoSaslgBjQ, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 40m21s, FileName: data.txt, Offset: 500, Size: 100
+Key: 6HemfA9ZBh, Value: value7, Extra: extra7, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 53m45s, FileName: data.txt, Offset: 700, Size: 100
+Key: pqTv4ngySm, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 46m22s, FileName: data.txt, Offset: 0, Size: 100
+keyMax: arK7rR7Gsa, keyMin: pqTv4ngySmkeyMax: arK7rR7Gsa, keyMin: pqTv4ngySmKey: cWuCLdGX5p, Value: value8, Extra: extra8, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 32m35s, FileName: data.txt, Offset: 800, Size: 100
+keyMax: arK7rR7Gsa, keyMin: pqTv4ngySmkeyMax: arK7rR7Gsa, keyMin: pqTv4ngySmKey: gudo4utnjP, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 44m7s, FileName: data.txt, Offset: 100, Size: 100
+keyMax: arK7rR7Gsa, keyMin: pqTv4ngySmKey: wAB4CzAsly, Value: value4, Extra: extra4, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 57m45s, FileName: data.txt, Offset: 400, Size: 100
+keyMax: arK7rR7Gsa, keyMin: pqTv4ngySmKey: ICZJlp8vmA, Value: value2, Extra: extra2, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 27m38s, FileName: data.txt, Offset: 200, Size: 100
+keyMax: arK7rR7Gsa, keyMin: pqTv4ngySmKey: 4QNcpZLBsu, Value: value9, Extra: extra9, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 52m59s, FileName: data.txt, Offset: 900, Size: 100
+Key: phjNnDqvsH, Value: value2, Extra: extra2, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 44m33s, FileName: data.txt, Offset: 200, Size: 100
+keyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJkeyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJKey: 64zvzvxdCh, Value: value6, Extra: extra6, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 36m8s, FileName: data.txt, Offset: 600, Size: 100
+keyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJKey: cYfYubOdg4, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 43m1s, FileName: data.txt, Offset: 300, Size: 100
+keyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJKey: OHEp2H7LGJ, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 37m6s, FileName: data.txt, Offset: 0, Size: 100
+Key: LDlNMpPSRk, Value: value7, Extra: extra7, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 19m58s, FileName: data.txt, Offset: 700, Size: 100
+keyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJkeyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJKey: DmttB3UUhz, Value: value4, Extra: extra4, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 6m52s, FileName: data.txt, Offset: 400, Size: 100
+keyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJKey: gMfFLmzZg4, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 5m24s, FileName: data.txt, Offset: 100, Size: 100
+keyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJKey: ap3E5qFc98, Value: value8, Extra: extra8, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 43m13s, FileName: data.txt, Offset: 800, Size: 100
+keyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJKey: RHeT9bVNII, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 52m21s, FileName: data.txt, Offset: 500, Size: 100
+keyMax: 4QNcpZLBsu, keyMin: OHEp2H7LGJKey: rc4aW5ysvR, Value: value9, Extra: extra9, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 36m40s, FileName: data.txt, Offset: 900, Size: 100
+keyMax: , keyMin: Key: 3ZoBsfCovE, Value: value8, Extra: extra8, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 54m26s, FileName: data.txt, Offset: 800, Size: 100
+Key: v0wZXAr6kj, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 7m12s, FileName: data.txt, Offset: 100, Size: 100
+Key: g2Jk2fhzOs, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 29m48s, FileName: data.txt, Offset: 0, Size: 100
+keyMax: , keyMin: keyMax: , keyMin: Key: 4aIZCu8PML, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 38m11s, FileName: data.txt, Offset: 500, Size: 100
+Key: cSPRv8enNw, Value: value7, Extra: extra7, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 39m46s, FileName: data.txt, Offset: 700, Size: 100
+keyMax: , keyMin: Key: 73n27Kvumk, Value: value2, Extra: extra2, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 25m37s, FileName: data.txt, Offset: 200, Size: 100
+keyMax: , keyMin: keyMax: , keyMin: keyMax: , keyMin: Key: uhMExjxKaV, Value: value6, Extra: extra6, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 49m19s, FileName: data.txt, Offset: 600, Size: 100
+keyMax: , keyMin: Key: Wi7HRjCHug, Value: value4, Extra: extra4, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 2m22s, FileName: data.txt, Offset: 400, Size: 100
+keyMax: , keyMin: Key: SWcmeNZZSO, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 54m9s, FileName: data.txt, Offset: 300, Size: 100
+keyMax: , keyMin: Key: chnQer6QnG, Value: value9, Extra: extra9, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 44m54s, FileName: data.txt, Offset: 900, Size: 100
+keyMax: , keyMin: Key: AhBi5Y0Gf5, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 10m45s, FileName: data.txt, Offset: 500, Size: 100
+keyMax: , keyMin: Key: hqzSVpkaDw, Value: value6, Extra: extra6, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 12m5s, FileName: data.txt, Offset: 600, Size: 100
+keyMax: , keyMin: Key: hrkEdxCDo1, Value: value8, Extra: extra8, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 17m50s, FileName: data.txt, Offset: 800, Size: 100
+keyMax: , keyMin: Key: GUGK9b6VsP, Value: value4, Extra: extra4, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 8m6s, FileName: data.txt, Offset: 400, Size: 100
+Key: UMGcESVtjb, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 39m29s, FileName: data.txt, Offset: 0, Size: 100
+keyMax: , keyMin: keyMax: , keyMin: Key: USyb4vaXta, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 42m10s, FileName: data.txt, Offset: 100, Size: 100
+keyMax: , keyMin: Key: w69qODBP1v, Value: value2, Extra: extra2, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 32m21s, FileName: data.txt, Offset: 200, Size: 100
+keyMax: , keyMin: Key: 5GYukanSpa, Value: value7, Extra: extra7, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 50m43s, FileName: data.txt, Offset: 700, Size: 100
+keyMax: , keyMin: Key: 0a4rMyCMa7, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 53m32s, FileName: data.txt, Offset: 300, Size: 100
+keyMax: , keyMin: Key: 1z4Thk1CHI, Value: value9, Extra: extra9, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 24s, FileName: data.txt, Offset: 900, Size: 100
+Key: dRrgJGYroA, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 47m43s, FileName: data.txt, Offset: 100, Size: 100
+keyMax: , keyMin: keyMax: , keyMin: Key: z9w6UttglC, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 50m6s, FileName: data.txt, Offset: 0, Size: 100
+keyMax: , keyMin: Key: PbZNrKv2Hc, Value: value8, Extra: extra8, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 30m3s, FileName: data.txt, Offset: 800, Size: 100
+Key: fhbgi1eYtA, Value: value6, Extra: extra6, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 5m15s, FileName: data.txt, Offset: 600, Size: 100
+Key: vGcWjbAd2S, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 58m12s, FileName: data.txt, Offset: 500, Size: 100
+keyMax: , keyMin: keyMax: , keyMin: Key: y0tNRLnyRv, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 54m46s, FileName: data.txt, Offset: 300, Size: 100
+keyMax: , keyMin: keyMax: , keyMin: Key: HgjwE3kH73, Value: value4, Extra: extra4, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 34m38s, FileName: data.txt, Offset: 400, Size: 100
+keyMax: , keyMin: Key: PrPM8wuv6r, Value: value7, Extra: extra7, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 11m33s, FileName: data.txt, Offset: 700, Size: 100
+keyMax: , keyMin: Key: eMbQQh7TWX, Value: value2, Extra: extra2, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 22m33s, FileName: data.txt, Offset: 200, Size: 100
+keyMax: , keyMin: Key: E35MjpNTsu, Value: value9, Extra: extra9, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 17m47s, FileName: data.txt, Offset: 900, Size: 100
+Key: 49qsGevqFv, Value: value0, Extra: extra0, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 39m41s, FileName: data.txt, Offset: 0, Size: 100
+keyMax: , keyMin: Key: gxQIBokYvw, Value: value7, Extra: extra7, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 20m20s, FileName: data.txt, Offset: 700, Size: 100
+keyMax: , keyMin: Key: kwAZqgEJwF, Value: value5, Extra: extra5, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 46m36s, FileName: data.txt, Offset: 500, Size: 100
+keyMax: , keyMin: Key: H61itTns4v, Value: value1, Extra: extra1, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 3m22s, FileName: data.txt, Offset: 100, Size: 100
+keyMax: , keyMin: keyMax: , keyMin: Key: iNZEfgYXzZ, Value: value8, Extra: extra8, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 44m42s, FileName: data.txt, Offset: 800, Size: 100
+keyMax: , keyMin: Key: csH3JHwBVr, Value: value6, Extra: extra6, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 22m47s, FileName: data.txt, Offset: 600, Size: 100
+keyMax: , keyMin: Key: yYvATS7Y8x, Value: value4, Extra: extra4, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 57m43s, FileName: data.txt, Offset: 400, Size: 100
+Key: FS3BVUHpkX, Value: value2, Extra: extra2, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 57m49s, FileName: data.txt, Offset: 200, Size: 100
+keyMax: , keyMin: keyMax: , keyMin: Key: nLftXI19hE, Value: value3, Extra: extra3, KeySize: 4, ValueSize: 6, ExtraSize: 6, TTL: 49m56s, FileName: data.txt, Offset: 300, Size: 100
+keyMax: , keyMin: 

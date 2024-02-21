@@ -62,24 +62,11 @@ func NewSkipList(maxLevel int16) *SkipList {
 	}
 }
 
-// 在跳表中插入节点
-func (sl *SkipList) Insert(key []byte, value *DataInfo) {
+// 在跳表中按照字典顺序插入节点
+func (sl *SkipList) InsertInOrder(key []byte, value *DataInfo) {
 
 	// 检查待插入的键是否已经存在
 	existingNode := sl.Search(key)
-	sl.mu.Lock()
-	defer sl.mu.Unlock()
-	if sl.Size == 0 {
-		sl.SkipListInfo.MaxKey = key
-		sl.SkipListInfo.MinKey = key
-	}
-	if bytes.Compare(key, sl.SkipListInfo.MaxKey) > 0 {
-		sl.SkipListInfo.MaxKey = key
-	}
-	if bytes.Compare(key, sl.SkipListInfo.MinKey) < 0 {
-		sl.SkipListInfo.MaxKey = key
-	}
-
 	if existingNode != nil {
 		// 如果键已经存在，更新相应的值
 		existingNode.DataInfo = value
@@ -102,7 +89,19 @@ func (sl *SkipList) Insert(key []byte, value *DataInfo) {
 		}
 		update[i] = node
 	}
-
+	sl.mu.Lock()
+	defer sl.mu.Unlock()
+	// 更新最大键和最小键
+	if sl.Size == 0 {
+		sl.SkipListInfo.MaxKey = key
+		sl.SkipListInfo.MinKey = key
+	}
+	if bytes.Compare(key, sl.SkipListInfo.MaxKey) > 0 {
+		sl.SkipListInfo.MaxKey = key
+	}
+	if bytes.Compare(key, sl.SkipListInfo.MinKey) < 0 {
+		sl.SkipListInfo.MinKey = key
+	}
 	// 插入新节点
 	for i := 0; i < len(newNode.Next); i++ {
 		// 如果下一个节点存在且键大于待插入键，将新节点插入到当前节点之后
@@ -114,8 +113,6 @@ func (sl *SkipList) Insert(key []byte, value *DataInfo) {
 			newNode.Next[i] = update[i].Next[i]
 			update[i].Next[i] = newNode
 		}
-		// 添加日志输出以便调试
-		//log.Printf("Inserted newNode at level %d, update[%d].Next length: %d\n", i, i, len(update[i].Next))
 	}
 
 	// 增加跳表的大小
@@ -187,28 +184,4 @@ func (sl *SkipList) ForEach(f func(key []byte, value *DataInfo) bool) {
 		}
 		node = node.Next[0]
 	}
-}
-func (sl *SkipList) Max() []byte {
-	if sl.Head == nil {
-		return nil // 如果跳表为空，则返回 nil
-	}
-
-	current := sl.Head
-	for i := sl.Size - 1; i >= 0; i-- {
-		for current.Next[i] != nil {
-			current = current.Next[i] // 向右移动到当前层的最右边节点
-		}
-	}
-	return current.Key // 返回当前层的最右边节点的键
-}
-func (sl *SkipList) Min() []byte {
-	if sl.Head == nil {
-		return nil // 如果跳表为空，则返回 nil
-	}
-
-	current := sl.Head
-	for current.Next[0] != nil {
-		current = current.Next[0] // 一直向前移动到第一个节点
-	}
-	return current.Key // 返回第一个节点的键
 }
