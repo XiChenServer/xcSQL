@@ -1,12 +1,15 @@
 package lsm
 
 import (
+	"SQL/internal/database"
 	"bufio"
 	"bytes"
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 	"sync"
+	"time"
 )
 
 // LevelInfo 表示 LSM 树中的一个层级，包含该层级的跳表集合
@@ -237,4 +240,65 @@ func (lsm *LSMTree) updateLevelMinMaxKeys(currentLevel *LevelInfo, selectedSkipL
 	if len(currentLevel.LevelMaxKey) == 0 || bytes.Compare(maxKey, currentLevel.LevelMaxKey) > 0 {
 		currentLevel.LevelMaxKey = maxKey
 	}
+}
+
+// LoadDataFromFile 从文件加载数据到 LSM 树中
+func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "Level") {
+			// 处理层级信息
+			// 这里可以根据需要解析层级信息
+			continue
+		}
+		if strings.HasPrefix(line, "SkipList") {
+			// 处理跳表信息
+			// 这里可以根据需要解析跳表信息
+			continue
+		}
+
+		// 解析键值对信息
+		keyValue := strings.Split(line, ", ")
+		if len(keyValue) != 4 {
+			return fmt.Errorf("invalid data format: %s", line)
+		}
+
+		key := []byte(strings.Split(keyValue[0], ": ")[1])
+		value := []byte(strings.Split(keyValue[1], ": ")[1])
+		extra := []byte(strings.Split(keyValue[2], ": ")[1])
+		ttlStr := strings.Split(keyValue[3], ": ")[1]
+		ttl, err := time.ParseDuration(ttlStr)
+		if err != nil {
+			return fmt.Errorf("failed to parse TTL: %v", err)
+		}
+
+		// 创建 DataInfo 对象
+		data := DataInfo{
+			DataMeta: database.DataMeta{
+				Key:       key,
+				Value:     value,
+				Extra:     extra,
+				KeySize:   uint32(len(key)),
+				ValueSize: uint32(len(value)),
+				ExtraSize: uint32(len(extra)),
+				TTL:       ttl,
+			},
+		}
+
+		// 将数据插入到 LSM 树中
+		lsm.Insert(key, &data)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -243,3 +243,19 @@ func TestConcurrentInsertData(t *testing.T) {
 	// 检查磁盘上的数据是否包含插入的数据
 	// 可以根据需要编写相应的检查逻辑
 }
+func TestLoadFromDisk(t *testing.T) {
+	// 创建一个 LSM 树实例
+	lsmTree := NewLSMTree(10, 10000)
+
+	// 定义模拟数据文件路径
+	dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+
+	// 加载模拟的数据文件到 LSM 树中
+	err := lsmTree.LoadDataFromFile(dataFilePath)
+	if err != nil {
+		t.Fatalf("Error loading data from disk: %v", err)
+	}
+	lsmTree.SaveActiveToDiskOnExit()
+	lsmTree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test2.txt")
+
+}
