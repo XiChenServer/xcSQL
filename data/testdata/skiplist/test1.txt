@@ -1,0 +1,2 @@
+Key: zAT4sPuKO0, Value: value39, Extra: extra39, KeySize: 5, ValueSize: 7, ExtraSize: 7, TTL: 52m36s, FileName: data.txt, Offset: 3900, Size: 100
+keyMax: zFQfHCQCTp, keyMin: 1AjHlTs7pD
