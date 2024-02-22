@@ -54,24 +54,31 @@ func TestDataInfoGenerationAndWrite(t *testing.T) {
 	wg.Wait()
 
 	// 将跳表内容写入文件
-	file, err := os.OpenFile("../../data/testdata/skiplist/skiplist_content.txt", os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile("../../data/testdata/skiplist/skiplist_content.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Printf("failed to open file: %v\n", err)
 		return
 	}
 	defer file.Close()
 
-	node := sl.Head.Next[0]
-	for node != nil {
-		line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, KeySize: %d, ValueSize: %d, ExtraSize: %d, TTL: %s, FileName: %s, Offset: %d, Size: %d\n",
-			node.Key, node.DataInfo.Value, node.DataInfo.Extra, node.DataInfo.KeySize, node.DataInfo.ValueSize, node.DataInfo.ExtraSize, node.DataInfo.TTL, node.DataInfo.FileName, node.DataInfo.Offset, node.DataInfo.Size)
-		_, err := file.WriteString(line)
-		if err != nil {
-			fmt.Printf("failed to write to file: %v\n", err)
-			return
-		}
-		node = node.Next[0]
+	// 将跳表内容写入文件
+	file, err = os.OpenFile("../../data/testdata/skiplist/skiplist_content.txt", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	if err != nil {
+		fmt.Printf("failed to open file: %v\n", err)
+		return
 	}
+	defer file.Close()
+
+	// 遍历跳表中的每个节点并将数据写入文件
+	sl.ForEach(func(key []byte, value *DataInfo) bool {
+		line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, KeySize: %d, ValueSize: %d, ExtraSize: %d, TTL: %s, FileName: %s, Offset: %d, Size: %d\n",
+			key, value.Value, value.Extra, value.KeySize, value.ValueSize, value.ExtraSize, value.TTL, value.FileName, value.Offset, value.Size)
+		if _, err := file.WriteString(line); err != nil {
+			fmt.Printf("failed to write to file: %v\n", err)
+			return false
+		}
+		return true
+	})
 }
 
 // writeDataToFile 将 DataInfo 写入文件
@@ -117,15 +124,13 @@ func generateRandomKey() string {
 	return string(b)
 }
 
-// TestDataInfoGenerationAndWrite1 测试 DataInfo 生成和写入
+// TestDataInfoGenerationAndWrite 测试 DataInfo 生成和写入
 func TestDataInfoGenerationAndWrite1(t *testing.T) {
-	// 并发写入的 goroutine 数量
-	concurrency := 100
-
 	// 创建跳表实例
 	sl := NewSkipList(16)
 
 	// 生成测试数据并插入跳表
+	concurrency := 100
 	var testData []DataInfo
 	for i := 0; i < concurrency; i++ {
 		data := DataInfo{
@@ -148,20 +153,22 @@ func TestDataInfoGenerationAndWrite1(t *testing.T) {
 		sl.InsertInOrder(data.Key, &data)
 	}
 
-	// 并发写入数据到文件
-	var wg sync.WaitGroup
-	wg.Add(concurrency)
-	for _, data := range testData {
-		go func(d DataInfo) {
-			defer wg.Done()
-			writeDataToFile(d, sl)
-		}(data)
+	// 将跳表内容写入文件
+	file, err := os.OpenFile("../../data/testdata/skiplist/skiplist_content.txt", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	if err != nil {
+		fmt.Printf("failed to open file: %v\n", err)
+		return
 	}
-	wg.Wait()
+	defer file.Close()
 
-	// 输出跳表中的节点信息
+	// 遍历跳表中的每个节点并将数据写入文件
 	sl.ForEach(func(key []byte, value *DataInfo) bool {
-		fmt.Printf("Key: %s, Value: %s\n", key, string(value.Value))
+		line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, KeySize: %d, ValueSize: %d, ExtraSize: %d, TTL: %s, FileName: %s, Offset: %d, Size: %d\n",
+			key, value.Value, value.Extra, value.KeySize, value.ValueSize, value.ExtraSize, value.TTL, value.FileName, value.Offset, value.Size)
+		if _, err := file.WriteString(line); err != nil {
+			fmt.Printf("failed to write to file: %v\n", err)
+			return false
+		}
 		return true
 	})
 }

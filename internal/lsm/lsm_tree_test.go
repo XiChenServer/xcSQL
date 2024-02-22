@@ -228,6 +228,7 @@ func TestConcurrentInsertData(t *testing.T) {
 				},
 			}
 			lsm.Insert(key, value)
+
 		}(i)
 	}
 
