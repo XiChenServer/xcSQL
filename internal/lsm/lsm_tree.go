@@ -16,14 +16,17 @@ type LevelInfo struct {
 
 // LSMTree 结构定义了 LSM 树的基本结构
 type LSMTree struct {
-	mu               sync.RWMutex // 用于保护内存表的读写
-	activeMemTable   *SkipList    // 活跃的内存表，跳表作为索引
-	readOnlyMemTable *SkipList    // 只读的内存表，跳表作为索引
-	diskLevels       []*LevelInfo // 磁盘级别，存储已经持久化的数据，每个层级有多个跳表
-	maxActiveSize    uint32       // 活跃内存表的最大大小
-	maxDiskTableSize uint32       // 磁盘表的最大大小
-	maxSkipLists     uint16       // 每个层级的最大跳表数量
-	maxDiskLevels    uint16
+	mu                   sync.RWMutex // 用于保护内存表的读写
+	activeMemTable       *SkipList    // 活跃的内存表，跳表作为索引
+	readOnlyMemTable     *SkipList    // 只读的内存表，跳表作为索引
+	diskLevels           []*LevelInfo // 磁盘级别，存储已经持久化的数据，每个层级有多个跳表
+	maxActiveSize        uint32       // 活跃内存表的最大大小
+	maxDiskTableSize     uint32       // 磁盘表的最大大小
+	maxSkipLists         uint16       // 每个层级的最大跳表数量
+	maxDiskLevels        uint16
+	writeToDiskWaitGroup sync.RWMutex  // 用于等待将只读表写入磁盘的协程完成
+	writeToDiskChan      chan struct{} // 添加一个通道来控制磁盘写入的并发数
+
 }
 
 // 初始化 LSMTree
@@ -39,7 +42,11 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 		maxDiskTableSize: maxDiskTableSize,
 		maxSkipLists:     maxSkipLists,
 		maxDiskLevels:    maxDiskLevels,
+		writeToDiskChan:  make(chan struct{}, 1), // 初始化 writeToDiskChan，缓冲大小为 1，表示同时只能有一个磁盘写入操作
 	}
+
+	// 启动一个 goroutine 处理并发写入
+	//go tree.handleWriteToDisk()
 
 	// 初始化每个层级的跳表数量
 	skipLists := maxSkipLists
@@ -56,6 +63,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 
 	return tree
 }
+
 func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 	lsm.mu.Lock()
 	defer lsm.mu.Unlock()
@@ -63,9 +71,12 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 	// 检查活跃内存表的大小是否达到最大值，若达到则将活跃表转换为只读表，并写入磁盘
 	if lsm.activeMemTable.Size >= lsm.maxActiveSize {
 		lsm.convertActiveToReadOnly()
-		go lsm.writeReadOnlyToDisk() // 启动一个 goroutine 将只读表写入磁盘
+		lsm.writeToDiskWaitGroup.Lock()
+		go lsm.writeReadOnlyToDisk()
+		lsm.writeToDiskWaitGroup.Unlock()
+		//lsm.writeToDiskChan <- struct{}{} // 发送信号到 writeToDiskChan 通道
+		lsm.activeMemTable = NewSkipList(16)
 	}
-
 	// 插入数据到活跃内存表
 	// 在插入时创建新的键值对副本，确保每个跳表保存的是独立的数据
 	valueCopy := &DataInfo{
@@ -82,8 +93,6 @@ func (lsm *LSMTree) convertActiveToReadOnly() {
 }
 
 func (lsm *LSMTree) writeReadOnlyToDisk() {
-	lsm.mu.Lock()
-	defer lsm.mu.Unlock()
 
 	// 存储只读表到第一层
 	lsm.storeReadOnlyToFirstLevel(lsm.readOnlyMemTable)
@@ -168,4 +177,9 @@ func (lsm *LSMTree) moveSkipListDown(levelIndex int) bool {
 
 	// 如果下一层已满，则递归调用 moveSkipListDown 函数，尝试将跳表移动到更下一层
 	return lsm.moveSkipListDown(nextLevelIndex)
+}
+
+// Close 方法用于关闭 writeToDiskChan 通道
+func (lsm *LSMTree) Close() {
+	close(lsm.writeToDiskChan)
 }

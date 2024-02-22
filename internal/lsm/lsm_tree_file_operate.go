@@ -43,7 +43,7 @@ func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 		}
 
 		// 打印当前层级的最大和最小键
-		writer.WriteString(fmt.Sprintf("Level %d, MaxKey: %s, MinKey: %s\n", levelIndex, string(level.LevelMaxKey), string(level.LevelMinKey)))
+		writer.WriteString(fmt.Sprintf("LevelInfo %d, MaxKey: %s, MinKey: %s\n", levelIndex, string(level.LevelMaxKey), string(level.LevelMinKey)))
 	}
 
 	return nil
@@ -78,12 +78,14 @@ func (lsm *LSMTree) updateLevelMinMaxKeys(currentLevel *LevelInfo, selectedSkipL
 
 // LoadDataFromFile 从文件加载数据到 LSM 树中
 func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
+	// 打开文件准备读取
 	file, err := os.Open(filePath)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
+	// 创建 Scanner 实例以逐行读取文件内容
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -97,7 +99,11 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 			// 这里可以根据需要解析跳表信息
 			continue
 		}
-
+		if strings.HasPrefix(line, "LevelInfo") {
+			// 处理层级信息
+			// 这里可以根据需要解析层级信息
+			continue
+		}
 		// 解析键值对信息
 		keyValue := strings.Split(line, ", ")
 		if len(keyValue) != 4 {
@@ -128,7 +134,6 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 
 		// 将数据插入到 LSM 树中
 		lsm.Insert(key, &data)
-		data = DataInfo{}
 	}
 
 	if err := scanner.Err(); err != nil {

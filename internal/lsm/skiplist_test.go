@@ -129,29 +129,47 @@ func TestDataInfoGenerationAndWrite1(t *testing.T) {
 	// 创建跳表实例
 	sl := NewSkipList(16)
 
-	// 生成测试数据并插入跳表
-	concurrency := 100
-	var testData []DataInfo
+	// 创建 WaitGroup 以等待所有 goroutine 完成
+	var wg sync.WaitGroup
+
+	// 设置并发数
+	concurrency := 10000
+
+	// 设置互斥锁以保护对跳表的并发写入
+	var mu sync.Mutex
+
+	// 启动并发写入 goroutine
 	for i := 0; i < concurrency; i++ {
-		data := DataInfo{
-			DataMeta: database.DataMeta{
-				Key:       []byte(generateRandomKey()),
-				Value:     []byte(fmt.Sprintf("value%d", i)),
-				Extra:     []byte(fmt.Sprintf("extra%d", i)),
-				KeySize:   uint32(len(fmt.Sprintf("key%d", i))),
-				ValueSize: uint32(len(fmt.Sprintf("value%d", i))),
-				ExtraSize: uint32(len(fmt.Sprintf("extra%d", i))),
-				TTL:       time.Duration(rand.Intn(3600)) * time.Second, // 随机生成 TTL
-			},
-			StorageLocation: storage.StorageLocation{
-				FileName: []byte("data.txt"),
-				Offset:   int64(i * 100), // 假设每条数据占用 100 字节
-				Size:     100,
-			},
-		}
-		testData = append(testData, data)
-		sl.InsertInOrder(data.Key, &data)
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+
+			data := DataInfo{
+				DataMeta: database.DataMeta{
+					Key:       []byte(generateRandomKey()),
+					Value:     []byte(fmt.Sprintf("value%d", i)),
+					Extra:     []byte(fmt.Sprintf("extra%d", i)),
+					KeySize:   uint32(len(fmt.Sprintf("key%d", i))),
+					ValueSize: uint32(len(fmt.Sprintf("value%d", i))),
+					ExtraSize: uint32(len(fmt.Sprintf("extra%d", i))),
+					TTL:       time.Duration(rand.Intn(3600)) * time.Second, // 随机生成 TTL
+				},
+				StorageLocation: storage.StorageLocation{
+					FileName: []byte("data.txt"),
+					Offset:   int64(i * 100), // 假设每条数据占用 100 字节
+					Size:     100,
+				},
+			}
+
+			// 插入数据到跳表
+			mu.Lock()
+			defer mu.Unlock()
+			sl.InsertInOrder(data.Key, &data)
+		}(i)
 	}
+
+	// 等待所有 goroutine 完成
+	wg.Wait()
 
 	// 将跳表内容写入文件
 	file, err := os.OpenFile("../../data/testdata/skiplist/skiplist_content.txt", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
