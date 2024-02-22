@@ -3,7 +3,6 @@ package lsm
 import (
 	"SQL/internal/database"
 	"bufio"
-	"bytes"
 	"fmt"
 	"os"
 	"strings"
@@ -54,26 +53,6 @@ func (lsm *LSMTree) SaveActiveToDiskOnExit() {
 	lsm.readOnlyMemTable = lsm.activeMemTable
 	// 在程序退出时保存活跃表到磁盘
 	defer lsm.writeReadOnlyToDisk()
-}
-func (lsm *LSMTree) updateLevelMinMaxKeys(currentLevel *LevelInfo, selectedSkipList *SkipList) {
-	// 获取跳表的最小键和最大键
-	minKey := selectedSkipList.SkipListInfo.MinKey
-	maxKey := selectedSkipList.SkipListInfo.MaxKey
-
-	// 如果跳表为空，则直接返回
-	if minKey == nil || maxKey == nil {
-		return
-	}
-
-	// 如果当前层级的最小键为空或者跳表的最小键小于当前层级的最小键，则更新最小键
-	if len(currentLevel.LevelMinKey) == 0 || bytes.Compare(minKey, currentLevel.LevelMinKey) < 0 {
-		currentLevel.LevelMinKey = minKey
-	}
-
-	// 如果当前层级的最大键为空或者跳表的最大键大于当前层级的最大键，则更新最大键
-	if len(currentLevel.LevelMaxKey) == 0 || bytes.Compare(maxKey, currentLevel.LevelMaxKey) > 0 {
-		currentLevel.LevelMaxKey = maxKey
-	}
 }
 
 // LoadDataFromFile 从文件加载数据到 LSM 树中

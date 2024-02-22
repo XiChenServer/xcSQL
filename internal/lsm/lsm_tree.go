@@ -1,6 +1,7 @@
 package lsm
 
 import (
+	"bytes"
 	"math/rand"
 	"sync"
 )
@@ -71,8 +72,9 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 	// 检查活跃内存表的大小是否达到最大值，若达到则将活跃表转换为只读表，并写入磁盘
 	if lsm.activeMemTable.Size >= lsm.maxActiveSize {
 		lsm.convertActiveToReadOnly()
+		// 使用锁来保证只有出现竞态的问题
 		lsm.writeToDiskWaitGroup.Lock()
-		go lsm.writeReadOnlyToDisk()
+		lsm.writeReadOnlyToDisk()
 		lsm.writeToDiskWaitGroup.Unlock()
 		//lsm.writeToDiskChan <- struct{}{} // 发送信号到 writeToDiskChan 通道
 		lsm.activeMemTable = NewSkipList(16)
@@ -92,6 +94,7 @@ func (lsm *LSMTree) convertActiveToReadOnly() {
 	lsm.activeMemTable = NewSkipList(16) // 重新初始化活跃内存表
 }
 
+// 将只读表存到lsm的磁盘之中
 func (lsm *LSMTree) writeReadOnlyToDisk() {
 
 	// 存储只读表到第一层
@@ -100,6 +103,8 @@ func (lsm *LSMTree) writeReadOnlyToDisk() {
 	//// 清空只读内存表
 	//lsm.readOnlyMemTable = nil
 }
+
+// 保证只读的表存到lsm磁盘的第一层
 func (lsm *LSMTree) storeReadOnlyToFirstLevel(skipList *SkipList) {
 	// 遍历磁盘级别，为每个层级创建新的跳表实例并复制数据
 	for levelIndex := 0; levelIndex < len(lsm.diskLevels); levelIndex++ {
@@ -141,6 +146,7 @@ func (lsm *LSMTree) storeReadOnlyToFirstLevel(skipList *SkipList) {
 	}
 }
 
+// 移动表到下一层，是一个递归的操作
 func (lsm *LSMTree) moveSkipListDown(levelIndex int) bool {
 	// 获取当前层级的跳表数量
 	skipListCount := int(lsm.diskLevels[levelIndex].SkipListCount)
@@ -182,4 +188,26 @@ func (lsm *LSMTree) moveSkipListDown(levelIndex int) bool {
 // Close 方法用于关闭 writeToDiskChan 通道
 func (lsm *LSMTree) Close() {
 	close(lsm.writeToDiskChan)
+}
+
+// 更新一个层中键的最大和最小的问题
+func (lsm *LSMTree) updateLevelMinMaxKeys(currentLevel *LevelInfo, selectedSkipList *SkipList) {
+	// 获取跳表的最小键和最大键
+	minKey := selectedSkipList.SkipListInfo.MinKey
+	maxKey := selectedSkipList.SkipListInfo.MaxKey
+
+	// 如果跳表为空，则直接返回
+	if minKey == nil || maxKey == nil {
+		return
+	}
+
+	// 如果当前层级的最小键为空或者跳表的最小键小于当前层级的最小键，则更新最小键
+	if len(currentLevel.LevelMinKey) == 0 || bytes.Compare(minKey, currentLevel.LevelMinKey) < 0 {
+		currentLevel.LevelMinKey = minKey
+	}
+
+	// 如果当前层级的最大键为空或者跳表的最大键大于当前层级的最大键，则更新最大键
+	if len(currentLevel.LevelMaxKey) == 0 || bytes.Compare(maxKey, currentLevel.LevelMaxKey) > 0 {
+		currentLevel.LevelMaxKey = maxKey
+	}
 }
