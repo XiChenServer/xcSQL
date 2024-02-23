@@ -42,7 +42,7 @@ func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 		}
 
 		// 打印当前层级的最大和最小键
-		writer.WriteString(fmt.Sprintf("LevelInfo %d, MaxKey: %s, MinKey: %s\n", levelIndex, string(level.LevelMaxKey), string(level.LevelMinKey)))
+		writer.WriteString(fmt.Sprintf("InfoLevel %d, MaxKey: %s, MinKey: %s\n", levelIndex, string(level.LevelMaxKey), string(level.LevelMinKey)))
 	}
 
 	return nil
@@ -69,6 +69,7 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.HasPrefix(line, "Level") {
+			fmt.Println("Level", line)
 			// 处理层级信息
 			// 这里可以根据需要解析层级信息
 			continue
@@ -78,7 +79,7 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 			// 这里可以根据需要解析跳表信息
 			continue
 		}
-		if strings.HasPrefix(line, "LevelInfo") {
+		if strings.HasPrefix(line, "InfoLevel") {
 			// 处理层级信息
 			// 这里可以根据需要解析层级信息
 			continue
@@ -110,9 +111,10 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 				TTL:       ttl,
 			},
 		}
-
+		//fmt.Printf("%+v", data)
 		// 将数据插入到 LSM 树中
 		lsm.Insert(key, &data)
+
 	}
 
 	if err := scanner.Err(); err != nil {

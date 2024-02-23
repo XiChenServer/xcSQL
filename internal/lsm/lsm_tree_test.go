@@ -112,8 +112,10 @@ func TestInsertSingleData(t *testing.T) {
 
 // 从文件中读取到lsm中，再从lsm中写到文件里面
 func TestLoadFromDisk(t *testing.T) {
-	// 创建一个 LSM 树实例
-	lsmTree := NewLSMTree(10, 10000)
+
+	maxActiveSize := uint32(16) // 增加最大活跃内存表的大小
+	maxDiskTableSize := uint32(10000)
+	lsmTree := NewLSMTree(maxActiveSize, maxDiskTableSize)
 
 	// 定义模拟数据文件路径
 	dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
@@ -123,7 +125,7 @@ func TestLoadFromDisk(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
-	defer lsmTree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
+	defer lsmTree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test2.txt")
 	defer lsmTree.SaveActiveToDiskOnExit()
 
 }
