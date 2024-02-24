@@ -65,28 +65,28 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 	return tree
 }
 
-func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
-	lsm.mu.Lock()
-	defer lsm.mu.Unlock()
-
-	// 检查活跃内存表的大小是否达到最大值，若达到则将活跃表转换为只读表，并写入磁盘
-	if lsm.activeMemTable.Size >= lsm.maxActiveSize {
-		lsm.convertActiveToReadOnly()
-		// 使用锁来保证只有出现竞态的问题
-		lsm.writeToDiskWaitGroup.Lock()
-		lsm.writeReadOnlyToDisk()
-		lsm.writeToDiskWaitGroup.Unlock()
-		//lsm.writeToDiskChan <- struct{}{} // 发送信号到 writeToDiskChan 通道
-		lsm.activeMemTable = NewSkipList(16)
-	}
-	// 插入数据到活跃内存表
-	// 在插入时创建新的键值对副本，确保每个跳表保存的是独立的数据
-	valueCopy := &DataInfo{
-		DataMeta:        value.DataMeta,
-		StorageLocation: value.StorageLocation,
-	}
-	lsm.activeMemTable.InsertInOrder(key, valueCopy)
-}
+//func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
+//	lsm.mu.Lock()
+//	defer lsm.mu.Unlock()
+//
+//	// 检查活跃内存表的大小是否达到最大值，若达到则将活跃表转换为只读表，并写入磁盘
+//	if lsm.activeMemTable.Size >= lsm.maxActiveSize {
+//		lsm.convertActiveToReadOnly()
+//		// 使用锁来保证只有出现竞态的问题
+//		lsm.writeToDiskWaitGroup.Lock()
+//		lsm.writeReadOnlyToDisk()
+//		lsm.writeToDiskWaitGroup.Unlock()
+//		//lsm.writeToDiskChan <- struct{}{} // 发送信号到 writeToDiskChan 通道
+//		lsm.activeMemTable = NewSkipList(16)
+//	}
+//	// 插入数据到活跃内存表
+//	// 在插入时创建新的键值对副本，确保每个跳表保存的是独立的数据
+//	valueCopy := &DataInfo{
+//		DataMeta:        value.DataMeta,
+//		StorageLocation: value.StorageLocation,
+//	}
+//	lsm.activeMemTable.InsertInOrder(key, valueCopy)
+//}
 
 // 将活跃内存表转换为只读表
 func (lsm *LSMTree) convertActiveToReadOnly() {
@@ -102,6 +102,32 @@ func (lsm *LSMTree) writeReadOnlyToDisk() {
 
 	//// 清空只读内存表
 	//lsm.readOnlyMemTable = nil
+}
+
+// InsertAndMoveDown 方法用于插入数据到活跃内存表并执行跳表移动操作
+func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
+	lsm.mu.Lock()
+	defer lsm.mu.Unlock()
+
+	// 检查活跃内存表的大小是否达到最大值，若达到则将活跃表转换为只读表，并写入磁盘
+	if lsm.activeMemTable.Size >= lsm.maxActiveSize {
+		lsm.convertActiveToReadOnly()
+		// 检查最开始的层是否已满，如果已满，则触发跳表移动操作
+		if lsm.diskLevels[0].SkipListCount >= lsm.diskLevels[0].LevelMaxSkipListCount {
+			lsm.moveSkipListDown(0)
+		}
+		// 存储只读表到 LSM 树的最开始的层
+		lsm.storeReadOnlyToFirstLevel(lsm.readOnlyMemTable)
+		lsm.readOnlyMemTable = NewSkipList(16) // 重新初始化只读内存表
+	}
+
+	// 插入数据到活跃内存表
+	// 在插入时创建新的键值对副本，确保每个跳表保存的是独立的数据
+	valueCopy := &DataInfo{
+		DataMeta:        value.DataMeta,
+		StorageLocation: value.StorageLocation,
+	}
+	lsm.activeMemTable.InsertInOrder(key, valueCopy)
 }
 
 // 保证只读的表存到lsm磁盘的第一层
@@ -147,21 +173,23 @@ func (lsm *LSMTree) storeReadOnlyToFirstLevel(skipList *SkipList) {
 }
 
 // 移动表到下一层，是一个递归的操作
-func (lsm *LSMTree) moveSkipListDown(levelIndex int) bool {
-	// 获取当前层级的跳表数量
-	skipListCount := int(lsm.diskLevels[levelIndex].SkipListCount)
-
+func (lsm *LSMTree) moveSkipListDown(levelIndex int) {
 	// 如果当前层级的跳表数量为 0，则无法移动跳表到下一层
-	if skipListCount == 0 {
-		return false
+	if lsm.diskLevels[levelIndex].SkipListCount == 0 {
+		return
 	}
 
-	// 随机选择一个表移动到下一层
-	randomIndex := rand.Intn(skipListCount)
+	// 随机选择一个表移动到下一层级
+	randomIndex := rand.Intn(int(lsm.diskLevels[levelIndex].SkipListCount))
 	selectedSkipList := lsm.diskLevels[levelIndex].SkipLists[randomIndex]
 
 	// 存储选定的跳表到下一层级
 	nextLevelIndex := levelIndex + 1
+
+	// 如果下一层已满，则递归调用移动操作，尝试将跳表移动到更下一层
+	if nextLevelIndex < len(lsm.diskLevels) && lsm.diskLevels[nextLevelIndex].SkipListCount >= lsm.diskLevels[nextLevelIndex].LevelMaxSkipListCount {
+		lsm.moveSkipListDown(nextLevelIndex)
+	}
 
 	// 检查下一层是否已满
 	if nextLevelIndex < len(lsm.diskLevels) && lsm.diskLevels[nextLevelIndex].SkipListCount < lsm.diskLevels[nextLevelIndex].LevelMaxSkipListCount {
@@ -169,20 +197,18 @@ func (lsm *LSMTree) moveSkipListDown(levelIndex int) bool {
 		lsm.diskLevels[nextLevelIndex].SkipLists[lsm.diskLevels[nextLevelIndex].SkipListCount] = selectedSkipList
 		lsm.diskLevels[nextLevelIndex].SkipListCount++
 
-		// 更新当前层级的最大和最小键
-		lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], selectedSkipList)
-		//lsm.updateLevelMinMaxKeys(lsm.diskLevels[nextLevelIndex], selectedSkipList)
-
-		// 从当前层级的跳表中移除选定的跳表
-		lsm.diskLevels[levelIndex].SkipLists[randomIndex] = lsm.diskLevels[levelIndex].SkipLists[skipListCount-1]
-		lsm.diskLevels[levelIndex].SkipLists[skipListCount-1] = nil // 避免内存泄漏
-		lsm.diskLevels[levelIndex].SkipListCount--
-
-		return true
+		// 删除当前层级中选定的跳表
+		lsm.deleteSkipList(levelIndex, randomIndex)
 	}
+}
 
-	// 如果下一层已满，则递归调用 moveSkipListDown 函数，尝试将跳表移动到更下一层
-	return lsm.moveSkipListDown(nextLevelIndex)
+// 删除指定层级的跳表
+func (lsm *LSMTree) deleteSkipList(levelIndex, skipListIndex int) {
+	// 将要删除的跳表替换为最后一个跳表，并将计数减一
+	lastIndex := int(lsm.diskLevels[levelIndex].SkipListCount) - 1
+	lsm.diskLevels[levelIndex].SkipLists[skipListIndex] = lsm.diskLevels[levelIndex].SkipLists[lastIndex]
+	lsm.diskLevels[levelIndex].SkipLists[lastIndex] = nil
+	lsm.diskLevels[levelIndex].SkipListCount--
 }
 
 // Close 方法用于关闭 writeToDiskChan 通道
