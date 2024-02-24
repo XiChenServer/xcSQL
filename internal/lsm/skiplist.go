@@ -185,3 +185,18 @@ func (sl *SkipList) ForEach(f func(key []byte, value *DataInfo) bool) {
 		node = node.Next[0]
 	}
 }
+
+// 添加 SkipListInfo 字段的最大和最小键的检查
+func (skipList *SkipList) getMaxKey() []byte {
+	if skipList.SkipListInfo != nil {
+		return skipList.SkipListInfo.MaxKey
+	}
+	return nil
+}
+
+func (skipList *SkipList) getMinKey() []byte {
+	if skipList.SkipListInfo != nil {
+		return skipList.SkipListInfo.MinKey
+	}
+	return nil
+}

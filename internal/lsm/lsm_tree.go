@@ -2,6 +2,7 @@ package lsm
 
 import (
 	"bytes"
+	"fmt"
 	"math/rand"
 	"sync"
 )
@@ -46,9 +47,6 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 		writeToDiskChan:  make(chan struct{}, 1), // 初始化 writeToDiskChan，缓冲大小为 1，表示同时只能有一个磁盘写入操作
 	}
 
-	// 启动一个 goroutine 处理并发写入
-	//go tree.handleWriteToDisk()
-
 	// 初始化每个层级的跳表数量
 	skipLists := maxSkipLists
 	for i := uint16(0); i < maxDiskLevels; i++ {
@@ -57,6 +55,8 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 		tree.diskLevels[i] = &LevelInfo{
 			SkipLists:             skipListSlice,
 			SkipListCount:         0,
+			LevelMaxKey:           []byte{}, // 使用空的字节数组表示最大键的缺失
+			LevelMinKey:           []byte{}, // 使用空的字节数组表示最小键的缺失
 			LevelMaxSkipListCount: skipLists,
 		}
 		skipLists *= 10 // 每个层级的跳表数量按4的幂级增加
@@ -161,13 +161,53 @@ func (lsm *LSMTree) storeReadOnlyToFirstLevel(skipList *SkipList) {
 		// 检查当前层级是否已满
 		if lsm.diskLevels[levelIndex].SkipListCount < lsm.diskLevels[levelIndex].LevelMaxSkipListCount {
 			// 如果当前层级未满，则将新的跳表实例存储到该层级
-			lsm.diskLevels[levelIndex].SkipLists[lsm.diskLevels[levelIndex].SkipListCount] = newSkipList
+			lsm.keepLsmLevelOrderly(levelIndex, newSkipList)
+			//lsm.diskLevels[levelIndex].SkipLists[lsm.diskLevels[levelIndex].SkipListCount] = newSkipList
 			lsm.diskLevels[levelIndex].SkipListCount++
 
 			// 更新层级的最大和最小键
 			lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], newSkipList)
 
 			return
+		}
+	}
+}
+
+// 在整个跳表进行插入的时候，保证lsm整个层的有序性
+func (lsm *LSMTree) keepLsmLevelOrderly(levelIndex int, skipList *SkipList) {
+	if lsm.diskLevels[levelIndex].SkipListCount == 0 {
+		fmt.Println("1232")
+		lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists, skipList)
+		return
+	}
+
+	fmt.Println("Before calling keepLsmLevelOrderly:")
+	fmt.Println("LevelIndex:", levelIndex)
+	fmt.Println("LSMTree:", lsm)
+	fmt.Println("DiskLevels:", lsm.diskLevels)
+
+	// 添加对 skipList 是否为空的有效性检查
+	if skipList == nil || skipList.SkipListInfo == nil {
+		fmt.Println("Invalid skipList or skipListInfo is nil.")
+		return
+	}
+
+	levelMinKey := lsm.diskLevels[levelIndex].LevelMinKey
+	levelMaxKey := lsm.diskLevels[levelIndex].LevelMaxKey
+	if bytes.Compare(levelMinKey, skipList.SkipListInfo.MaxKey) >= 0 {
+		// 如果新跳表的最大键大于等于当前层级的最小键，直接将新跳表插入到当前层级的首位
+		lsm.diskLevels[levelIndex].SkipLists = append([]*SkipList{skipList}, lsm.diskLevels[levelIndex].SkipLists...)
+	} else if bytes.Compare(levelMaxKey, skipList.SkipListInfo.MinKey) <= 0 {
+		// 如果新跳表的最小键小于等于当前层级的最大键，直接将新跳表插入到当前层级的末尾
+		lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists, skipList)
+	} else {
+		// 否则，需要找到新跳表应该插入的位置，确保整个层级的有序性
+		for i, existingSkipList := range lsm.diskLevels[levelIndex].SkipLists {
+			if bytes.Compare(existingSkipList.SkipListInfo.MaxKey, skipList.SkipListInfo.MaxKey) > 0 {
+				// 如果当前跳表的最大键大于新跳表的最大键，说明新跳表应该插入到当前位置的前面
+				lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists[:i], append([]*SkipList{skipList}, lsm.diskLevels[levelIndex].SkipLists[i:]...)...)
+				break
+			}
 		}
 	}
 }
@@ -195,7 +235,10 @@ func (lsm *LSMTree) moveSkipListDown(levelIndex int) {
 	if nextLevelIndex < len(lsm.diskLevels) && lsm.diskLevels[nextLevelIndex].SkipListCount < lsm.diskLevels[nextLevelIndex].LevelMaxSkipListCount {
 		// 将选定的跳表存储到下一层
 		lsm.diskLevels[nextLevelIndex].SkipLists[lsm.diskLevels[nextLevelIndex].SkipListCount] = selectedSkipList
-		lsm.diskLevels[nextLevelIndex].SkipListCount++
+		lsm.keepLsmLevelOrderly(levelIndex, selectedSkipList)
+		//lsm.diskLevels[nextLevelIndex].SkipListCount++
+		// 更新层级的最大和最小键
+		lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], selectedSkipList)
 
 		// 删除当前层级中选定的跳表
 		lsm.deleteSkipList(levelIndex, randomIndex)
