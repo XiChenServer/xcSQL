@@ -123,3 +123,11 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 
 	return nil
 }
+
+// 将只读表存到lsm的磁盘之中
+func (lsm *LSMTree) writeReadOnlyToDisk() {
+
+	// 存储只读表到第一层
+	lsm.storeReadOnlyToFirstLevel(lsm.readOnlyMemTable)
+
+}

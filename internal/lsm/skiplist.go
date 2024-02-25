@@ -38,11 +38,6 @@ type SkipList struct {
 	SkipListInfo *SkipListInfo // 表中的一些信息
 }
 
-// 新建一个跳表
-func NewSkipListLevel() *SkipList {
-	return NewSkipList(16) // 初始化一个最大层数为 3 的跳表
-}
-
 // 初始化跳表
 func NewSkipList(maxLevel int16) *SkipList {
 	head := &SkipListNode{
@@ -51,8 +46,8 @@ func NewSkipList(maxLevel int16) *SkipList {
 		Next:     make([]*SkipListNode, maxLevel),
 	}
 	skipListInfo := &SkipListInfo{
-		MaxKey: nil,
-		MinKey: nil,
+		MaxKey: []byte{},
+		MinKey: []byte{},
 	}
 	return &SkipList{
 		Head:         head,
