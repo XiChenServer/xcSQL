@@ -18,48 +18,26 @@ func (lsm *LSMTree) keepLsmLevelOrderly(levelIndex int, skipList *SkipList) {
 		return
 	}
 
-	// 如果当前层级的跳表数量为0，则直接将新跳表插入
-	if lsm.diskLevels[levelIndex].SkipListCount == 0 {
-		lsm.diskLevels[levelIndex].SkipLists = []*SkipList{skipList}
-		lsm.diskLevels[levelIndex+1].SkipListCount++
-		return
-	}
-
-	levelMinKey := lsm.diskLevels[levelIndex].LevelMinKey
-	levelMaxKey := lsm.diskLevels[levelIndex].LevelMaxKey
-	skipListMinKey := skipList.SkipListInfo.MinKey
-	skipListMaxKey := skipList.SkipListInfo.MaxKey
-
-	// 如果新跳表的最大键大于等于当前层级的最小键，直接将新跳表插入到当前层级的首位
-	if bytes.Compare(levelMinKey, skipListMaxKey) >= 0 {
-		// 在切片的开头插入新的跳表
-		lsm.diskLevels[levelIndex].SkipLists = append([]*SkipList{skipList}, lsm.diskLevels[levelIndex].SkipLists...)
-		lsm.diskLevels[levelIndex+1].SkipListCount++
-		return
-	}
-
-	// 如果新跳表的最小键小于等于当前层级的最大键，直接将新跳表插入到当前层级的末尾
-	if bytes.Compare(levelMaxKey, skipListMinKey) <= 0 {
-		// 直接追加新的跳表到切片末尾
-		lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists, skipList)
-		lsm.diskLevels[levelIndex+1].SkipListCount++
-		return
-	}
-
-	// 否则，需要找到新跳表应该插入的位置，确保整个层级的有序性
+	// 遍历已存在的跳表，找到新跳表应该插入的位置
 	for i, existingSkipList := range lsm.diskLevels[levelIndex].SkipLists {
 		if existingSkipList == nil || existingSkipList.SkipListInfo == nil {
 			continue
 		}
 
-		if bytes.Compare(existingSkipList.SkipListInfo.MaxKey, skipListMaxKey) > 0 {
-			// 在当前位置插入新的跳表
-			lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists[:i+1], lsm.diskLevels[levelIndex].SkipLists[i:]...)
-			lsm.diskLevels[levelIndex].SkipLists[i] = skipList
-			lsm.diskLevels[levelIndex+1].SkipListCount++
-			break
+		// 比较新跳表的最大键和当前跳表的最大键
+		if bytes.Compare(existingSkipList.SkipListInfo.MaxKey, skipList.SkipListInfo.MaxKey) > 0 {
+			// 在当前位置插入新跳表
+			lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists[:i], append([]*SkipList{skipList}, lsm.diskLevels[levelIndex].SkipLists[i:]...)...)
+			lsm.diskLevels[levelIndex].SkipListCount++
+			lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], skipList)
+			return
 		}
 	}
+
+	// 如果新跳表的最大键大于等于当前所有跳表的最大键，则将新跳表追加到末尾
+	lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists, skipList)
+	lsm.diskLevels[levelIndex].SkipListCount++
+	lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], skipList)
 }
 
 // 检查lsm的哪一层中是否存在重叠跳表
