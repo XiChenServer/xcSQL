@@ -48,9 +48,9 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 	skipLists := maxSkipLists
 	for i := uint16(0); i < maxDiskLevels; i++ {
 		// 为每个层级的 SkipLists 切片预分配空间
-		skipListSlice := make([]*SkipList, skipLists)
+		//skipListSlice := make([]*SkipList, skipLists)
 		tree.diskLevels[i] = &LevelInfo{
-			SkipLists:             skipListSlice,
+			SkipLists:             nil,
 			SkipListCount:         0,
 			LevelMaxKey:           []byte{}, // 使用空的字节数组表示最大键的缺失
 			LevelMinKey:           []byte{}, // 使用空的字节数组表示最小键的缺失
@@ -93,10 +93,6 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 	// 检查活跃内存表的大小是否达到最大值，若达到则将活跃表转换为只读表，并写入磁盘
 	if lsm.activeMemTable.Size >= lsm.maxActiveSize {
 		lsm.convertActiveToReadOnly()
-		//// 检查最开始的层是否已满，如果已满，则触发跳表移动操作
-		//if lsm.diskLevels[0].SkipListCount >= lsm.diskLevels[0].LevelMaxSkipListCount {
-		//	lsm.moveSkipListDown(0)
-		//}
 		// 存储只读表到 LSM 树的最开始的层
 		lsm.storeReadOnlyToFirstLevel(lsm.readOnlyMemTable)
 		lsm.readOnlyMemTable = NewSkipList(16) // 重新初始化只读内存表

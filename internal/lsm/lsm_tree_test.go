@@ -46,11 +46,6 @@ func TestConcurrentInsertData(t *testing.T) {
 					Size:     100,
 				},
 			}
-			if i == 999 {
-				fmt.Println("到了", i)
-				return
-			}
-			fmt.Println(i, string(key))
 			lsm.Insert(key, value)
 
 		}(i)

@@ -1,1 +1,168 @@
 package lsm
+
+import (
+	"bytes"
+	"fmt"
+)
+
+// 在整个跳表进行插入的时候，保证LSM整个层的有序性
+func (lsm *LSMTree) keepLsmLevelOrderly(levelIndex int, skipList *SkipList) {
+	// 检查传入参数的有效性
+	if levelIndex < 0 || levelIndex >= int(lsm.maxDiskLevels) {
+		fmt.Println("Invalid level index.")
+		return
+	}
+
+	if skipList == nil || skipList.SkipListInfo == nil || skipList.Head == nil {
+		fmt.Println("Invalid skipList or skipListInfo is nil.")
+		return
+	}
+
+	// 如果当前层级的跳表数量为0，则直接将新跳表插入
+	if lsm.diskLevels[levelIndex].SkipListCount == 0 {
+		lsm.diskLevels[levelIndex].SkipLists = []*SkipList{skipList}
+		lsm.diskLevels[levelIndex+1].SkipListCount++
+		return
+	}
+
+	levelMinKey := lsm.diskLevels[levelIndex].LevelMinKey
+	levelMaxKey := lsm.diskLevels[levelIndex].LevelMaxKey
+	skipListMinKey := skipList.SkipListInfo.MinKey
+	skipListMaxKey := skipList.SkipListInfo.MaxKey
+
+	// 如果新跳表的最大键大于等于当前层级的最小键，直接将新跳表插入到当前层级的首位
+	if bytes.Compare(levelMinKey, skipListMaxKey) >= 0 {
+		// 在切片的开头插入新的跳表
+		lsm.diskLevels[levelIndex].SkipLists = append([]*SkipList{skipList}, lsm.diskLevels[levelIndex].SkipLists...)
+		lsm.diskLevels[levelIndex+1].SkipListCount++
+		return
+	}
+
+	// 如果新跳表的最小键小于等于当前层级的最大键，直接将新跳表插入到当前层级的末尾
+	if bytes.Compare(levelMaxKey, skipListMinKey) <= 0 {
+		// 直接追加新的跳表到切片末尾
+		lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists, skipList)
+		lsm.diskLevels[levelIndex+1].SkipListCount++
+		return
+	}
+
+	// 否则，需要找到新跳表应该插入的位置，确保整个层级的有序性
+	for i, existingSkipList := range lsm.diskLevels[levelIndex].SkipLists {
+		if existingSkipList == nil || existingSkipList.SkipListInfo == nil {
+			continue
+		}
+
+		if bytes.Compare(existingSkipList.SkipListInfo.MaxKey, skipListMaxKey) > 0 {
+			// 在当前位置插入新的跳表
+			lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists[:i+1], lsm.diskLevels[levelIndex].SkipLists[i:]...)
+			lsm.diskLevels[levelIndex].SkipLists[i] = skipList
+			lsm.diskLevels[levelIndex+1].SkipListCount++
+			break
+		}
+	}
+}
+
+// 检查lsm的哪一层中是否存在重叠跳表
+func (lsm *LSMTree) hasOverlappingSkipLists(levelIndex int, skipList *SkipList) bool {
+	// 获取只读内存表的最大键和最小键
+	maxKey := skipList.getMaxKey()
+	minKey := skipList.getMinKey()
+
+	// 遍历所有层级的跳表，检查是否存在重叠
+	for _, sl := range lsm.diskLevels[levelIndex].SkipLists {
+		if sl == nil {
+			continue
+		}
+		slMaxKey := sl.getMaxKey()
+		slMinKey := sl.getMinKey()
+
+		// 如果存在重叠，则返回 true
+		if bytes.Compare(minKey, slMaxKey) < 0 && bytes.Compare(maxKey, slMinKey) > 0 {
+			return true
+		}
+	}
+
+	return false
+}
+
+// 合并只读内存表中的重叠跳表
+func (lsm *LSMTree) mergeOverlappingSkipLists(levelIndex int, skipList *SkipList) {
+	// 获取当前层级的跳表列表
+	level := lsm.diskLevels[levelIndex]
+
+	// 获取待插入跳表的最大键和最小键
+	maxKey := skipList.getMaxKey()
+	minKey := skipList.getMinKey()
+
+	// 初始化一个切片，用于存储合并后的跳表列表
+	mergedSkipLists := make([]*SkipList, 0)
+
+	// 遍历当前层级的跳表，查找需要合并的跳表
+	for _, sl := range level.SkipLists {
+		if sl == nil {
+			continue
+		}
+		slMaxKey := sl.getMaxKey()
+		slMinKey := sl.getMinKey()
+
+		// 如果存在重叠，则进行合并操作
+		if bytes.Compare(minKey, slMaxKey) < 0 && bytes.Compare(maxKey, slMinKey) > 0 {
+			// 合并跳表操作
+			skipList = mergeSortedSkipLists(skipList, sl)
+		} else {
+			// 如果不存在重叠，则将原跳表保留在合并后的列表中
+			mergedSkipLists = append(mergedSkipLists, sl)
+		}
+	}
+
+	// 将合并后的跳表添加到列表中
+	mergedSkipLists = append(mergedSkipLists, skipList)
+
+	// 更新当前层级的跳表列表
+	level.SkipLists = mergedSkipLists
+}
+
+// 合并两个有序跳表
+func mergeSortedSkipLists(sl1, sl2 *SkipList) *SkipList {
+	maxLevel := sl1.MaxLevel                // 假设两个跳表的层数相同，选择其中一个跳表的层数作为合并后跳表的层数
+	mergedSkipList := NewSkipList(maxLevel) // 创建一个新的跳表作为合并后的结果
+	node1 := sl1.Head.Next[0]               // 第一个跳表的头节点
+	node2 := sl2.Head.Next[0]               // 第二个跳表的头节点
+
+	// 双指针遍历两个跳表的节点
+	for node1 != nil && node2 != nil {
+		// 如果节点1的键小于节点2的键，则将节点1插入到合并后的跳表中
+		if bytes.Compare(node1.Key, node2.Key) < 0 {
+			mergedSkipList.InsertInOrder(node1.Key, node1.DataInfo)
+			node1 = node1.Next[0] // 移动节点1的指针
+		} else {
+			// 否则，将节点2插入到合并后的跳表中
+			mergedSkipList.InsertInOrder(node2.Key, node2.DataInfo)
+			node2 = node2.Next[0] // 移动节点2的指针
+		}
+	}
+
+	// 将剩余的节点插入到合并后的跳表中
+	for node1 != nil {
+		mergedSkipList.InsertInOrder(node1.Key, node1.DataInfo)
+		node1 = node1.Next[0]
+	}
+	for node2 != nil {
+		mergedSkipList.InsertInOrder(node2.Key, node2.DataInfo)
+		node2 = node2.Next[0]
+	}
+
+	return mergedSkipList
+}
+
+// 分解跳表，确保跳表数量不超过最大限制
+func (lsm *LSMTree) splitSkipListsIfNeeded() {
+	// 遍历所有层级的跳表，检查是否有跳表数量超过最大限制
+	for _, level := range lsm.diskLevels {
+		if level.SkipListCount > lsm.maxSkipLists {
+			// 如果跳表数量超过最大限制，则需要进行分解操作
+			// 分解操作...
+			// 这里需要根据具体的跳表实现进行分解操作
+		}
+	}
+}
