@@ -79,9 +79,9 @@ func getCurrentFileNumber(storagePath string) (uint, error) {
 }
 
 // StoreData 将数据存储到指定位置
-func (sm *StorageManager) StoreData(data database.KeyValuePair) (StorageLocation, error) {
+func (sm *StorageManager) StoreData(data *database.KeyValue) (StorageLocation, error) {
 	// 压缩数据
-	compressedData, err := compressData(data)
+	compressedData, err := compressData(*data)
 	if err != nil {
 		return StorageLocation{}, err
 	}
@@ -134,7 +134,7 @@ func (sm *StorageManager) StoreData(data database.KeyValuePair) (StorageLocation
 }
 
 // compressData 压缩数据
-func compressData(data database.KeyValuePair) ([]byte, error) {
+func compressData(data database.KeyValue) ([]byte, error) {
 
 	// 使用 gob 包将结构体编码为字节切片
 	var buffer bytes.Buffer
