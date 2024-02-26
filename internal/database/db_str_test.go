@@ -1,54 +1,23 @@
-package storage
+package database
 
 import (
 	"SQL/internal/model"
+	"SQL/internal/storage"
+	"SQL/logs"
+	"fmt"
 	"math/rand"
-	"sync"
 	"testing"
 	"time"
 )
 
-func TestConcurrentStoreData(t *testing.T) {
-	const numRoutines = 10    // 并发测试的协程数量
-	const testDataSize = 1000 // 测试数据的大小
-
-	// 创建存储管理器
-	storageManager, err := NewStorageManager("../../data/testdata", 4*1024) // 1MB 文件大小限制
-	if err != nil {
-		t.Fatalf("failed to create storage manager: %v", err)
+// generateRandomData 生成指定长度的随机字节切片
+func generateRandomData(size int) []byte {
+	rand.Seed(time.Now().UnixNano())
+	data := make([]byte, size)
+	for i := range data {
+		data[i] = byte(rand.Intn(256)) // 生成0到255之间的随机字节
 	}
-	//defer func() {
-	//	// 清理测试数据
-	//	err := os.RemoveAll("testdata")
-	//	if err != nil {
-	//		t.Fatalf("failed to clean up test data: %v", err)
-	//	}
-	//}()
-
-	// 并发写入测试数据
-	var wg sync.WaitGroup
-	for i := 0; i < numRoutines; i++ {
-		wg.Add(1)
-		go func(id int) {
-			defer wg.Done()
-			data := generateTestData(testDataSize)
-			for _, v := range data {
-				_, err := storageManager.StoreData(&v)
-				if err != nil {
-					t.Errorf("goroutine %d: failed to store data: %v", id, err)
-				}
-			}
-
-		}(i)
-	}
-	wg.Wait()
-
-	//// 检查存储结果
-	//fileInfo, err := storageManager.CurrentFile.Stat()
-	//if err != nil {
-	//	t.Fatalf("failed to get file info: %v", err)
-	//}
-	//fmt.Printf("Total data stored: %d bytes\n", fileInfo.Size())
+	return data
 }
 
 // generateTestData 生成测试数据
@@ -99,12 +68,28 @@ func generateTestData(size int) []model.KeyValue {
 	return data
 }
 
-// generateRandomData 生成指定长度的随机字节切片
-func generateRandomData(size int) []byte {
-	rand.Seed(time.Now().UnixNano())
-	data := make([]byte, size)
-	for i := range data {
-		data[i] = byte(rand.Intn(256)) // 生成0到255之间的随机字节
+// 简单的测试数据可以存入
+func TestDB_Set(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//data := generateTestData(10)
+	key := []byte("test_key")
+	value := []byte("test_value")
+	db.Set(key, value)
+
+}
+
+// 简单的测试数据可以通过解压获取到
+func TestDB_Get(t *testing.T) {
+	fileName := "data_0.gz" // 你的存储位置文件名
+	offset := int64(222)    // 偏移量
+	size := int64(227)      // 数据大小
+
+	// 解压数据
+	decompressedData, err := storage.DecompressAndFillData("../../data/testdata/string_test/"+fileName, offset, size)
+	if err != nil {
+		t.Fatalf("failed to decompress data: %v", err)
 	}
-	return data
+	// 打印解压后的数据
+	fmt.Println("Decompressed Data:", string(decompressedData.DataMeta.Key))
 }

@@ -1,31 +1,11 @@
 package database
 
 import (
+	"SQL/internal/model"
 	"time"
 )
 
-// KeyValue 表示键值对
-type KeyValue struct {
-	DataMeta   *DataMeta
-	Version    uint32    // 版本号
-	CreateTime time.Time // 创建时间
-	UpdateTime time.Time // 修改时间
-	AccessTime time.Time // 访问时间
-	DataType   uint16    // 数据类型
-	DataMark   uint16    // 权限控制信息
-	checksum   uint32    //校验和
-}
-type DataMeta struct {
-	Key       []byte // 键
-	Value     []byte // 值，可以根据需要选择不同的数据类型
-	Extra     []byte // 其他的
-	KeySize   uint32
-	ValueSize uint32
-	ExtraSize uint32
-	TTL       time.Duration // 生存时间，0 表示永不过期
-}
-
-func NewKeyValueEntry(key, value []byte, t, m uint16, ttl ...time.Duration) *KeyValue {
+func NewKeyValueEntry(key, value []byte, t, m uint16, ttl ...time.Duration) *model.KeyValue {
 	var expireTime time.Duration
 
 	// 如果提供了ttl参数，则使用提供的ttl值
@@ -38,11 +18,11 @@ func NewKeyValueEntry(key, value []byte, t, m uint16, ttl ...time.Duration) *Key
 	return NewKeyValuePair(key, value, nil, t, m, expireTime)
 }
 
-func NewKeyValuePair(key, value, extra []byte, t, m uint16, ttl time.Duration) *KeyValue {
+func NewKeyValuePair(key, value, extra []byte, t, m uint16, ttl time.Duration) *model.KeyValue {
 	// 获取当前的时间
 	currentTime := time.Now()
-	return &KeyValue{
-		DataMeta: &DataMeta{
+	return &model.KeyValue{
+		DataMeta: &model.DataMeta{
 			Key:       key,
 			Value:     value,
 			Extra:     extra,

@@ -1,12 +1,8 @@
 package storage
 
 import (
-	"SQL/internal/database"
+	"SQL/internal/model"
 	"bytes"
-	"compress/gzip"
-	"encoding/gob"
-	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -79,7 +75,7 @@ func getCurrentFileNumber(storagePath string) (uint, error) {
 }
 
 // StoreData 将数据存储到指定位置
-func (sm *StorageManager) StoreData(data *database.KeyValue) (StorageLocation, error) {
+func (sm *StorageManager) StoreData(data *model.KeyValue) (StorageLocation, error) {
 	// 压缩数据
 	compressedData, err := compressData(*data)
 	if err != nil {
@@ -133,63 +129,79 @@ func (sm *StorageManager) StoreData(data *database.KeyValue) (StorageLocation, e
 	}, nil
 }
 
-// compressData 压缩数据
-func compressData(data database.KeyValue) ([]byte, error) {
-
-	// 使用 gob 包将结构体编码为字节切片
-	var buffer bytes.Buffer
-	encoder := gob.NewEncoder(&buffer)
-	if err := encoder.Encode(data); err != nil {
-		fmt.Println("Error:", err)
-		return nil, err
-	}
-
-	var compressedData bytes.Buffer
-	gzipWriter := gzip.NewWriter(&compressedData)
-
-	// 写入数据
-	_, err := gzipWriter.Write(buffer.Bytes())
-	if err != nil {
-		gzipWriter.Close()
-		return nil, err
-	}
-
-	// 关闭压缩器
-	err = gzipWriter.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	return compressedData.Bytes(), nil
-}
-
-// DecompressData 解压数据
-func DecompressData(fileName string, offset, size int64) ([]byte, error) {
-	// 打开文件
-	file, err := os.Open(fileName)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	// 设置读取范围
-	_, err = file.Seek(offset, 0)
-	if err != nil {
-		return nil, err
-	}
-
-	// 创建gzip.Reader
-	reader, err := gzip.NewReader(file)
-	if err != nil {
-		return nil, err
-	}
-	defer reader.Close()
-
-	// 读取解压后的数据
-	decompressedData, err := ioutil.ReadAll(reader)
-	if err != nil {
-		return nil, err
-	}
-
-	return decompressedData, nil
-}
+//// compressData 压缩数据
+//func compressData(data model.KeyValue) ([]byte, error) {
+//	// 使用 gob 包将结构体编码为字节切片
+//	var buffer bytes.Buffer
+//	encoder := gob.NewEncoder(&buffer)
+//	if err := encoder.Encode(data); err != nil {
+//		fmt.Println("Error:", err)
+//		return nil, err
+//	}
+//
+//	var compressedData bytes.Buffer
+//	gzipWriter := gzip.NewWriter(&compressedData)
+//
+//	// 写入数据
+//	_, err := gzipWriter.Write(buffer.Bytes())
+//	if err != nil {
+//		gzipWriter.Close()
+//		return nil, err
+//	}
+//
+//	// 关闭压缩器
+//	err = gzipWriter.Close()
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return compressedData.Bytes(), nil
+//}
+//
+//// DecompressData 解压数据
+//func DecompressData(fileName string, offset, size int64) ([]byte, error) {
+//	// 打开文件
+//	file, err := os.Open(fileName)
+//	if err != nil {
+//		return nil, err
+//	}
+//	defer file.Close()
+//
+//	// 设置读取范围
+//	_, err = file.Seek(offset, 0)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	// 创建gzip.Reader
+//	reader, err := gzip.NewReader(file)
+//	if err != nil {
+//		return nil, err
+//	}
+//	defer reader.Close()
+//
+//	// 读取解压后的数据
+//	decompressedData, err := ioutil.ReadAll(reader)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return decompressedData, nil
+//}
+//
+//func DecompressAndFillData(fileName string, offset, size int64) (*model.KeyValue, error) {
+//	// 解压数据
+//	decompressedData, err := DecompressData(fileName, offset, size)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	// 解码数据到 KeyValue 结构体
+//	var keyValue model.KeyValue
+//	err = gob.NewDecoder(bytes.NewReader(decompressedData)).Decode(&keyValue)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return &keyValue, nil
+//}
