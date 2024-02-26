@@ -1,10 +1,12 @@
 package lsm
 
 import (
-	"SQL/internal/database"
+	"SQL/internal/model"
+	"SQL/internal/storage"
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -31,7 +33,10 @@ func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 				writer.WriteString(fmt.Sprintf("Level %d, SkipList %d:\n", levelIndex, skipListIndex))
 				// 遍历跳表中的所有键值对并写入文件
 				skipList.ForEach(func(key []byte, value *DataInfo) bool {
-					line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, TTL: %s\n", string(key), string(value.Value), string(value.Extra), value.TTL.String())
+					size := strconv.FormatInt(value.Size, 10)
+					offset := strconv.FormatInt(value.Offset, 10)
+
+					line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(key), string(value.Value), string(value.Extra), value.TTL.String(), string(value.FileName), offset, size)
 					writer.WriteString(line)
 					return true
 				})
@@ -48,13 +53,6 @@ func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 	return nil
 }
 
-// 在程序退出时将活跃表保存到磁盘
-func (lsm *LSMTree) SaveActiveToDiskOnExit() {
-	lsm.readOnlyMemTable = lsm.activeMemTable
-	// 在程序退出时保存活跃表到磁盘
-	defer lsm.writeReadOnlyToDisk()
-}
-
 // LoadDataFromFile 从文件加载数据到 LSM 树中
 func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 	// 打开文件准备读取
@@ -69,24 +67,24 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.HasPrefix(line, "Level") {
-			fmt.Println("Level", line)
 			// 处理层级信息
-			// 这里可以根据需要解析层级信息
+			fmt.Println("Level", line)
+			// 这里可以根据需要解析和处理层级信息
 			continue
 		}
 		if strings.HasPrefix(line, "SkipList") {
 			// 处理跳表信息
-			// 这里可以根据需要解析跳表信息
+			// 这里可以根据需要解析和处理跳表信息
 			continue
 		}
 		if strings.HasPrefix(line, "InfoLevel") {
 			// 处理层级信息
-			// 这里可以根据需要解析层级信息
+			// 这里可以根据需要解析和处理层级信息
 			continue
 		}
 		// 解析键值对信息
 		keyValue := strings.Split(line, ", ")
-		if len(keyValue) != 4 {
+		if len(keyValue) != 7 {
 			return fmt.Errorf("invalid data format: %s", line)
 		}
 
@@ -98,10 +96,19 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 		if err != nil {
 			return fmt.Errorf("failed to parse TTL: %v", err)
 		}
+		fileName := []byte(strings.Split(keyValue[4], ": ")[1]) // 添加了文件名提取
+		offset, err := strconv.ParseInt(strings.Split(keyValue[5], ": ")[1], 10, 64)
+		if err != nil {
+			return fmt.Errorf("failed to parse Offset: %v", err)
+		}
+		size, err := strconv.ParseInt(strings.Split(keyValue[6], ": ")[1], 10, 64)
+		if err != nil {
+			return fmt.Errorf("failed to parse Size: %v", err)
+		}
 
 		// 创建 DataInfo 对象
 		data := DataInfo{
-			DataMeta: database.DataMeta{
+			DataMeta: model.DataMeta{
 				Key:       key,
 				Value:     value,
 				Extra:     extra,
@@ -110,9 +117,12 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 				ExtraSize: uint32(len(extra)),
 				TTL:       ttl,
 			},
+			StorageLocation: storage.StorageLocation{
+				FileName: fileName,
+				Offset:   offset,
+				Size:     size,
+			},
 		}
-		//fmt.Printf("%+v", data)
-		// 将数据插入到 LSM 树中
 		lsm.Insert(key, &data)
 
 	}
@@ -130,4 +140,11 @@ func (lsm *LSMTree) writeReadOnlyToDisk() {
 	// 存储只读表到第一层
 	lsm.storeReadOnlyToFirstLevel(lsm.readOnlyMemTable)
 
+}
+
+// 在程序退出时将活跃表保存到磁盘
+func (lsm *LSMTree) SaveActiveToDiskOnExit() {
+	lsm.readOnlyMemTable = lsm.activeMemTable
+	// 在程序退出时保存活跃表到磁盘
+	defer lsm.writeReadOnlyToDisk()
 }

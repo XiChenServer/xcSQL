@@ -1,7 +1,7 @@
 package lsm
 
 import (
-	"SQL/internal/database"
+	"SQL/internal/model"
 	"SQL/internal/storage"
 	"fmt"
 	"math/rand"
@@ -23,7 +23,7 @@ func TestDataInfoGenerationAndWrite(t *testing.T) {
 	var testData []DataInfo
 	for i := 0; i < concurrency; i++ {
 		data := DataInfo{
-			DataMeta: database.DataMeta{
+			DataMeta: model.DataMeta{
 				Key:       []byte(generateRandomKey()),
 				Value:     []byte(fmt.Sprintf("value%d", i)),
 				Extra:     []byte(fmt.Sprintf("extra%d", i)),
@@ -145,7 +145,7 @@ func TestDataInfoGenerationAndWrite1(t *testing.T) {
 			defer wg.Done()
 
 			data := DataInfo{
-				DataMeta: database.DataMeta{
+				DataMeta: model.DataMeta{
 					Key:       []byte(generateRandomKey()),
 					Value:     []byte(fmt.Sprintf("value%d", i)),
 					Extra:     []byte(fmt.Sprintf("extra%d", i)),

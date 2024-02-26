@@ -1,7 +1,7 @@
 package lsm
 
 import (
-	"SQL/internal/database"
+	"SQL/internal/model"
 	"SQL/internal/storage"
 	"bufio"
 	"bytes"
@@ -14,7 +14,7 @@ import (
 // 在进行存储的时候，内部含有数据的元信息还有就是数据的存储位置
 
 type DataInfo struct {
-	database.DataMeta
+	model.DataMeta
 	storage.StorageLocation
 }
 

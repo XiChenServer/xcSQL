@@ -1,7 +1,7 @@
 package lsm
 
 import (
-	"SQL/internal/database"
+	"SQL/internal/model"
 	"SQL/internal/storage"
 	"fmt"
 	"math/rand"
@@ -31,7 +31,7 @@ func TestConcurrentInsertData(t *testing.T) {
 
 			key := []byte(generateRandomKey())
 			value := &DataInfo{
-				DataMeta: database.DataMeta{
+				DataMeta: model.DataMeta{
 					Key:       key,
 					Value:     []byte(fmt.Sprintf("value%d", i)),
 					Extra:     []byte(fmt.Sprintf("extra%d", i)),
@@ -76,7 +76,7 @@ func TestInsertSingleData(t *testing.T) {
 	for i := 0; i < dataNum; i++ {
 		key := []byte(generateRandomKey())
 		value := &DataInfo{
-			DataMeta: database.DataMeta{
+			DataMeta: model.DataMeta{
 				Key:       key,
 				Value:     []byte("value"),
 				Extra:     []byte("extra"),
@@ -120,6 +120,32 @@ func TestLoadFromDisk(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
+	defer lsmTree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test2.txt")
+	defer lsmTree.SaveActiveToDiskOnExit()
+
+}
+
+// 测试获取单个数据
+func TestLoadOneData(t *testing.T) {
+
+	maxActiveSize := uint32(16) // 增加最大活跃内存表的大小
+	maxDiskTableSize := uint32(10000)
+	lsmTree := NewLSMTree(maxActiveSize, maxDiskTableSize)
+
+	// 定义模拟数据文件路径
+	dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+
+	// 加载模拟的数据文件到 LSM 树中
+	err := lsmTree.LoadDataFromFile(dataFilePath)
+	if err != nil {
+		t.Fatalf("Error loading data from disk: %v", err)
+	}
+	// 加载模拟的数据文件到 LSM 树中
+	data, err := lsmTree.Get([]byte("21EQPzMyei"))
+	if err != nil {
+		t.Fatalf("Error loading data fatal: %v", err)
+	}
+	fmt.Println(string(data.Key), string(data.FileName), string(data.Value))
 	defer lsmTree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test2.txt")
 	defer lsmTree.SaveActiveToDiskOnExit()
 

@@ -72,11 +72,18 @@ func generateTestData(size int) []model.KeyValue {
 func TestDB_Set(t *testing.T) {
 	logs.InitLogger()
 	db := NewXcDB()
-	//data := generateTestData(10)
-	key := []byte("test_key")
-	value := []byte("test_value")
-	db.Set(key, value)
+	dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 
+	// 加载模拟的数据文件到 LSM 树中
+	err := db.lsm.LoadDataFromFile(dataFilePath)
+	if err != nil {
+		t.Fatalf("Error loading data from disk: %v", err)
+	}
+	key := []byte(generateRandomKey())
+	value := []byte(generateRandomKey())
+	db.Set(key, value)
+	defer db.lsm.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
+	defer db.lsm.SaveActiveToDiskOnExit()
 }
 
 // 简单的测试数据可以通过解压获取到
@@ -92,4 +99,15 @@ func TestDB_Get(t *testing.T) {
 	}
 	// 打印解压后的数据
 	fmt.Println("Decompressed Data:", string(decompressedData.DataMeta.Key))
+}
+
+// generateRandomKey 生成随机键值
+func generateRandomKey() string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	keyLen := 10
+	b := make([]byte, keyLen)
+	for i := range b {
+		b[i] = charset[rand.Intn(len(charset))]
+	}
+	return string(b)
 }

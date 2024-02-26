@@ -1,6 +1,8 @@
 package lsm
 
 import (
+	"bytes"
+	"errors"
 	"sync"
 )
 
@@ -110,4 +112,38 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 // Close 方法用于关闭 writeToDiskChan 通道
 func (lsm *LSMTree) Close() {
 	close(lsm.writeToDiskChan)
+}
+
+// InsertAndMoveDown 方法用于插入数据到活跃内存表并执行跳表移动操作
+func (lsm *LSMTree) Get(key []byte) (*DataInfo, error) {
+	lsm.mu.RLock()
+	defer lsm.mu.RUnlock()
+	// 在活跃内存表中查找与传入的键相同的项
+	for node := lsm.activeMemTable.Head.Next[0]; node != nil; node = node.Next[0] {
+		if bytes.Equal(node.Key, key) {
+			return node.DataInfo, nil
+		}
+	}
+	for node := lsm.readOnlyMemTable.Head.Next[0]; node != nil; node = node.Next[0] {
+		if bytes.Equal(node.Key, key) {
+			return node.DataInfo, nil
+		}
+	}
+	for node := lsm.readOnlyMemTable.Head.Next[0]; node != nil; node = node.Next[0] {
+		if bytes.Equal(node.Key, key) {
+			return node.DataInfo, nil
+		}
+	}
+	// 如果在活跃内存表中找不到，依次在其他层级中查找
+	for _, level := range lsm.diskLevels {
+		for _, skipList := range level.SkipLists {
+			for node := skipList.Head.Next[0]; node != nil; node = node.Next[0] {
+				if bytes.Equal(node.Key, key) {
+					return node.DataInfo, nil
+				}
+			}
+		}
+	}
+	err := errors.New("don`t find data")
+	return nil, err // 如果找不到与传入的键相同的项，则返回 nil
 }
