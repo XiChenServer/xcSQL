@@ -2,20 +2,23 @@ package lsm
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 )
 
 // 在整个跳表进行插入的时候，保证LSM整个层的有序性
-func (lsm *LSMTree) keepLsmLevelOrderly(levelIndex int, skipList *SkipList) {
+func (lsm *LSMTree) keepLsmLevelOrderly(levelIndex int, skipList *SkipList) error {
 	// 检查传入参数的有效性
 	if levelIndex < 0 || levelIndex >= int(lsm.maxDiskLevels) {
 		fmt.Println("Invalid level index.")
-		return
+		err := errors.New("Invalid skipListIndex.")
+		return err
 	}
 
 	if skipList == nil || skipList.SkipListInfo == nil || skipList.Head == nil {
 		fmt.Println("Invalid skipList or skipListInfo is nil.")
-		return
+		err := errors.New("Invalid skipList or skipListInfo is nil.")
+		return err
 	}
 
 	// 遍历已存在的跳表，找到新跳表应该插入的位置
@@ -30,14 +33,18 @@ func (lsm *LSMTree) keepLsmLevelOrderly(levelIndex int, skipList *SkipList) {
 			lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists[:i], append([]*SkipList{skipList}, lsm.diskLevels[levelIndex].SkipLists[i:]...)...)
 			lsm.diskLevels[levelIndex].SkipListCount++
 			lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], skipList)
-			return
+			return nil
 		}
 	}
 
 	// 如果新跳表的最大键大于等于当前所有跳表的最大键，则将新跳表追加到末尾
 	lsm.diskLevels[levelIndex].SkipLists = append(lsm.diskLevels[levelIndex].SkipLists, skipList)
 	lsm.diskLevels[levelIndex].SkipListCount++
-	lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], skipList)
+	err := lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], skipList)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // 检查lsm的哪一层中是否存在重叠跳表

@@ -1,6 +1,7 @@
 Level 0, SkipList 0:
 Key: 21EQPzMyei, Value: TZGVHjeWh9, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 1567, Size: 238
 Key: CqmoJ5zETi, Value: n1XTP5I7OB, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 1805, Size: 239
+Key: ndEOlCFKWy, Value: qwEXa98zcJ, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 2044, Size: 234
 Key: test_key, Value: test_value, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 1342, Size: 225
 SkipList 0, MaxKey: test_key, MinKey: 21EQPzMyei
 InfoLevel 0, MaxKey: test_key, MinKey: 21EQPzMyei

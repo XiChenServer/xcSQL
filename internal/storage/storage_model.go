@@ -77,7 +77,7 @@ func getCurrentFileNumber(storagePath string) (uint, error) {
 // StoreData 将数据存储到指定位置
 func (sm *StorageManager) StoreData(data *model.KeyValue) (StorageLocation, error) {
 	// 压缩数据
-	compressedData, err := compressData(*data)
+	compressedData, err := sm.compressData(*data)
 	if err != nil {
 		return StorageLocation{}, err
 	}

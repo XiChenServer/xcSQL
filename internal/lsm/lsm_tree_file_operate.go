@@ -123,7 +123,10 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 				Size:     size,
 			},
 		}
-		lsm.Insert(key, &data)
+		err = lsm.Insert(key, &data)
+		if err != nil {
+			return err
+		}
 
 	}
 

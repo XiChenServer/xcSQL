@@ -12,7 +12,7 @@ import (
 )
 
 // compressData 压缩数据
-func compressData(data model.KeyValue) ([]byte, error) {
+func (sm *StorageManager) compressData(data model.KeyValue) ([]byte, error) {
 	// 使用 gob 包将结构体编码为字节切片
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
@@ -80,7 +80,7 @@ func DecompressData(fileName string, offset, size int64) ([]byte, error) {
 	return decompressedData, nil
 }
 
-func DecompressAndFillData(fileName string, offset, size int64) (*model.KeyValue, error) {
+func (sm *StorageManager) DecompressAndFillData(fileName string, offset, size int64) (*model.KeyValue, error) {
 	// 解压数据
 	decompressedData, err := DecompressData(fileName, offset, size)
 	if err != nil {

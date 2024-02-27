@@ -88,7 +88,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
 //}
 
 // InsertAndMoveDown 方法用于插入数据到活跃内存表并执行跳表移动操作
-func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
+func (lsm *LSMTree) Insert(key []byte, value *DataInfo) error {
 	lsm.mu.Lock()
 	defer lsm.mu.Unlock()
 
@@ -96,7 +96,10 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 	if lsm.activeMemTable.Size >= lsm.maxActiveSize {
 		lsm.convertActiveToReadOnly()
 		// 存储只读表到 LSM 树的最开始的层
-		lsm.storeReadOnlyToFirstLevel(lsm.readOnlyMemTable)
+		err := lsm.storeReadOnlyToFirstLevel(lsm.readOnlyMemTable)
+		if err != nil {
+			return err
+		}
 		lsm.readOnlyMemTable = NewSkipList(16) // 重新初始化只读内存表
 	}
 
@@ -107,6 +110,7 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) {
 		StorageLocation: value.StorageLocation,
 	}
 	lsm.activeMemTable.InsertInOrder(key, valueCopy)
+	return nil
 }
 
 // Close 方法用于关闭 writeToDiskChan 通道
