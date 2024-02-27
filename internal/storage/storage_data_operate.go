@@ -5,9 +5,9 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/gob"
-	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -17,7 +17,6 @@ func (sm *StorageManager) compressData(data model.KeyValue) ([]byte, error) {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	if err := encoder.Encode(data); err != nil {
-		fmt.Println("Error:", err)
 		return nil, err
 	}
 
@@ -40,7 +39,7 @@ func (sm *StorageManager) compressData(data model.KeyValue) ([]byte, error) {
 
 func DecompressData(fileName string, offset, size int64) ([]byte, error) {
 	// 打开文件
-	file, err := os.Open(fileName)
+	file, err := os.OpenFile(fileName, os.O_RDONLY, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -63,10 +62,11 @@ func DecompressData(fileName string, offset, size int64) ([]byte, error) {
 	if size > 0 && offset+size <= fileSize {
 		fileSize = size
 	}
-
 	// 创建gzip.Reader
 	reader, err := gzip.NewReader(io.LimitReader(file, fileSize))
 	if err != nil {
+		// 记录错误日志
+		log.Println("Error creating gzip reader:", err)
 		return nil, err
 	}
 	defer reader.Close()
@@ -74,6 +74,8 @@ func DecompressData(fileName string, offset, size int64) ([]byte, error) {
 	// 读取解压后的数据
 	decompressedData, err := ioutil.ReadAll(reader)
 	if err != nil {
+		// 记录错误日志
+		log.Println("Error reading decompressed data:", err)
 		return nil, err
 	}
 

@@ -3,20 +3,17 @@ package lsm
 import (
 	"bytes"
 	"errors"
-	"fmt"
 )
 
 // 在整个跳表进行插入的时候，保证LSM整个层的有序性
 func (lsm *LSMTree) keepLsmLevelOrderly(levelIndex int, skipList *SkipList) error {
 	// 检查传入参数的有效性
 	if levelIndex < 0 || levelIndex >= int(lsm.maxDiskLevels) {
-		fmt.Println("Invalid level index.")
 		err := errors.New("Invalid skipListIndex.")
 		return err
 	}
 
 	if skipList == nil || skipList.SkipListInfo == nil || skipList.Head == nil {
-		fmt.Println("Invalid skipList or skipListInfo is nil.")
 		err := errors.New("Invalid skipList or skipListInfo is nil.")
 		return err
 	}

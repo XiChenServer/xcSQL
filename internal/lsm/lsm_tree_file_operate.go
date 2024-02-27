@@ -68,7 +68,7 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 		line := scanner.Text()
 		if strings.HasPrefix(line, "Level") {
 			// 处理层级信息
-			fmt.Println("Level", line)
+
 			// 这里可以根据需要解析和处理层级信息
 			continue
 		}
