@@ -88,13 +88,11 @@ func (sm *StorageManager) DecompressAndFillData(fileName string, offset, size in
 	if err != nil {
 		return nil, err
 	}
-
 	// 解码数据到 KeyValue 结构体
 	var keyValue model.KeyValue
 	err = gob.NewDecoder(bytes.NewReader(decompressedData)).Decode(&keyValue)
 	if err != nil {
 		return nil, err
 	}
-
 	return &keyValue, nil
 }

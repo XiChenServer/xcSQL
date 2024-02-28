@@ -3,6 +3,7 @@ Key: AteW5jNS87, Value: iZCEHSBxeg, Extra: , TTL: 1m5s, FileName: ../../data/tes
 Key: FtZlwNYtuo, Value: uAWvQRdrtw, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 735, Size: 243
 Key: JWhleue4tr, Value: hlwE958noj, Extra: , TTL: 1m5s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 1971, Size: 246
 Key: JeM8jfw5Nv, Value: WOtrH4gyYh, Extra: , TTL: 1m5s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 2022, Size: 260
+Key: NG9tAX3q3V, Value: fVeVXGQXwQ, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 978, Size: 235
 Key: NUvq7gw6y5, Value: 3l4R8nYa1V, Extra: , TTL: 1m5s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 1472, Size: 250
 Key: OrizaukGo1, Value: FzFBPvHgMB, Extra: , TTL: 1m5s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 246, Size: 247
 Key: QlQU62MNi9, Value: ayqMge0TKD, Extra: , TTL: 1m5s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 4020, Size: 249

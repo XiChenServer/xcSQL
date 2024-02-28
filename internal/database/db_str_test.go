@@ -94,3 +94,25 @@ func generateRandomKey() string {
 	}
 	return string(b)
 }
+
+// 简单的测试数据可以存入
+func TestDB_Strlen(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+
+	// 加载模拟的数据文件到 LSM 树中
+	err := db.lsm.LoadDataFromFile(string(db.lsm.LsmPath))
+	if err != nil {
+		t.Fatalf("Error loading data from disk: %v", err)
+	}
+	key := []byte("NG9tAX3q3V")
+	data, err := db.Strlen(key)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Get ok:", data)
+	defer db.lsm.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
+	defer db.lsm.SaveActiveToDiskOnExit()
+	defer storage.SaveStorageManager(db.storageManager, "../../data/testdata/lsm_tree/config.txt")
+}

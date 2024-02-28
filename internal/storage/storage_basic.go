@@ -25,6 +25,7 @@ func SaveStorageManager(storageManager *StorageManager, filePath string) error {
 	return nil
 }
 
+// 将StorageManager信息从文件里面取出来
 func LoadStorageManager(filePath string) (*StorageManager, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
