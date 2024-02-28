@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 // KeyValue 表示键值对
 type KeyValue struct {

@@ -1,9 +1,2 @@
-2024-02-27T14:57:17.202+0800	PANIC	database/db.go:23	failed to create storage manager: %v unexpected EOF
-2024-02-27T15:08:12.176+0800	PANIC	database/db.go:23	failed to create storage manager: %v unexpected EOF
-2024-02-27T18:52:31.108+0800	PANIC	database/db.go:23	failed to create storage manager: %v open ../../data/testdata/lsm_tree/config.txt: no such file or directory
-2024-02-27T18:53:42.066+0800	ERROR	database/db.go:23	failed to create storage manager: %v<nil>
-2024-02-27T18:53:50.012+0800	ERROR	database/db.go:23	failed to create storage manager: %v<nil>
-2024-02-27T20:59:32.433+0800	ERROR	database/db.go:23	failed to create storage manager: %v<nil>
-2024-02-27T21:00:12.944+0800	ERROR	database/db.go:23	failed to create storage manager: %v<nil>
-2024-02-27T21:00:35.439+0800	ERROR	database/db.go:23	failed to create storage manager: %v<nil>
-2024-02-27T21:00:50.076+0800	ERROR	database/db.go:23	failed to create storage manager: %v<nil>
+2024-02-28T22:03:11.242+0800	ERROR	database/db.go:23	failed to create storage manager: %v<nil>
+2024-02-28T22:03:31.341+0800	ERROR	database/db.go:23	failed to create storage manager: %v<nil>

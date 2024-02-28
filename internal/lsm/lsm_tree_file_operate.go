@@ -66,6 +66,53 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
+		if strings.HasPrefix(line, "Key") {
+			// 解析键值对信息
+			keyValue := strings.Split(line, ", ")
+			if len(keyValue) != 7 {
+				return fmt.Errorf("invalid data format: %s", line)
+			}
+
+			key := []byte(strings.Split(keyValue[0], ": ")[1])
+			value := []byte(strings.Split(keyValue[1], ": ")[1])
+			extra := []byte(strings.Split(keyValue[2], ": ")[1])
+			ttlStr := strings.Split(keyValue[3], ": ")[1]
+			ttl, err := time.ParseDuration(ttlStr)
+			if err != nil {
+				return fmt.Errorf("failed to parse TTL: %v", err)
+			}
+			fileName := []byte(strings.Split(keyValue[4], ": ")[1]) // 添加了文件名提取
+			offset, err := strconv.ParseInt(strings.Split(keyValue[5], ": ")[1], 10, 64)
+			if err != nil {
+				return fmt.Errorf("failed to parse Offset: %v", err)
+			}
+			size, err := strconv.ParseInt(strings.Split(keyValue[6], ": ")[1], 10, 64)
+			if err != nil {
+				return fmt.Errorf("failed to parse Size: %v", err)
+			}
+
+			// 创建 DataInfo 对象
+			data := DataInfo{
+				DataMeta: model.DataMeta{
+					Key:       key,
+					Value:     value,
+					Extra:     extra,
+					KeySize:   uint32(len(key)),
+					ValueSize: uint32(len(value)),
+					ExtraSize: uint32(len(extra)),
+					TTL:       ttl,
+				},
+				StorageLocation: storage.StorageLocation{
+					FileName: fileName,
+					Offset:   offset,
+					Size:     size,
+				},
+			}
+			err = lsm.Insert(key, &data)
+			if err != nil {
+				return err
+			}
+		}
 		if strings.HasPrefix(line, "Level") {
 			// 处理层级信息
 
@@ -81,51 +128,6 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 			// 处理层级信息
 			// 这里可以根据需要解析和处理层级信息
 			continue
-		}
-		// 解析键值对信息
-		keyValue := strings.Split(line, ", ")
-		if len(keyValue) != 7 {
-			return fmt.Errorf("invalid data format: %s", line)
-		}
-
-		key := []byte(strings.Split(keyValue[0], ": ")[1])
-		value := []byte(strings.Split(keyValue[1], ": ")[1])
-		extra := []byte(strings.Split(keyValue[2], ": ")[1])
-		ttlStr := strings.Split(keyValue[3], ": ")[1]
-		ttl, err := time.ParseDuration(ttlStr)
-		if err != nil {
-			return fmt.Errorf("failed to parse TTL: %v", err)
-		}
-		fileName := []byte(strings.Split(keyValue[4], ": ")[1]) // 添加了文件名提取
-		offset, err := strconv.ParseInt(strings.Split(keyValue[5], ": ")[1], 10, 64)
-		if err != nil {
-			return fmt.Errorf("failed to parse Offset: %v", err)
-		}
-		size, err := strconv.ParseInt(strings.Split(keyValue[6], ": ")[1], 10, 64)
-		if err != nil {
-			return fmt.Errorf("failed to parse Size: %v", err)
-		}
-
-		// 创建 DataInfo 对象
-		data := DataInfo{
-			DataMeta: model.DataMeta{
-				Key:       key,
-				Value:     value,
-				Extra:     extra,
-				KeySize:   uint32(len(key)),
-				ValueSize: uint32(len(value)),
-				ExtraSize: uint32(len(extra)),
-				TTL:       ttl,
-			},
-			StorageLocation: storage.StorageLocation{
-				FileName: fileName,
-				Offset:   offset,
-				Size:     size,
-			},
-		}
-		err = lsm.Insert(key, &data)
-		if err != nil {
-			return err
 		}
 
 	}

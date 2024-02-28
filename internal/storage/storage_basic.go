@@ -20,6 +20,7 @@ func SaveStorageManager(storageManager *StorageManager, filePath string) error {
 	writer := bufio.NewWriter(file)
 	defer writer.Flush()
 	name := storageManager.CurrentFile.Name()
+
 	writer.WriteString(fmt.Sprintf("StoragePath: %s, MaxFileSize: %d, CurrentFile: %s, CurrentSize: %d, FileNumber: %d\n", string(storageManager.StoragePath),
 		storageManager.MaxFileSize, name, storageManager.CurrentSize, storageManager.FileNumber))
 	return nil

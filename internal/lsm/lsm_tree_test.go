@@ -12,7 +12,7 @@ import (
 
 // 多线程用于测试将文件写到lsm
 func TestConcurrentInsertData(t *testing.T) {
-	// 创建 LSM 树实例
+
 	maxActiveSize := uint32(16) // 增加最大活跃内存表的大小
 	maxDiskTableSize := uint32(10000)
 	lsm := NewLSMTree(maxActiveSize, maxDiskTableSize)
@@ -58,8 +58,7 @@ func TestConcurrentInsertData(t *testing.T) {
 	// 保证最后的时候，可以先把活跃表中的数据写入，然后再把lsm中的数据写到磁盘
 	defer lsm.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
 	defer lsm.SaveActiveToDiskOnExit()
-	// 等待一段时间确保数据已经写入到磁盘
-	time.Sleep(100 * time.Millisecond)
+	//	defer storage.SaveStorageManager(db.storageManager, "../../data/testdata/lsm_tree/config.txt")
 
 	// 检查磁盘上的数据是否包含插入的数据
 	// 可以根据需要编写相应的检查逻辑

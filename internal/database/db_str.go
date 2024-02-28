@@ -24,15 +24,15 @@ func (db XcDB) Set(key, value []byte, ttl ...uint64) error {
 }
 
 func (db *XcDB) doSet(key, value []byte, ttl ...uint64) error {
-	db.mu.Lock()
-	defer db.mu.Unlock()
+	db.Mu.Lock()
+	defer db.Mu.Unlock()
 	var timeSlice []time.Duration
 	for _, t := range ttl {
 		timeSlice = append(timeSlice, time.Duration(t)*time.Second)
 	}
 
 	e := NewKeyValueEntry(key, value, String, StringSet, timeSlice...)
-	stroeLocal, err := db.storageManager.StoreData(e)
+	stroeLocal, err := db.StorageManager.StoreData(e)
 	if err != nil {
 		logs.SugarLogger.Error("string set fail:", err)
 		return err
@@ -41,7 +41,7 @@ func (db *XcDB) doSet(key, value []byte, ttl ...uint64) error {
 		DataMeta:        *e.DataMeta,
 		StorageLocation: stroeLocal,
 	}
-	db.lsm.Insert(key, datainfo)
+	db.Lsm.Insert(key, datainfo)
 	return nil
 }
 
@@ -55,9 +55,9 @@ func (db *XcDB) Get(key []byte) (*model.KeyValue, error) {
 }
 
 func (db *XcDB) doGet(key []byte) (*model.KeyValue, error) {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-	datainfo, err := db.lsm.Get(key)
+	db.Mu.RLock()
+	defer db.Mu.RUnlock()
+	datainfo, err := db.Lsm.Get(key)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (db *XcDB) doGet(key []byte) (*model.KeyValue, error) {
 	fileName := datainfo.FileName
 	size := datainfo.Size
 
-	data, err := db.storageManager.DecompressAndFillData(string(fileName), offset, size)
+	data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
 
 	if err != nil {
 		fmt.Println(err)
@@ -92,9 +92,11 @@ func (db *XcDB) doGet(key []byte) (*model.KeyValue, error) {
 
 // 访问之后，对于数据进行一定的修改，重新保存
 func (db *XcDB) reSet(data *model.KeyValue) error {
+	data.DataMeta.ValueSize = uint32(len(data.DataMeta.Value))
 	now := time.Now()
 	data.AccessTime = now
-	stroeLocal, err := db.storageManager.StoreData(data)
+
+	stroeLocal, err := db.StorageManager.StoreData(data)
 	if err != nil {
 		logs.SugarLogger.Error("string set fail:", err)
 		return err
@@ -103,7 +105,7 @@ func (db *XcDB) reSet(data *model.KeyValue) error {
 		DataMeta:        *data.DataMeta,
 		StorageLocation: stroeLocal,
 	}
-	err = db.lsm.Insert(data.DataMeta.Key, datainfo)
+	err = db.Lsm.Insert(data.DataMeta.Key, datainfo)
 	if err != nil {
 		return err
 	}
@@ -138,10 +140,11 @@ func (db *XcDB) Strlen(key []byte) (uint32, error) {
 	}
 	return valueLen, nil
 }
+
 func (db *XcDB) doGetStrLen(key []byte) (uint32, error) {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-	datainfo, err := db.lsm.Get(key)
+	db.Mu.RLock()
+	defer db.Mu.RUnlock()
+	datainfo, err := db.Lsm.Get(key)
 	if err != nil {
 		return 0, err
 	}
@@ -149,7 +152,7 @@ func (db *XcDB) doGetStrLen(key []byte) (uint32, error) {
 	fileName := datainfo.FileName
 	size := datainfo.Size
 
-	data, err := db.storageManager.DecompressAndFillData(string(fileName), offset, size)
+	data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
 
 	if err != nil {
 		fmt.Println(err)
@@ -160,24 +163,25 @@ func (db *XcDB) doGetStrLen(key []byte) (uint32, error) {
 		err = errors.New("Data has expired")
 		return 0, err
 	}
+	err = db.reSet(data)
+	if err != nil {
+		return 0, err
+	}
+
 	return datainfo.ValueSize, nil
 }
-func (db *XcDB) Append(key, value []byte, ttl ...uint64) error {
-	valueLen, err := db.doGetStrLen(key)
+func (db *XcDB) Append(key, value []byte) error {
+	err := db.doAppend(key, value)
 	if err != nil {
-		return err
-	}
-	if int(valueLen) == 0 {
-		err = errors.New("Not found")
 		return err
 	}
 	return nil
 }
 
-func (db *XcDB) doAppend(key, value []byte, ttl ...uint64) error {
-	db.mu.RLock()
-	defer db.mu.RUnlock()
-	datainfo, err := db.lsm.Get(key)
+func (db *XcDB) doAppend(key, value []byte) error {
+	db.Mu.RLock()
+	defer db.Mu.RUnlock()
+	datainfo, err := db.Lsm.Get(key)
 	if err != nil {
 		return err
 	}
@@ -185,7 +189,7 @@ func (db *XcDB) doAppend(key, value []byte, ttl ...uint64) error {
 	fileName := datainfo.FileName
 	size := datainfo.Size
 
-	data, err := db.storageManager.DecompressAndFillData(string(fileName), offset, size)
+	data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
 
 	if err != nil {
 		fmt.Println(err)
@@ -195,6 +199,10 @@ func (db *XcDB) doAppend(key, value []byte, ttl ...uint64) error {
 		err = errors.New("Data has expired")
 		return err
 	}
-
+	data.DataMeta.Value = append(data.DataMeta.Value, value...)
+	err = db.reSet(data)
+	if err != nil {
+		return err
+	}
 	return nil
 }

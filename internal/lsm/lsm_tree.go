@@ -3,6 +3,7 @@ package lsm
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -97,36 +98,63 @@ func (lsm *LSMTree) Close() {
 	close(lsm.writeToDiskChan)
 }
 
-// InsertAndMoveDown 方法用于插入数据到活跃内存表并执行跳表移动操作
-func (lsm *LSMTree) Get(key []byte) (*DataInfo, error) {
-	lsm.mu.RLock()
-	defer lsm.mu.RUnlock()
-	// 在活跃内存表中查找与传入的键相同的项
-	for node := lsm.activeMemTable.Head.Next[0]; node != nil; node = node.Next[0] {
-		if bytes.Equal(node.Key, key) {
-			return node.DataInfo, nil
-		}
+// 写一个函数用于确定在哪个层级和跳表中进行查找
+func (lsm *LSMTree) determineSearchRange(key []byte) (*LevelInfo, *SkipList) {
+	// 在活跃内存表中查找
+	if bytes.Compare(key, lsm.activeMemTable.getMinKey()) >= 0 && bytes.Compare(key, lsm.activeMemTable.getMaxKey()) <= 0 {
+		fmt.Println(string(key), string(lsm.activeMemTable.getMinKey()), string(lsm.activeMemTable.getMaxKey()))
+		return nil, lsm.activeMemTable
 	}
-	for node := lsm.readOnlyMemTable.Head.Next[0]; node != nil; node = node.Next[0] {
-		if bytes.Equal(node.Key, key) {
-			return node.DataInfo, nil
-		}
+
+	// 在只读内存表中查找
+	if bytes.Compare(key, lsm.readOnlyMemTable.getMinKey()) >= 0 && bytes.Compare(key, lsm.readOnlyMemTable.getMaxKey()) <= 0 {
+		return nil, lsm.readOnlyMemTable
 	}
-	for node := lsm.readOnlyMemTable.Head.Next[0]; node != nil; node = node.Next[0] {
-		if bytes.Equal(node.Key, key) {
-			return node.DataInfo, nil
-		}
-	}
-	// 如果在活跃内存表中找不到，依次在其他层级中查找
+
+	// 在磁盘层级中查找
 	for _, level := range lsm.diskLevels {
-		for _, skipList := range level.SkipLists {
-			for node := skipList.Head.Next[0]; node != nil; node = node.Next[0] {
-				if bytes.Equal(node.Key, key) {
-					return node.DataInfo, nil
+		// 首先检查目标键是否在当前层级的键范围内
+		if bytes.Compare(key, level.LevelMinKey) >= 0 && bytes.Compare(key, level.LevelMaxKey) <= 0 {
+			// 使用二分查找确定目标键所在的跳表
+			low, high := 0, len(level.SkipLists)-1
+			for low <= high {
+				mid := (low + high) / 2
+				midKey := level.SkipLists[mid].getMaxKey()
+				if bytes.Compare(midKey, key) < 0 {
+					low = mid + 1
+				} else if bytes.Compare(midKey, key) > 0 {
+					high = mid - 1
+				} else {
+					// 找到目标键所在的跳表
+					return level, level.SkipLists[mid]
 				}
 			}
 		}
 	}
-	err := errors.New("don`t find data")
-	return nil, err // 如果找不到与传入的键相同的项，则返回 nil
+
+	// 如果未找到目标键所在的跳表，则返回 nil
+	return nil, nil
+
+}
+
+// 修改 Get 函数，使用二分查找算法在确定的层级和跳表中进行查找
+func (lsm *LSMTree) Get(key []byte) (*DataInfo, error) {
+	lsm.mu.RLock()
+	defer lsm.mu.RUnlock()
+
+	level, skipList := lsm.determineSearchRange(key)
+	if level == nil && skipList == nil {
+		return nil, errors.New("don't find data")
+	}
+
+	for node := skipList.Head.Next[0]; node != nil; node = node.Next[0] {
+		if bytes.Equal(node.Key, key) {
+			return node.DataInfo, nil
+		}
+	}
+	//if curNode.Next[0] != nil && bytes.Equal(curNode.Next[0].Key, key) {
+	//	return curNode.Next[0].DataInfo, nil
+	//}
+
+	return nil, errors.New("don't find data")
 }
