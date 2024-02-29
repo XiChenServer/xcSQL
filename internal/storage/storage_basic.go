@@ -10,7 +10,7 @@ import (
 )
 
 // 将StorageManager保存到文件中
-func SaveStorageManager(storageManager *StorageManager, filePath string) error {
+func SaveStorageManager(storageManager *StorageManager, filePath, Type string) error {
 	file, err := os.Create(filePath)
 	if err != nil {
 		return err
@@ -21,7 +21,7 @@ func SaveStorageManager(storageManager *StorageManager, filePath string) error {
 	defer writer.Flush()
 	name := storageManager.CurrentFile.Name()
 
-	writer.WriteString(fmt.Sprintf("StoragePath: %s, MaxFileSize: %d, CurrentFile: %s, CurrentSize: %d, FileNumber: %d\n", string(storageManager.StoragePath),
+	writer.WriteString(fmt.Sprintf("Type: %s,StoragePath: %s, MaxFileSize: %d, CurrentFile: %s, CurrentSize: %d, FileNumber: %d\n", Type, string(storageManager.StoragePath),
 		storageManager.MaxFileSize, name, storageManager.CurrentSize, storageManager.FileNumber))
 	return nil
 }

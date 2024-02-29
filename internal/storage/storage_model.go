@@ -3,6 +3,7 @@ package storage
 import (
 	"SQL/internal/model"
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -96,6 +97,7 @@ func (sm *StorageManager) StoreData(data *model.KeyValue) (StorageLocation, erro
 		fileName := filepath.Join(string(sm.StoragePath), "data_"+strconv.Itoa(int(sm.FileNumber))+".gz")
 		file, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 		if err != nil {
+			fmt.Println("sdfs", fileName)
 			sm.FileLock.Unlock()
 			return StorageLocation{}, err
 		}

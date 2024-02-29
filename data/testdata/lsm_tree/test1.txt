@@ -1,0 +1,10 @@
+Level 0, SkipList 0:
+Key: nYtmaVajs5, Value: IRZw9s3JOt, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 721, Size: 244
+SkipList 0, MaxKey: nYtmaVajs5, MinKey: nYtmaVajs5
+InfoLevel 0, MaxKey: nYtmaVajs5, MinKey: nYtmaVajs5
+InfoLevel 1, MaxKey: , MinKey: 
+InfoLevel 2, MaxKey: , MinKey: 
+InfoLevel 3, MaxKey: , MinKey: 
+InfoLevel 4, MaxKey: , MinKey: 
+InfoLevel 5, MaxKey: , MinKey: 
+InfoLevel 6, MaxKey: , MinKey: 

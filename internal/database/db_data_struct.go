@@ -15,7 +15,11 @@ func NewKeyValueEntry(key, value []byte, t, m uint16, ttl ...time.Duration) *mod
 		// 否则默认设置为0，即永不过期
 		expireTime = 0
 	}
-	return NewKeyValuePair(key, value, nil, t, m, expireTime)
+	var extra []byte
+	if t == 1 {
+		extra = []byte("String")
+	}
+	return NewKeyValuePair(key, value, extra, t, m, expireTime)
 }
 
 func NewKeyValuePair(key, value, extra []byte, t, m uint16, ttl time.Duration) *model.KeyValue {

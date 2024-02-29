@@ -9,10 +9,7 @@ import (
 	"time"
 )
 
-const (
-	String    uint16 = 1
-	StringSet uint16 = 2
-)
+const ()
 
 // 对于字符串进行建立的操作
 func (db XcDB) Set(key, value []byte, ttl ...uint64) error {
@@ -31,7 +28,7 @@ func (db *XcDB) doSet(key, value []byte, ttl ...uint64) error {
 		timeSlice = append(timeSlice, time.Duration(t)*time.Second)
 	}
 
-	e := NewKeyValueEntry(key, value, String, StringSet, timeSlice...)
+	e := NewKeyValueEntry(key, value, model.String, model.StringSet, timeSlice...)
 	stroeLocal, err := db.StorageManager.StoreData(e)
 	if err != nil {
 		logs.SugarLogger.Error("string set fail:", err)
@@ -41,7 +38,9 @@ func (db *XcDB) doSet(key, value []byte, ttl ...uint64) error {
 		DataMeta:        *e.DataMeta,
 		StorageLocation: stroeLocal,
 	}
-	db.Lsm.Insert(key, datainfo)
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.String]
+	tree.Insert(key, datainfo)
 	return nil
 }
 
@@ -57,7 +56,9 @@ func (db *XcDB) Get(key []byte) (*model.KeyValue, error) {
 func (db *XcDB) doGet(key []byte) (*model.KeyValue, error) {
 	db.Mu.RLock()
 	defer db.Mu.RUnlock()
-	datainfo, err := db.Lsm.Get(key)
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.String]
+	datainfo, err := tree.Get(key)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +106,9 @@ func (db *XcDB) reSet(data *model.KeyValue) error {
 		DataMeta:        *data.DataMeta,
 		StorageLocation: stroeLocal,
 	}
-	err = db.Lsm.Insert(data.DataMeta.Key, datainfo)
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.String]
+	err = tree.Insert(data.DataMeta.Key, datainfo)
 	if err != nil {
 		return err
 	}
@@ -144,7 +147,9 @@ func (db *XcDB) Strlen(key []byte) (uint32, error) {
 func (db *XcDB) doGetStrLen(key []byte) (uint32, error) {
 	db.Mu.RLock()
 	defer db.Mu.RUnlock()
-	datainfo, err := db.Lsm.Get(key)
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.String]
+	datainfo, err := tree.Get(key)
 	if err != nil {
 		return 0, err
 	}
@@ -181,7 +186,9 @@ func (db *XcDB) Append(key, value []byte) error {
 func (db *XcDB) doAppend(key, value []byte) error {
 	db.Mu.RLock()
 	defer db.Mu.RUnlock()
-	datainfo, err := db.Lsm.Get(key)
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.String]
+	datainfo, err := tree.Get(key)
 	if err != nil {
 		return err
 	}

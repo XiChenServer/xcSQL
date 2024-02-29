@@ -1,6 +1,7 @@
 package lsm
 
 import (
+	"SQL/internal/model"
 	"bytes"
 	"errors"
 	"fmt"
@@ -33,12 +34,15 @@ type LSMTree struct {
 }
 
 // 初始化 LSMTree
-func NewLSMTree(maxActiveSize, maxDiskTableSize uint32) *LSMTree {
+func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 	maxSkipLists := uint16(10) // 第一个层级的跳表数量
 	maxDiskLevels := uint16(7) // 最多的磁盘层级数量
-
+	var typeName string
+	if Type == model.String {
+		typeName = "String"
+	}
 	tree := &LSMTree{
-		LsmPath:          []byte("../../data/testdata/lsm_tree/test1.txt"),
+		LsmPath:          []byte(("../../data/testdata/lsm_tree/") + typeName + ("/test1.txt")),
 		activeMemTable:   NewSkipList(16),
 		readOnlyMemTable: NewSkipList(16),
 		diskLevels:       make([]*LevelInfo, maxDiskLevels),

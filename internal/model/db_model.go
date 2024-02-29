@@ -4,6 +4,13 @@ import (
 	"time"
 )
 
+const (
+	List      uint16 = 11
+	ListLPUSH uint16 = 12
+	String    uint16 = 1
+	StringSet uint16 = 2
+)
+
 // KeyValue 表示键值对
 type KeyValue struct {
 	DataMeta   *DataMeta

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"SQL/internal/model"
 	"SQL/internal/storage"
 	"SQL/logs"
 	"fmt"
@@ -27,7 +28,9 @@ func TestDB_SetMore(t *testing.T) {
 	dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 
 	// 加载模拟的数据文件到 LSM 树中
-	err := db.Lsm.LoadDataFromFile(dataFilePath)
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.String]
+	err := tree.LoadDataFromFile(dataFilePath)
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
@@ -55,9 +58,9 @@ func TestDB_SetMore(t *testing.T) {
 	// 等待所有 goroutine 完成
 	wg.Wait()
 
-	defer db.Lsm.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
-	defer db.Lsm.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	defer tree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
+	defer tree.SaveActiveToDiskOnExit()
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
 }
 
 // 简单的测试数据可以存入
@@ -65,9 +68,10 @@ func TestDB_Set(t *testing.T) {
 	logs.InitLogger()
 	db := NewXcDB()
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
-
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.String]
 	// 加载模拟的数据文件到 LSM 树中
-	err := db.Lsm.LoadDataFromFile(string(db.Lsm.LsmPath))
+	err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
@@ -82,9 +86,10 @@ func TestDB_Set(t *testing.T) {
 
 	fmt.Println("Insert ok")
 	fmt.Println(string(key))
-	defer db.Lsm.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
-	defer db.Lsm.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	defer lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+
+	defer lsmType.SaveActiveToDiskOnExit()
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
 }
 
 // 简单的测试数据可以通过解压获取到
@@ -107,22 +112,23 @@ func TestDB_GetEasy(t *testing.T) {
 func TestDB_Get(t *testing.T) {
 	logs.InitLogger()
 	db := NewXcDB()
-
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.String]
 	// 加载模拟的数据文件到 LSM 树中
-	err := db.Lsm.LoadDataFromFile(string(db.Lsm.LsmPath))
+	err := tree.LoadDataFromFile(string(tree.LsmPath))
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
-	key := []byte("SvDiPix9Wg")
+	key := []byte("QmByaOs6LN")
 	data, err := db.Get(key)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Println("Get ok:", string(data.DataMeta.Key), string(data.DataMeta.Value))
-	defer db.Lsm.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
-	defer db.Lsm.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	defer tree.PrintDiskDataToFile(string(tree.LsmPath))
+	defer tree.SaveActiveToDiskOnExit()
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
 }
 
 // generateRandomKey 生成随机键值
@@ -140,9 +146,10 @@ func generateRandomKey() string {
 func TestDB_Strlen(t *testing.T) {
 	logs.InitLogger()
 	db := NewXcDB()
-
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.String]
 	// 加载模拟的数据文件到 LSM 树中
-	err := db.Lsm.LoadDataFromFile(string(db.Lsm.LsmPath))
+	err := tree.LoadDataFromFile(string(tree.LsmPath))
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
@@ -153,18 +160,19 @@ func TestDB_Strlen(t *testing.T) {
 		return
 	}
 	fmt.Println("Get ok:", data)
-	defer db.Lsm.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
-	defer db.Lsm.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	defer tree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
+	defer tree.SaveActiveToDiskOnExit()
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
 }
 
 // 进行追加操作
 func TestDB_Append(t *testing.T) {
 	logs.InitLogger()
 	db := NewXcDB()
-
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.String]
 	// 加载模拟的数据文件到 LSM 树中
-	err := db.Lsm.LoadDataFromFile(string(db.Lsm.LsmPath))
+	err := tree.LoadDataFromFile(string(tree.LsmPath))
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
@@ -175,7 +183,7 @@ func TestDB_Append(t *testing.T) {
 		return
 	}
 	fmt.Println("Append success")
-	defer db.Lsm.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
-	defer db.Lsm.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	defer tree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
+	defer tree.SaveActiveToDiskOnExit()
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
 }

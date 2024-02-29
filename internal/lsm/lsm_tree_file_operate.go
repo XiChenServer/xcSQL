@@ -55,13 +55,14 @@ func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 
 // LoadDataFromFile 从文件加载数据到 LSM 树中
 func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
-	// 打开文件准备读取
-	file, err := os.Open(filePath)
+
+	// 打开文件，如果文件不存在则创建
+	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
+		fmt.Println("Error opening file:", err)
 		return err
 	}
 	defer file.Close()
-
 	// 创建 Scanner 实例以逐行读取文件内容
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
