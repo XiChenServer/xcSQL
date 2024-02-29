@@ -12,7 +12,7 @@ import (
 const ()
 
 // 对于字符串进行建立的操作
-func (db XcDB) Set(key, value []byte, ttl ...uint64) error {
+func (db *XcDB) Set(key, value []byte, ttl ...uint64) error {
 	err := db.doSet(key, value, ttl...)
 	if err != nil {
 		return err
@@ -41,6 +41,7 @@ func (db *XcDB) doSet(key, value []byte, ttl ...uint64) error {
 	lsmMap := *db.Lsm
 	tree := lsmMap[model.String]
 	tree.Insert(key, datainfo)
+
 	return nil
 }
 

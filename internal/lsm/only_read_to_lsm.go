@@ -7,84 +7,6 @@ import (
 	"math/rand"
 )
 
-// // 保证只读的表存到lsm磁盘的第一层
-//
-//	func (lsm *LSMTree) storeReadOnlyToFirstLevel(skipList *SkipList) {
-//		// 遍历磁盘级别，为每个层级创建新的跳表实例并复制数据
-//		for levelIndex := 0; levelIndex < len(lsm.diskLevels); levelIndex++ {
-//			// 创建新的只读表副本
-//			readOnlyCopy := NewSkipList(16)
-//			skipList.ForEach(func(key []byte, value *DataInfo) bool {
-//				valueCopy := &DataInfo{
-//					DataMeta:        value.DataMeta,
-//					StorageLocation: value.StorageLocation,
-//				}
-//				readOnlyCopy.InsertInOrder(key, valueCopy)
-//				return true
-//			})
-//
-//			// 创建新的跳表实例
-//			newSkipList := NewSkipList(16)
-//
-//			// 遍历只读表副本中的所有键值对，并插入到新的跳表中
-//			readOnlyCopy.ForEach(func(key []byte, value *DataInfo) bool {
-//				valueCopy := &DataInfo{
-//					DataMeta:        value.DataMeta,
-//					StorageLocation: value.StorageLocation,
-//				}
-//				newSkipList.InsertInOrder(key, valueCopy)
-//				return true
-//			})
-//
-//			// 检查当前层级是否已满
-//			if lsm.diskLevels[levelIndex].SkipListCount < lsm.diskLevels[levelIndex].LevelMaxSkipListCount {
-//				// 如果当前层级未满，则将新的跳表实例存储到该层级
-//				//lsm.keepLsmLevelOrderly(levelIndex, newSkipList)
-//				lsm.diskLevels[levelIndex].SkipLists[lsm.diskLevels[levelIndex].SkipListCount] = newSkipList
-//				lsm.diskLevels[levelIndex].SkipListCount++
-//
-//				// 更新层级的最大和最小键
-//				lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], newSkipList)
-//
-//				return
-//			}
-//		}
-//	}
-//
-// // 移动表到下一层，是一个递归的操作
-//
-//	func (lsm *LSMTree) moveSkipListDown(levelIndex int) {
-//		// 如果当前层级的跳表数量为 0，则无法移动跳表到下一层
-//		if lsm.diskLevels[levelIndex].SkipListCount == 0 {
-//			return
-//		}
-//
-//		// 随机选择一个表移动到下一层级
-//		randomIndex := rand.Intn(int(lsm.diskLevels[levelIndex].SkipListCount))
-//		selectedSkipList := lsm.diskLevels[levelIndex].SkipLists[randomIndex]
-//
-//		// 存储选定的跳表到下一层级
-//		nextLevelIndex := levelIndex + 1
-//
-//		// 如果下一层已满，则递归调用移动操作，尝试将跳表移动到更下一层
-//		if nextLevelIndex < len(lsm.diskLevels) && lsm.diskLevels[nextLevelIndex].SkipListCount >= lsm.diskLevels[nextLevelIndex].LevelMaxSkipListCount {
-//			lsm.moveSkipListDown(nextLevelIndex)
-//		}
-//
-//		// 检查下一层是否已满
-//		if nextLevelIndex < len(lsm.diskLevels) && lsm.diskLevels[nextLevelIndex].SkipListCount < lsm.diskLevels[nextLevelIndex].LevelMaxSkipListCount {
-//			// 将选定的跳表存储到下一层
-//			lsm.diskLevels[nextLevelIndex].SkipLists[lsm.diskLevels[nextLevelIndex].SkipListCount] = selectedSkipList
-//			//lsm.keepLsmLevelOrderly(levelIndex, selectedSkipList)
-//			lsm.diskLevels[nextLevelIndex].SkipListCount++
-//			// 更新层级的最大和最小键
-//			lsm.updateLevelMinMaxKeys(lsm.diskLevels[levelIndex], selectedSkipList)
-//
-//			// 删除当前层级中选定的跳表
-//			lsm.deleteSkipList(levelIndex, randomIndex)
-//		}
-//	}
-//
 // 将活跃内存表转换为只读表
 func (lsm *LSMTree) convertActiveToReadOnly() {
 	lsm.readOnlyMemTable = lsm.activeMemTable
@@ -125,20 +47,18 @@ func (lsm *LSMTree) updateLevelMinMaxKeys(currentLevel *LevelInfo, selectedSkipL
 func (lsm *LSMTree) storeReadOnlyToFirstLevel(skipList *SkipList) error {
 	// 如果第一层还有空间，则直接存储到第一层
 	if lsm.diskLevels[0].SkipListCount >= lsm.diskLevels[0].LevelMaxSkipListCount {
+
 		// 如果第一层已满，则随机选择一个跳表存储到下一层
 		randomIndex := rand.Intn(int(lsm.diskLevels[0].SkipListCount))
 		selectedSkipList := lsm.diskLevels[0].SkipLists[randomIndex]
 		lsm.moveSkipListDown(0, randomIndex, selectedSkipList)
 
 	}
+
 	err := lsm.keepLsmLevelOrderly(0, skipList)
 	if err != nil {
 		return err
 	}
-
-	//lsm.diskLevels[0].SkipLists = append(lsm.diskLevels[0].SkipLists, skipList)
-	//lsm.diskLevels[0].SkipListCount++
-	//lsm.updateLevelMinMaxKeys(lsm.diskLevels[0], skipList)
 	return nil
 }
 

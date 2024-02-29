@@ -75,21 +75,21 @@ func TestDB_Set(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
-	//key := []byte(generateRandomKey())
-	//value := []byte(generateRandomKey())
-	//err = db.Set(key, value)
-	//
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
-	//
-	//fmt.Println("Insert ok")
-	//fmt.Println(string(key))
+	key := []byte(generateRandomKey())
+	value := []byte(generateRandomKey())
+	err = db.Set(key, value)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-	defer lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
-	defer lsmType.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	fmt.Println("Insert ok")
+	fmt.Println(string(key))
+	fmt.Println(string(lsmType.LsmPath))
+
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 }
 
 // 简单的测试数据可以通过解压获取到

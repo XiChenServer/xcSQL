@@ -1,40 +1,34 @@
 Level 0, SkipList 0:
-Key: 48pkdqu8ge, Value: liyxkVH7gk, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 9870, Size: 240
-Key: 9Yc3idJq2h, Value: t7oXXHuM5i, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 0, Size: 241
-Key: Fgb096ym6C, Value: OuYAJbwRZo, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 723, Size: 242
-Key: HeCS21YIao, Value: awlkRB77ms, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 1929, Size: 238
-Key: IG047FGa11, Value: 5z6S3AI0Dq, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 1449, Size: 240
-Key: IXs0Nw5vJS, Value: lUjjfjWmAB, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 483, Size: 240
-Key: JZbRVrGqms, Value: ETuxIzsef0, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 9148, Size: 240
-Key: MPc6AmkZkX, Value: tfXdVyTf7f, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 9631, Size: 239
-Key: P0BG876Tlw, Value: Jh4K1e0K2k, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 1205, Size: 244
-Key: PkRYel2WuS, Value: 0wpSaXwNJx, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 965, Size: 240
-Key: ZDw9nKXabq, Value: qXBNfxI6bI, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 8667, Size: 242
-Key: oJpfWCmIID, Value: QVUMBpJ6HM, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 8909, Size: 239
-Key: prsjahwBZf, Value: CzXuLTWSW5, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 241, Size: 242
-Key: vKR9W36uK3, Value: 8tiHwZWuyh, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 9388, Size: 243
-Key: vknhikRbbI, Value: JDBT8FBOPU, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 8429, Size: 238
-Key: zni80yIhqD, Value: TWPTYpZp8i, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 1689, Size: 240
-SkipList 0, MaxKey: zni80yIhqD, MinKey: 48pkdqu8ge
+Key: 1FbrbIQEtg, Value: EMlacmKs2x, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 3385, Size: 239
+Key: 1Xj5bamUBW, Value: 48MgIWLWuc, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 4827, Size: 242
+Key: 6685xraICr, Value: 0CzVHpFdvW, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 5796, Size: 243
+Key: 6fE08tXV28, Value: kmveVc9gDq, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 6039, Size: 242
+Key: AXlsSsDjRc, Value: CbvaCLEsSk, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 6760, Size: 238
+Key: G7pKLA6W0N, Value: pwgMEVv1Er, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 4101, Size: 241
+Key: V2klYBDrO6, Value: R26uTCKxfk, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 4342, Size: 241
+Key: Xt3UFpxrSb, Value: 7LcDEtW8qy, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 3624, Size: 237
+Key: cMoUx5awBw, Value: Ax3NYCCwJV, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 3141, Size: 244
+Key: e8KiGRa74W, Value: qtxOHuV7FV, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 3861, Size: 240
+Key: n3hUHg4u7Z, Value: RAZWfmPOeI, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 5313, Size: 245
+Key: ngprtXKUM2, Value: vb3ukYuB1r, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 5558, Size: 238
+Key: nwpj03eFp8, Value: kNBRbyGV6Z, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 4583, Size: 244
+Key: oExRR9ByHB, Value: GEpTbZdQgC, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 6523, Size: 237
+Key: ron1yfzpws, Value: jX98kU61gt, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 6281, Size: 242
+Key: z645rOFfeO, Value: fZvLVRKHVZ, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 5069, Size: 244
+SkipList 0, MaxKey: z645rOFfeO, MinKey: 1FbrbIQEtg
 Level 0, SkipList 1:
-Key: 48pkdqu8ge, Value: liyxkVH7gk, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 9870, Size: 240
-Key: 9Yc3idJq2h, Value: t7oXXHuM5i, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 0, Size: 241
-Key: Fgb096ym6C, Value: OuYAJbwRZo, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 723, Size: 242
-Key: HeCS21YIao, Value: awlkRB77ms, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 1929, Size: 238
-Key: IG047FGa11, Value: 5z6S3AI0Dq, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 1449, Size: 240
-Key: IXs0Nw5vJS, Value: lUjjfjWmAB, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 483, Size: 240
-Key: JZbRVrGqms, Value: ETuxIzsef0, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 9148, Size: 240
-Key: MPc6AmkZkX, Value: tfXdVyTf7f, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 9631, Size: 239
-Key: P0BG876Tlw, Value: Jh4K1e0K2k, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 1205, Size: 244
-Key: PkRYel2WuS, Value: 0wpSaXwNJx, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 965, Size: 240
-Key: ZDw9nKXabq, Value: qXBNfxI6bI, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 8667, Size: 242
-Key: oJpfWCmIID, Value: QVUMBpJ6HM, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 8909, Size: 239
-Key: prsjahwBZf, Value: CzXuLTWSW5, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 241, Size: 242
-Key: vKR9W36uK3, Value: 8tiHwZWuyh, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 9388, Size: 243
-Key: vknhikRbbI, Value: JDBT8FBOPU, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 8429, Size: 238
-Key: zni80yIhqD, Value: TWPTYpZp8i, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_1.gz, Offset: 1689, Size: 240
-SkipList 1, MaxKey: zni80yIhqD, MinKey: 48pkdqu8ge
-InfoLevel 0, MaxKey: zni80yIhqD, MinKey: 48pkdqu8ge
+Key: 5IMtubIpbv, Value: 4Ku9NnV5Iu, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 6998, Size: 238
+Key: 8jppYq0DYG, Value: hxMJECIkyW, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 8206, Size: 240
+Key: Bq95wOCmjJ, Value: C0rHZjF0Uo, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 7963, Size: 243
+Key: K21xtlLEAu, Value: AT7424EyyO, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 7236, Size: 243
+Key: UGwiuzfRdD, Value: yHRAmWyfKV, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 8932, Size: 239
+Key: V3QJ0pJXKn, Value: 3YkhdPS9Tl, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 9171, Size: 244
+Key: ZChgPfEjGO, Value: 7cXKrGhgzs, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 8689, Size: 243
+Key: iW0gq8jvSm, Value: IHsr9mKsCh, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 8446, Size: 243
+Key: tUyXpCkr9h, Value: Z2FXpeQklh, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 7722, Size: 241
+Key: xOnrihq1CS, Value: T8bQ1l5Gi4, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_4.gz, Offset: 7479, Size: 243
+SkipList 1, MaxKey: xOnrihq1CS, MinKey: 5IMtubIpbv
+InfoLevel 0, MaxKey: z645rOFfeO, MinKey: 1FbrbIQEtg
 InfoLevel 1, MaxKey: , MinKey: 
 InfoLevel 2, MaxKey: , MinKey: 
 InfoLevel 3, MaxKey: , MinKey: 

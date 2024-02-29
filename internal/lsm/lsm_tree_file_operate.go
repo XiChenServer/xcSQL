@@ -150,6 +150,15 @@ func (lsm *LSMTree) writeReadOnlyToDisk() {
 
 // 在程序退出时将活跃表保存到磁盘
 func (lsm *LSMTree) SaveActiveToDiskOnExit() {
+	lsm.readOnlyMemTable = NewSkipList(16) // 重新初始化只读内存表
+	lsm.readOnlyMemTable = lsm.activeMemTable
+	// 在程序退出时保存活跃表到磁盘
+	defer lsm.writeReadOnlyToDisk()
+}
+
+// 在程序退出时将活跃表保存到磁盘
+func (lsm *LSMTree) SaveActiveToDiskOnExit1() {
+
 	lsm.readOnlyMemTable = lsm.activeMemTable
 	// 在程序退出时保存活跃表到磁盘
 	defer lsm.writeReadOnlyToDisk()

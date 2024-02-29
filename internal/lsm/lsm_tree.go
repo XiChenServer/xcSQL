@@ -85,6 +85,39 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) error {
 			return err
 		}
 		lsm.readOnlyMemTable = NewSkipList(16) // 重新初始化只读内存表
+
+	}
+	//node := lsm.activeMemTable.Head
+	//
+	//for node != nil {
+	//	fmt.Println("fd", string(node.Key))
+	//	node = node.Next[0]
+	//}
+	// 插入数据到活跃内存表
+	// 在插入时创建新的键值对副本，确保每个跳表保存的是独立的数据
+	valueCopy := &DataInfo{
+		DataMeta:        value.DataMeta,
+		StorageLocation: value.StorageLocation,
+	}
+	lsm.activeMemTable.InsertInOrder(key, valueCopy)
+	return nil
+}
+
+// InsertAndMoveDown 方法用于插入数据到活跃内存表并执行跳表移动操作
+func (lsm *LSMTree) Insert1(key []byte, value *DataInfo) error {
+	lsm.mu.Lock()
+	defer lsm.mu.Unlock()
+	//
+	// 检查活跃内存表的大小是否达到最大值，若达到则将活跃表转换为只读表，并写入磁盘
+	if lsm.activeMemTable.Size >= lsm.maxActiveSize {
+		lsm.convertActiveToReadOnly()
+		//// 存储只读表到 LSM 树的最开始的层
+		//err := lsm.storeReadOnlyToFirstLevel(lsm.readOnlyMemTable)
+		//if err != nil {
+		//	return err
+		//}
+		lsm.readOnlyMemTable = NewSkipList(16) // 重新初始化只读内存表
+
 	}
 
 	// 插入数据到活跃内存表
@@ -94,6 +127,13 @@ func (lsm *LSMTree) Insert(key []byte, value *DataInfo) error {
 		StorageLocation: value.StorageLocation,
 	}
 	lsm.activeMemTable.InsertInOrder(key, valueCopy)
+
+	node := lsm.activeMemTable.Head
+
+	for node != nil {
+		fmt.Println("fd", string(node.Key))
+		node = node.Next[0]
+	}
 	return nil
 }
 
@@ -161,4 +201,12 @@ func (lsm *LSMTree) Get(key []byte) (*DataInfo, error) {
 	//}
 
 	return nil, errors.New("don't find data")
+}
+
+func (lsm *LSMTree) Printf() {
+	node := lsm.activeMemTable.Head
+	for node != nil {
+		fmt.Println("1", string(node.Key))
+		node = node.Next[0]
+	}
 }

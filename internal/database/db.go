@@ -10,13 +10,13 @@ import (
 
 type XcDB struct {
 	StorageManager *storage.StorageManager
-	Lsm            *map[uint16]lsm.LSMTree
+	Lsm            *map[uint16]*lsm.LSMTree
 	// 读写锁，用于并发读写控制
 	Mu sync.RWMutex
 }
 
 func NewXcDB() *XcDB {
-	var lsmMap = make(map[uint16]lsm.LSMTree)
+	var lsmMap = make(map[uint16]*lsm.LSMTree)
 	// 启动一个协程来初始化字符串类型的LSM树
 	//go func() {
 	//	lsmString := lsm.NewLSMTree(16, 10000, model.String)
@@ -32,8 +32,8 @@ func NewXcDB() *XcDB {
 	//}()
 	lsmString := lsm.NewLSMTree(16, 10000, model.String)
 	lsmList := lsm.NewLSMTree(16, 10000, model.List)
-	lsmMap[model.List] = *lsmList
-	lsmMap[model.String] = *lsmString
+	lsmMap[model.List] = lsmList
+	lsmMap[model.String] = lsmString
 	storageManager, err := storage.LoadStorageManager("../../data/testdata/lsm_tree/config.txt")
 
 	if err != nil {
