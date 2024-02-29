@@ -1,7 +1,118 @@
 Level 0, SkipList 0:
-Key: nYtmaVajs5, Value: IRZw9s3JOt, Extra: String, TTL: 0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 721, Size: 244
-SkipList 0, MaxKey: nYtmaVajs5, MinKey: nYtmaVajs5
-InfoLevel 0, MaxKey: nYtmaVajs5, MinKey: nYtmaVajs5
+Key: BdkungjpjN, Value: 28xDsstx3X, Extra: qZnFM9KhpG, TTL: 44m55s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 2178, Size: 273
+Key: E4Owe46vng, Value: a5mj6llc1B, Extra: 63BQSeNgHk, TTL: 46m52s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 1630, Size: 274
+Key: MwwTXkR6NT, Value: 74oHD7v9Dj, Extra: ScDnr8meNK, TTL: 56m35s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 1904, Size: 274
+Key: doBSRmn4T1, Value: 4QBM3Q4i1h, Extra: 2BCxbVKIQ1, TTL: 4m18s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 2451, Size: 269
+SkipList 0, MaxKey: doBSRmn4T1, MinKey: BdkungjpjN
+Level 0, SkipList 1:
+Key: 26Uexz4VcI, Value: JHPnb6SgNO, Extra: 5UaINBTrpe, TTL: 23m32s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 813, Size: 269
+Key: 51ON0zhYXR, Value: h53JWm2W4V, Extra: mBHYKGy0hC, TTL: 13m9s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 1356, Size: 270
+Key: 5tBt0EmDrw, Value: XIWmYwo7WX, Extra: t9ExSkYuTY, TTL: 23m57s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 538, Size: 273
+Key: 6fwsZIvVm3, Value: nNEmiDum8O, Extra: jyOPXA2get, TTL: 56m6s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 1626, Size: 269
+Key: ETRB6QJlq1, Value: eLg4ITXkj7, Extra: LFXTnDfRyF, TTL: 12m11s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 2985, Size: 272
+Key: ISWvhCNwvd, Value: wvYEb4H65c, Extra: htOnKAchEr, TTL: 42m54s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 2709, Size: 276
+Key: J4CuWcFU4P, Value: YkRFEditTA, Extra: GIaFl7qmlz, TTL: 21m26s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 3528, Size: 272
+Key: JD0l7ODvoO, Value: ZGWuV6tfb0, Extra: bAGek6bx1q, TTL: 33m43s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 2438, Size: 271
+Key: NPoQnJuaBw, Value: ScjZcXmO3G, Extra: MgnfgocnnY, TTL: 10s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 0, Size: 272
+Key: VDjlXf7CWp, Value: MBcXTK6KHi, Extra: 4tAAf4nABR, TTL: 55m22s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 3800, Size: 273
+Key: afBE9UdJXq, Value: C3zOSWUuIv, Extra: g9hOmoX8nx, TTL: 42m29s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 1082, Size: 274
+Key: dHXqxqChxP, Value: czsa0lwO5n, Extra: eb7aP4ATdG, TTL: 18m29s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 3257, Size: 271
+Key: eqacXYkB0A, Value: RnK4RFsUD5, Extra: fM388WUnos, TTL: 57m43s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 2168, Size: 270
+Key: gpeChNpBaj, Value: vgh7ZBddaB, Extra: 8itlUbtgoS, TTL: 1m41s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 272, Size: 266
+Key: oworTmxPRe, Value: gFG0wNafnj, Extra: Vc5Zf7FnCm, TTL: 32m50s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 1895, Size: 273
+Key: qeGkJFu3mi, Value: 6S6NlFb7bm, Extra: 7jqifUsTUg, TTL: 33m48s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 811, Size: 273
+SkipList 1, MaxKey: qeGkJFu3mi, MinKey: 26Uexz4VcI
+Level 0, SkipList 2:
+Key: 2H3yJENrv5, Value: My9OWkZDc1, Extra: NWxsitEQyl, TTL: 13m5s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 0, Size: 271
+Key: 8aIEAH1J77, Value: NCHa6trPgo, Extra: SsNPryMSxm, TTL: 25m4s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 3239, Size: 271
+Key: 9gAvOjAkSc, Value: rP0FBfXmmM, Extra: BrlhRz2Enx, TTL: 4m19s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 271, Size: 273
+Key: EkpyFe6gGu, Value: BkAHF6MJkY, Extra: eSbyUxuN8h, TTL: 15m3s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 817, Size: 272
+Key: HorVUxWOoT, Value: jE8ft3lefX, Extra: rpYcK2hUO2, TTL: 14m0s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 1084, Size: 267
+Key: Ir2FE4vY0J, Value: sOoAYExxdN, Extra: 8pWInwt24O, TTL: 35m8s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 1089, Size: 277
+Key: MSDaxsFoKn, Value: IIWcIpoRBE, Extra: a95sFZZ3Ni, TTL: 31m56s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 2159, Size: 268
+Key: QO1tPgPulr, Value: J9eaKCm13k, Extra: YpwIppXDCn, TTL: 34m11s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 3510, Size: 270
+Key: Zr8jy48RtO, Value: 8WN9tHwhU2, Extra: SXm5IXBrbW, TTL: 29m47s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 2698, Size: 272
+Key: aGaLWwIQrR, Value: DkgHv5oRMz, Extra: nqfa32IZU4, TTL: 37m18s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 1351, Size: 268
+Key: bAGuKoQ5W1, Value: MmByHog457, Extra: 6SwEAXRoSt, TTL: 3m0s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 2970, Size: 269
+Key: dn0VE5VrHv, Value: RIn1mCqogU, Extra: QbqRfBLCw8, TTL: 45m16s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 544, Size: 273
+Key: hXb4Cp8wfD, Value: cvULi0HenS, Extra: xPqMYjDFOw, TTL: 18m47s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 1888, Size: 271
+Key: p2N5s37OeE, Value: NxMxqT6J0c, Extra: Y53kTvfjn3, TTL: 6m48s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 3780, Size: 267
+Key: pAaqvvrUOj, Value: NOtfK6YPQW, Extra: 0ZpxDsvjwA, TTL: 9m19s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 2427, Size: 271
+Key: sCOD0vJj76, Value: JEosiAXhZx, Extra: 2nYqJL252l, TTL: 19s, FileName: ../../data/testdata/storage/data_5.gz, Offset: 1619, Size: 269
+SkipList 2, MaxKey: sCOD0vJj76, MinKey: 2H3yJENrv5
+Level 0, SkipList 3:
+Key: 1bFcCJXJ6v, Value: WL6elIJC78, Extra: 5g6gOmu6W9, TTL: 2m17s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 1635, Size: 272
+Key: 7IKBYs132O, Value: PNCH6ZWIv1, Extra: XFKcUJ8BPe, TTL: 9m22s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 0, Size: 277
+Key: 9I1TEY7RMf, Value: tOahiDbDQJ, Extra: LZUMfFHUN7, TTL: 10m37s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 3532, Size: 275
+Key: A3VyBM8PSx, Value: haP6U0mVDR, Extra: hFKcvTQsmD, TTL: 53m56s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 277, Size: 271
+Key: JkB00lfNWV, Value: s2xsVpsWdX, Extra: yELuCzeS5M, TTL: 8m9s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 1366, Size: 269
+Key: P7ms03MoaS, Value: IzLLSOplUk, Extra: grAw37zvqa, TTL: 50m50s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 548, Size: 268
+Key: RcE0OBx4Uw, Value: vWASiF7SMz, Extra: 23QHa7nuxo, TTL: 9m4s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 1907, Size: 268
+Key: X2fF0uOUEg, Value: 3UtyM3NJpX, Extra: 6FUUedJwho, TTL: 32m32s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 1359, Size: 271
+Key: YaI5nGqF2O, Value: lpKAJIhE02, Extra: 1hE4dMdDx7, TTL: 40m25s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 2714, Size: 273
+Key: cH4p3cUn5D, Value: J1E0bho45w, Extra: TKvPzmaIbU, TTL: 51m52s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 3807, Size: 272
+Key: cHqyqoMPD1, Value: DcWP1trKCU, Extra: nrkbqkVyhu, TTL: 54m44s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 2446, Size: 268
+Key: hX9EOgHP4B, Value: Gfu2nOtKUG, Extra: 6rxh9rGiWR, TTL: 24m13s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 3257, Size: 275
+Key: oBokebMSYQ, Value: 0ZdKc9B5B3, Extra: RjLhkHK2pQ, TTL: 55m17s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 2175, Size: 271
+Key: pBr31Z3ojM, Value: ZbQMskvFX7, Extra: mwY3erK7kx, TTL: 34m9s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 816, Size: 272
+Key: t8wYMcMSgf, Value: JO119D3HZQ, Extra: M2LMGNGiLl, TTL: 21m8s, FileName: ../../data/testdata/storage/data_6.gz, Offset: 2987, Size: 270
+Key: vUhd01RDmH, Value: ivZcDBUeMH, Extra: fEvZ8fN1RO, TTL: 5s, FileName: ../../data/testdata/storage/data_7.gz, Offset: 1088, Size: 271
+SkipList 3, MaxKey: vUhd01RDmH, MinKey: 1bFcCJXJ6v
+Level 0, SkipList 4:
+Key: HbQFoiBJse, Value: vfmjjLBSSz, Extra: MOrTWTZ2bG, TTL: 51m5s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 1353, Size: 266
+Key: IMuPtpR6Fg, Value: Bpe5CzQl16, Extra: aETxv9fWEw, TTL: 38m19s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 2432, Size: 273
+Key: JlWdmKO92Q, Value: K381UyCwYj, Extra: vbVMNX51FG, TTL: 26m8s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 1619, Size: 273
+Key: Jv5vZFKjqB, Value: wLTE7W4hHr, Extra: ogLBffvjS5, TTL: 56m32s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 270, Size: 268
+Key: LEU0F31lgR, Value: oKOlre3v8t, Extra: 8G3B7IHTrC, TTL: 24m31s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 815, Size: 266
+Key: O2hysiKOkh, Value: NxySqhi5Ta, Extra: 33U28qAkjt, TTL: 46m53s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 1892, Size: 270
+Key: VSU93Z2lj9, Value: MYFVJ7WY4l, Extra: ioGPRkYEH5, TTL: 27m24s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 1081, Size: 272
+Key: ZWLNOw44nR, Value: O9Nyehvy98, Extra: PIsvEQGSrb, TTL: 8m37s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 3243, Size: 270
+Key: aK9PRpFrEm, Value: PtTrKIX1V7, Extra: D6wzmbYwDL, TTL: 56m47s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 3513, Size: 270
+Key: edI6ZPV8l5, Value: rTdUB8O9KR, Extra: SdfjaJHPy1, TTL: 12s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 270, Size: 269
+Key: en8mgXNKWT, Value: WKYC4AwHI7, Extra: dLdZccDdhP, TTL: 18m5s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 0, Size: 270
+Key: gU5QY7t9QP, Value: aEGu6yoURu, Extra: 58kOs63x5i, TTL: 34m20s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 2705, Size: 269
+Key: h70b9AHBXK, Value: ih6fThbKjE, Extra: 7wT1W5LUf4, TTL: 39m55s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 3783, Size: 270
+Key: pNH5Zzm3LT, Value: NLvgQxilER, Extra: phOqP2v2Ki, TTL: 39m59s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 2162, Size: 270
+Key: qldE1p0aGQ, Value: JZmwo1vCvB, Extra: JmoXo40Mdj, TTL: 57m7s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 2974, Size: 269
+Key: vcz2BFOEbY, Value: h7qspH47zN, Extra: zSwq1WV1LX, TTL: 37m59s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 538, Size: 277
+SkipList 4, MaxKey: vcz2BFOEbY, MinKey: HbQFoiBJse
+Level 0, SkipList 5:
+Key: 732vMNIZzp, Value: A1q1X3wMZS, Extra: GhBgq4d9F3, TTL: 5m28s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 0, Size: 275
+Key: GP0rS4UaEP, Value: JJ98hiTrCF, Extra: KuOTXF9e3O, TTL: 35s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 3778, Size: 271
+Key: GVkY6VDDYG, Value: asqltYhQrw, Extra: fdu9Fclge4, TTL: 21m46s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 544, Size: 269
+Key: LPFHSNo74g, Value: aTx3pldV6b, Extra: Hr0qCbd7kV, TTL: 39m2s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 539, Size: 268
+Key: NSUnA6TKfs, Value: AiecCtByaB, Extra: wEq5OtQsp1, TTL: 53m46s, FileName: ../../data/testdata/storage/data_4.gz, Offset: 275, Size: 269
+Key: PRSWyxA4D5, Value: 2kMWON5Nun, Extra: AKN0tFvklr, TTL: 34m22s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 3237, Size: 271
+Key: Y0Weu6ZhAT, Value: oJMQLIfQsS, Extra: DbPO1Mfb0p, TTL: 28m34s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 1610, Size: 272
+Key: b9j79Jmbmu, Value: G231pZuGoZ, Extra: MTYpXUnK3L, TTL: 1m46s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 1882, Size: 269
+Key: bYts6n1KDC, Value: DD7TMC671A, Extra: G2w7RpBKny, TTL: 29m15s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 1071, Size: 270
+Key: nDUqqC0XT4, Value: vmtG0FcLov, Extra: R3Dfw6JdUR, TTL: 25m23s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 2151, Size: 275
+Key: pTdyMxHUY3, Value: sReZ3X7ALl, Extra: EM3LOV472b, TTL: 26m59s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 2426, Size: 271
+Key: sBEXS6UT24, Value: s7JyDiWd5I, Extra: izXdsoOd4F, TTL: 17m48s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 807, Size: 264
+Key: uEqKzTtjkD, Value: mI4acCXSOZ, Extra: Szy1gwiVH3, TTL: 30m37s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 1341, Size: 269
+Key: uEudFvGdYG, Value: rBgdfToAuJ, Extra: BErvkpkdYA, TTL: 51m42s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 2965, Size: 272
+Key: uktNMv9KPl, Value: niPg2gcXM4, Extra: q6A9IVvJ9y, TTL: 31m4s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 2697, Size: 268
+Key: xOC5qymXBg, Value: 0AtJv5B6w6, Extra: WKUsacfQsX, TTL: 49m13s, FileName: ../../data/testdata/storage/data_3.gz, Offset: 3508, Size: 270
+SkipList 5, MaxKey: xOC5qymXBg, MinKey: 732vMNIZzp
+Level 0, SkipList 6:
+Key: 1k84Myd32O, Value: EfbcJQwZ5t, Extra: JzOndEAd0Z, TTL: 3m31s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 2436, Size: 269
+Key: 8eA57XaJFb, Value: 9biiPcHruv, Extra: iqAwpGgT94, TTL: 40m58s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 0, Size: 269
+Key: DTFxfNPlxM, Value: AMl5qQdMeE, Extra: e4pvT8TGXo, TTL: 16m42s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 812, Size: 270
+Key: FmxF60f8bo, Value: cw255N7OfB, Extra: BlBdpfvUkF, TTL: 54m44s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 2705, Size: 273
+Key: GKQLkc06A3, Value: 0xWruIgDBx, Extra: ur0ymbY9FW, TTL: 27m7s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 3515, Size: 271
+Key: Hl1kqBKJWa, Value: U6ivM4KMUf, Extra: MtIcEpqS4X, TTL: 26m12s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 2168, Size: 268
+Key: LCZkNAzQp7, Value: n8YXRDHeh1, Extra: xMiZRXcUik, TTL: 6m20s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 2978, Size: 268
+Key: N4emYFz5t8, Value: H0vmQmzJfO, Extra: jT1U6rJEte, TTL: 29m29s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 1893, Size: 275
+Key: VoPEkZwPZB, Value: mDF03LDKQX, Extra: jHnAXi5sBE, TTL: 2m53s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 1352, Size: 269
+Key: ZZblutMYVy, Value: EKam7OMTkc, Extra: cUUrvAHcsj, TTL: 29m31s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 541, Size: 271
+Key: a8BW4iNkZB, Value: xSHs4KdCzs, Extra: ImMJjIkiZm, TTL: 57m56s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 1082, Size: 270
+Key: pxbRIbeaT9, Value: BlxxZb2Cl9, Extra: E3tVzUsNV4, TTL: 38m46s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 1621, Size: 272
+Key: q9I3X2g2mc, Value: u8saK6uj0u, Extra: SNeXkLrvHg, TTL: 14m55s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 3786, Size: 269
+Key: r2fAnTxW2b, Value: iWC2pN8e4i, Extra: mxZl3YGY4N, TTL: 36m19s, FileName: ../../data/testdata/storage/data_2.gz, Offset: 0, Size: 270
+Key: u71m5jisjT, Value: nCYCWOMJ7W, Extra: qsrZeq13G4, TTL: 30m25s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 269, Size: 272
+Key: y1U0Q0JfgR, Value: EEbiKR7Cem, Extra: joAPofUmfm, TTL: 1m32s, FileName: ../../data/testdata/storage/data_1.gz, Offset: 3246, Size: 269
+SkipList 6, MaxKey: y1U0Q0JfgR, MinKey: 1k84Myd32O
+InfoLevel 0, MaxKey: y1U0Q0JfgR, MinKey: 1bFcCJXJ6v
 InfoLevel 1, MaxKey: , MinKey: 
 InfoLevel 2, MaxKey: , MinKey: 
 InfoLevel 3, MaxKey: , MinKey: 

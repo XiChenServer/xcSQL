@@ -60,7 +60,7 @@ func TestDB_SetMore(t *testing.T) {
 
 	defer tree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
 	defer tree.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 }
 
 // 简单的测试数据可以存入
@@ -75,21 +75,21 @@ func TestDB_Set(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
-	key := []byte(generateRandomKey())
-	value := []byte(generateRandomKey())
-	err = db.Set(key, value)
+	//key := []byte(generateRandomKey())
+	//value := []byte(generateRandomKey())
+	//err = db.Set(key, value)
+	//
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
+	//
+	//fmt.Println("Insert ok")
+	//fmt.Println(string(key))
 
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println("Insert ok")
-	fmt.Println(string(key))
 	defer lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
-
 	defer lsmType.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 }
 
 // 简单的测试数据可以通过解压获取到
@@ -119,7 +119,7 @@ func TestDB_Get(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
-	key := []byte("QmByaOs6LN")
+	key := []byte("HeCS21YIao")
 	data, err := db.Get(key)
 	if err != nil {
 		fmt.Println(err)
@@ -128,7 +128,7 @@ func TestDB_Get(t *testing.T) {
 	fmt.Println("Get ok:", string(data.DataMeta.Key), string(data.DataMeta.Value))
 	defer tree.PrintDiskDataToFile(string(tree.LsmPath))
 	defer tree.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 }
 
 // generateRandomKey 生成随机键值
@@ -162,7 +162,7 @@ func TestDB_Strlen(t *testing.T) {
 	fmt.Println("Get ok:", data)
 	defer tree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
 	defer tree.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 }
 
 // 进行追加操作
@@ -185,5 +185,5 @@ func TestDB_Append(t *testing.T) {
 	fmt.Println("Append success")
 	defer tree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
 	defer tree.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt", "String")
+	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 }

@@ -16,3 +16,11 @@
 2024-02-29T17:19:18.485+0800	ERROR	database/db_str.go:34	string set fail:open String,StoragePath/data_2.gz: no such file or directory
 2024-02-29T17:20:53.991+0800	ERROR	database/db_str.go:34	string set fail:open String,StoragePath/data_2.gz: no such file or directory
 2024-02-29T17:20:55.714+0800	ERROR	database/db.go:26	failed to create storage manager: %v<nil>
+2024-02-29T19:34:28.555+0800	ERROR	database/db_str.go:34	string set fail:open String,StoragePath/data_1.gz: no such file or directory
+2024-02-29T19:34:30.033+0800	ERROR	database/db_str.go:34	string set fail:open String,StoragePath/data_1.gz: no such file or directory
+2024-02-29T19:34:31.640+0800	ERROR	database/db_str.go:34	string set fail:open String,StoragePath/data_1.gz: no such file or directory
+2024-02-29T19:34:33.153+0800	ERROR	database/db_str.go:34	string set fail:open String,StoragePath/data_1.gz: no such file or directory
+2024-02-29T19:34:35.345+0800	ERROR	database/db_str.go:34	string set fail:open String,StoragePath/data_1.gz: no such file or directory
+2024-02-29T19:34:36.920+0800	ERROR	database/db_str.go:34	string set fail:open String,StoragePath/data_1.gz: no such file or directory
+2024-02-29T19:38:42.888+0800	ERROR	database/db_str.go:34	string set fail:open String,StoragePath/data_1.gz: no such file or directory
+2024-02-29T19:39:31.190+0800	ERROR	database/db.go:41	failed to create storage manager: %v<nil>
