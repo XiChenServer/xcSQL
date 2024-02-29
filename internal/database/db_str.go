@@ -62,7 +62,6 @@ func (db *XcDB) doGet(key []byte) (*model.KeyValue, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	offset := datainfo.Offset
 	fileName := datainfo.FileName
 	size := datainfo.Size
