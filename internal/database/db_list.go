@@ -10,15 +10,17 @@ import (
 )
 
 // 编写对于列表的操作方法
-func (db *XcDB) LPUSH(key []byte, values [][]byte, ttl ...uint64) error {
-	err := db.doLPUSH(key, values, ttl...)
+
+// 注意这里的操作是对于list的头部进行插入的操作
+func (db *XcDB) RPUSH(key []byte, values [][]byte, ttl ...uint64) error {
+	err := db.doRPUSH(key, values, ttl...)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (db *XcDB) doLPUSH(key []byte, values [][]byte, ttl ...uint64) error {
+func (db *XcDB) doRPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 	db.Mu.Lock()
 	defer db.Mu.Unlock()
 	var timeSlice []time.Duration
@@ -26,7 +28,7 @@ func (db *XcDB) doLPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 		timeSlice = append(timeSlice, time.Duration(t)*time.Second)
 	}
 	changeValue := StoreListValueWithDataType(values)
-	e := NewKeyValueEntry(key, changeValue, model.List, model.ListLPUSH, timeSlice...)
+	e := NewKeyValueEntry(key, changeValue, model.XCDB_List, model.XCDB_ListLPUSH, timeSlice...)
 	stroeLocal, err := db.StorageManager.StoreData(e)
 	if err != nil {
 		logs.SugarLogger.Error("string set fail:", err)
@@ -37,7 +39,7 @@ func (db *XcDB) doLPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 		StorageLocation: stroeLocal,
 	}
 	lsmMap := *db.Lsm
-	tree := lsmMap[model.List]
+	tree := lsmMap[model.XCDB_List]
 	tree.Insert(key, datainfo)
 	return nil
 }

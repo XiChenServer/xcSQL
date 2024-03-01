@@ -5,10 +5,10 @@ import (
 )
 
 const (
-	List      uint16 = 11
-	ListLPUSH uint16 = 12
-	String    uint16 = 1
-	StringSet uint16 = 2
+	XCDB_List      uint16 = 11
+	XCDB_ListLPUSH uint16 = 12
+	XCDB_String    uint16 = 1
+	XCDB_StringSet uint16 = 2
 )
 
 // KeyValue 表示键值对

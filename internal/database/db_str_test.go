@@ -29,7 +29,7 @@ func TestDB_SetMore(t *testing.T) {
 
 	// 加载模拟的数据文件到 LSM 树中
 	lsmMap := *db.Lsm
-	tree := lsmMap[model.String]
+	tree := lsmMap[model.XCDB_String]
 	err := tree.LoadDataFromFile(dataFilePath)
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
@@ -69,15 +69,15 @@ func TestDB_Set(t *testing.T) {
 	db := NewXcDB()
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
-	lsmType := lsmMap[model.String]
+	lsmType := lsmMap[model.XCDB_String]
 	// 加载模拟的数据文件到 LSM 树中
-	err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
-	if err != nil {
-		t.Fatalf("Error loading data from disk: %v", err)
-	}
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
 	key := []byte(generateRandomKey())
 	value := []byte(generateRandomKey())
-	err = db.Set(key, value)
+	err := db.Set(key, value)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -112,7 +112,7 @@ func TestDB_Get(t *testing.T) {
 	logs.InitLogger()
 	db := NewXcDB()
 	lsmMap := *db.Lsm
-	tree := lsmMap[model.String]
+	tree := lsmMap[model.XCDB_String]
 	// 加载模拟的数据文件到 LSM 树中
 	err := tree.LoadDataFromFile(string(tree.LsmPath))
 	if err != nil {
@@ -146,7 +146,7 @@ func TestDB_Strlen(t *testing.T) {
 	logs.InitLogger()
 	db := NewXcDB()
 	lsmMap := *db.Lsm
-	tree := lsmMap[model.String]
+	tree := lsmMap[model.XCDB_String]
 	// 加载模拟的数据文件到 LSM 树中
 	err := tree.LoadDataFromFile(string(tree.LsmPath))
 	if err != nil {
@@ -169,7 +169,7 @@ func TestDB_Append(t *testing.T) {
 	logs.InitLogger()
 	db := NewXcDB()
 	lsmMap := *db.Lsm
-	tree := lsmMap[model.String]
+	tree := lsmMap[model.XCDB_String]
 	// 加载模拟的数据文件到 LSM 树中
 	err := tree.LoadDataFromFile(string(tree.LsmPath))
 	if err != nil {

@@ -17,15 +17,15 @@ func TestDB_LPUSH(t *testing.T) {
 	db := NewXcDB()
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
-	lsmType := lsmMap[model.List]
-	// 加载模拟的数据文件到 LSM 树中
-	err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
-	if err != nil {
-		t.Fatalf("Error loading data from disk: %v", err)
-	}
+	lsmType := lsmMap[model.XCDB_List]
+	//// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
 	key := []byte(generateRandomKey())
 	value := generateRandomByteSlices(4, 6, 5)
-	err = db.LPUSH(key, value)
+	err := db.RPUSH(key, value)
 	if err != nil {
 		fmt.Println(err)
 		return

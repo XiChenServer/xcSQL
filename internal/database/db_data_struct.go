@@ -16,10 +16,10 @@ func NewKeyValueEntry(key, value []byte, t, m uint16, ttl ...time.Duration) *mod
 		expireTime = 0
 	}
 	var extra []byte
-	if t == model.List {
-		extra = []byte("String")
-	} else if t == model.List {
-		extra = []byte("List")
+	if t == model.XCDB_List {
+		extra = []byte("XCDB_String")
+	} else if t == model.XCDB_List {
+		extra = []byte("XCDB_List")
 	}
 	return NewKeyValuePair(key, value, extra, t, m, expireTime)
 }

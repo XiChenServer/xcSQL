@@ -38,8 +38,8 @@ import (
 //				skipList.ForEach(func(key []byte, value *DataInfo) bool {
 //					size := strconv.FormatInt(value.Size, 10)
 //					offset := strconv.FormatInt(value.Offset, 10)
-//					//line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(key), string(value.Value), string(value.Extra), value.TTL.String(), string(value.FileName), offset, size)
-//					line := fmt.Sprintf("Key: %s, Value: %v, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(value.Key), value.Value, string(value.Extra), value.TTL.String(), string(value.FileName), offset, size)
+//					//line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(key), string(value.Value), string(value.Extra), value.TTL.XCDB_String(), string(value.FileName), offset, size)
+//					line := fmt.Sprintf("Key: %s, Value: %v, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(value.Key), value.Value, string(value.Extra), value.TTL.XCDB_String(), string(value.FileName), offset, size)
 //
 //					_, _ = writer.WriteString(line)
 //					//writer.WriteString(line)

@@ -38,10 +38,10 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 	maxSkipLists := uint16(10) // 第一个层级的跳表数量
 	maxDiskLevels := uint16(7) // 最多的磁盘层级数量
 	var typeName string
-	if Type == model.String {
-		typeName = "String"
-	} else if Type == model.List {
-		typeName = "List"
+	if Type == model.XCDB_String {
+		typeName = "XCDB_String"
+	} else if Type == model.XCDB_List {
+		typeName = "XCDB_List"
 	}
 	tree := &LSMTree{
 		LsmPath:          []byte(("../../data/testdata/lsm_tree/") + typeName + ("/test1.gz")),
@@ -68,7 +68,10 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 		}
 		skipLists *= 10 // 每个层级的跳表数量按4的幂级增加
 	}
-
+	_ = tree.LoadDataFromFile(string(tree.LsmPath))
+	//if err != nil {
+	//	//fmt.Println("Error loading data from disk: %v", err)
+	//}
 	return tree
 }
 
