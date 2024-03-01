@@ -9,8 +9,10 @@ import (
 
 // 将活跃内存表转换为只读表
 func (lsm *LSMTree) convertActiveToReadOnly() {
+
 	lsm.readOnlyMemTable = lsm.activeMemTable
 	lsm.activeMemTable = NewSkipList(16) // 重新初始化活跃内存表
+
 }
 
 // 更新一个层中键的最大和最小的问题

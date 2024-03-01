@@ -65,7 +65,14 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 	}
 	defer file.Close()
 	// 创建 Scanner 实例以逐行读取文件内容
+
+	//scanner := bufio.NewScanner(file)
 	scanner := bufio.NewScanner(file)
+	// 设置缓冲区大小为 64 * 1024 字节
+	const maxScanTokenSize = 1024 * 1024
+	buf := make([]byte, maxScanTokenSize)
+	scanner.Buffer(buf, maxScanTokenSize)
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.HasPrefix(line, "Key") {

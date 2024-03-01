@@ -183,7 +183,7 @@ func (lsm *LSMTree) determineSearchRange(key []byte) (*LevelInfo, *SkipList) {
 }
 
 // 修改 Get 函数，使用二分查找算法在确定的层级和跳表中进行查找
-func (lsm *LSMTree) Get(key []byte) (*DataInfo, error) {
+func (lsm *LSMTree) Get1(key []byte) (*DataInfo, error) {
 	lsm.mu.RLock()
 	defer lsm.mu.RUnlock()
 
@@ -203,6 +203,48 @@ func (lsm *LSMTree) Get(key []byte) (*DataInfo, error) {
 	//}
 
 	return nil, errors.New("don't find data")
+}
+
+// 修改 Get 函数，先在活跃表、只读表、LSM 树的层级中的跳表中进行查找
+func (lsm *LSMTree) Get(key []byte) (*DataInfo, error) {
+	lsm.mu.RLock()
+	defer lsm.mu.RUnlock()
+
+	// 先在活跃表中查找
+	if bytes.Compare(key, lsm.activeMemTable.getMinKey()) >= 0 && bytes.Compare(key, lsm.activeMemTable.getMaxKey()) <= 0 {
+		return lsm.searchInSkipList(lsm.activeMemTable, key)
+	}
+
+	// 然后在只读表中查找
+	if bytes.Compare(key, lsm.readOnlyMemTable.getMinKey()) >= 0 && bytes.Compare(key, lsm.readOnlyMemTable.getMaxKey()) <= 0 {
+		return lsm.searchInSkipList(lsm.readOnlyMemTable, key)
+	}
+
+	// 最后在 LSM 树的层级中的跳表中进行查找
+	for _, level := range lsm.diskLevels {
+		if bytes.Compare(key, level.LevelMinKey) >= 0 && bytes.Compare(key, level.LevelMaxKey) <= 0 {
+			for _, skipList := range level.SkipLists {
+				if bytes.Compare(key, skipList.getMinKey()) >= 0 && bytes.Compare(key, skipList.getMaxKey()) <= 0 {
+					return lsm.searchInSkipList(skipList, key)
+				}
+			}
+		}
+	}
+
+	return nil, errors.New("data not found")
+}
+
+// 辅助函数：在跳表中查找数据
+func (lsm *LSMTree) searchInSkipList(skipList *SkipList, key []byte) (*DataInfo, error) {
+	for node := skipList.Head.Next[0]; node != nil; node = node.Next[0] {
+		if bytes.Equal(node.Key, key) {
+			return node.DataInfo, nil
+		} else if bytes.Compare(node.Key, key) > 0 {
+			break // 如果当前节点的键大于目标键，则跳出循环
+		}
+	}
+
+	return nil, errors.New("data not found")
 }
 
 func (lsm *LSMTree) Printf() {
