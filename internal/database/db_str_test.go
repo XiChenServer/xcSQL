@@ -85,7 +85,6 @@ func TestDB_Set(t *testing.T) {
 
 	fmt.Println("Insert ok")
 	fmt.Println(string(key))
-	fmt.Println(string(lsmType.LsmPath))
 
 	lsmType.SaveActiveToDiskOnExit()
 	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))

@@ -44,7 +44,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 		typeName = "List"
 	}
 	tree := &LSMTree{
-		LsmPath:          []byte(("../../data/testdata/lsm_tree/") + typeName + ("/test1.txt")),
+		LsmPath:          []byte(("../../data/testdata/lsm_tree/") + typeName + ("/test1.gz")),
 		activeMemTable:   NewSkipList(16),
 		readOnlyMemTable: NewSkipList(16),
 		diskLevels:       make([]*LevelInfo, maxDiskLevels),
