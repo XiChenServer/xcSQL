@@ -35,8 +35,9 @@ func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 				skipList.ForEach(func(key []byte, value *DataInfo) bool {
 					size := strconv.FormatInt(value.Size, 10)
 					offset := strconv.FormatInt(value.Offset, 10)
+					//line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(key), string(value.Value), string(value.Extra), value.TTL.String(), string(value.FileName), offset, size)
+					line := fmt.Sprintf("Key: %s, Value: %v, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(key), value.Value, string(value.Extra), value.TTL.String(), string(value.FileName), offset, size)
 
-					line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(key), string(value.Value), string(value.Extra), value.TTL.String(), string(value.FileName), offset, size)
 					writer.WriteString(line)
 					return true
 				})

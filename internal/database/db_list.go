@@ -37,7 +37,7 @@ func (db *XcDB) doLPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 		StorageLocation: stroeLocal,
 	}
 	lsmMap := *db.Lsm
-	tree := lsmMap[model.String]
+	tree := lsmMap[model.List]
 	tree.Insert(key, datainfo)
 	return nil
 }

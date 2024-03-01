@@ -175,6 +175,8 @@ func (db *XcDB) doGetStrLen(key []byte) (uint32, error) {
 
 	return datainfo.ValueSize, nil
 }
+
+// 对于字符串进行添加的操作
 func (db *XcDB) Append(key, value []byte) error {
 	err := db.doAppend(key, value)
 	if err != nil {

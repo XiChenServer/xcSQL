@@ -119,7 +119,7 @@ func TestDB_Get(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
-	key := []byte("HeCS21YIao")
+	key := []byte("PFW9khA2ho")
 	data, err := db.Get(key)
 	if err != nil {
 		fmt.Println(err)

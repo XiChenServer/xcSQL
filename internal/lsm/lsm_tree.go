@@ -40,6 +40,8 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 	var typeName string
 	if Type == model.String {
 		typeName = "String"
+	} else if Type == model.List {
+		typeName = "List"
 	}
 	tree := &LSMTree{
 		LsmPath:          []byte(("../../data/testdata/lsm_tree/") + typeName + ("/test1.txt")),
@@ -52,7 +54,6 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 		maxDiskLevels:    maxDiskLevels,
 		writeToDiskChan:  make(chan struct{}, 1), // 初始化 writeToDiskChan，缓冲大小为 1，表示同时只能有一个磁盘写入操作
 	}
-
 	// 初始化每个层级的跳表数量
 	skipLists := maxSkipLists
 	for i := uint16(0); i < maxDiskLevels; i++ {
@@ -146,7 +147,7 @@ func (lsm *LSMTree) Close() {
 func (lsm *LSMTree) determineSearchRange(key []byte) (*LevelInfo, *SkipList) {
 	// 在活跃内存表中查找
 	if bytes.Compare(key, lsm.activeMemTable.getMinKey()) >= 0 && bytes.Compare(key, lsm.activeMemTable.getMaxKey()) <= 0 {
-		fmt.Println(string(key), string(lsm.activeMemTable.getMinKey()), string(lsm.activeMemTable.getMaxKey()))
+		fmt.Println("ff", string(key), string(lsm.activeMemTable.getMinKey()), string(lsm.activeMemTable.getMaxKey()))
 		return nil, lsm.activeMemTable
 	}
 
@@ -192,6 +193,7 @@ func (lsm *LSMTree) Get(key []byte) (*DataInfo, error) {
 	}
 
 	for node := skipList.Head.Next[0]; node != nil; node = node.Next[0] {
+		fmt.Println(string(node.Key), string(node.DataInfo.Value), string(node.DataInfo.Key))
 		if bytes.Equal(node.Key, key) {
 			return node.DataInfo, nil
 		}
