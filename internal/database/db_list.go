@@ -14,7 +14,7 @@ import (
 
 // 编写对于列表的操作方法
 
-// 注意这里的操作是对于list的头部进行插入的操作
+// 注意这里的操作是对于list的尾部进行插入的操作
 func (db *XcDB) RPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 	err := db.doRPUSH(key, values, ttl...)
 	if err != nil {
@@ -98,6 +98,97 @@ func (db *XcDB) doRPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 		return err
 	}
 	return nil
+}
+
+// 注意这里的操作是对于list的头部进行插入的操作
+func (db *XcDB) LPUSH(key []byte, values [][]byte, ttl ...uint64) error {
+	err := db.doLPUSH(key, values, ttl...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *XcDB) doLPUSH(key []byte, values [][]byte, ttl ...uint64) error {
+	db.Mu.Lock()
+	defer db.Mu.Unlock()
+
+	var timeSlice []time.Duration
+	for _, t := range ttl {
+		timeSlice = append(timeSlice, time.Duration(t)*time.Second)
+	}
+
+	lsmMap := *db.Lsm
+	list := lsmMap[model.XCDB_List]
+	datainfo, _ := list.Get(key)
+
+	// 创建新的列表并将值插入其中
+	if datainfo == nil {
+		// 对于新创建的列表，需要将插入的值逆序存储
+		for i, j := 0, len(values)-1; i < j; i, j = i+1, j-1 {
+			values[i], values[j] = values[j], values[i]
+		}
+		changeValue := StoreListValueWithDataType(values)
+		e := NewKeyValueEntry(key, changeValue, model.XCDB_List, model.XCDB_ListLPUSH, timeSlice...)
+		stroeLocal, err := db.StorageManager.StoreData(e)
+		if err != nil {
+			logs.SugarLogger.Error("string set fail:", err)
+			return err
+		}
+
+		datainfo = &lsm.DataInfo{
+			DataMeta:        *e.DataMeta,
+			StorageLocation: stroeLocal,
+		}
+
+		err = list.Insert(key, datainfo)
+		return err
+	}
+
+	// 如果列表存在，则将新值插入到旧值的前面
+	offset := datainfo.Offset
+	fileName := datainfo.FileName
+	size := datainfo.Size
+
+	data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	if isExpired(data) {
+		return errors.New("Data has expired")
+	}
+
+	oldValue, err := RetrieveListValueWithDataType(data.Value)
+	if err != nil {
+		return err
+	}
+	// 对于后续追加的值，同样需要逆序存储
+	for i, j := 0, len(values)-1; i < j; i, j = i+1, j-1 {
+		values[i], values[j] = values[j], values[i]
+	}
+
+	// 将新值插入到旧值的前面
+	// 由于是左侧插入，所以要先将旧值插入到新值前面，然后再将新值插入到新值的前面
+	values = append(values, oldValue...)
+
+	// 存储修改后的列表值
+	changeValue := StoreListValueWithDataType(values)
+	e := NewKeyValueEntry(key, changeValue, model.XCDB_List, model.XCDB_ListLPUSH, timeSlice...)
+	stroeLocal, err := db.StorageManager.StoreData(e)
+	if err != nil {
+		logs.SugarLogger.Error("string set fail:", err)
+		return err
+	}
+
+	datainfo = &lsm.DataInfo{
+		DataMeta:        *e.DataMeta,
+		StorageLocation: stroeLocal,
+	}
+
+	err = list.Insert(key, datainfo)
+	return err
 }
 
 // 对于list进行查找的操作，
@@ -186,15 +277,18 @@ func (db *XcDB) doLINDEX(key []byte, index int) ([]byte, error) {
 
 // 根据下标获取值
 func getValueAtIndex(data []byte, index int) ([]byte, error) {
-	value, err := RetrieveListValueWithDataType(data)
+	values, err := RetrieveListValueWithDataType(data)
 	if err != nil {
 		return nil, err
 	}
-	if index < 0 || index >= len(data) {
+	for _, v := range values {
+		fmt.Println(string(v))
+	}
+	if index < 0 || index >= len(values) {
 		return nil, errors.New("index out of range")
 	}
 
-	return value[index], nil
+	return values[index], nil
 }
 
 // 根据左右的范围获取值
@@ -261,4 +355,150 @@ func RetrieveListValueWithDataType(data []byte) ([][]byte, error) {
 		elements = append(elements, element)
 	}
 	return elements, nil
+}
+
+// LPOP 从列表中移除并返回头部元素
+func (db *XcDB) LPOP(key []byte) ([]byte, error) {
+	data, err := db.doLPOP(key)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (db *XcDB) doLPOP(key []byte) ([]byte, error) {
+	db.Mu.Lock()
+	defer db.Mu.Unlock()
+
+	lsmMap := *db.Lsm
+	list := lsmMap[model.XCDB_List]
+	datainfo, err := list.Get(key)
+	if err != nil {
+		return nil, err
+	}
+	if datainfo != nil {
+		offset := datainfo.Offset
+		fileName := datainfo.FileName
+		size := datainfo.Size
+
+		data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
+		if err != nil {
+			return nil, err
+		}
+
+		if isExpired(data) {
+			return nil, errors.New("Data has expired")
+		}
+
+		// 解析列表值
+		oldValue, err := RetrieveListValueWithDataType(data.Value)
+		if err != nil {
+			return nil, err
+		}
+
+		// 移除并返回头部元素
+		var head []byte
+		if len(oldValue) > 0 {
+			head = oldValue[0]
+			oldValue = oldValue[1:]
+		} else {
+			// 如果列表为空，则返回空
+			return nil, errors.New("List is empty")
+		}
+
+		// 更新数据并存储
+		changeValue := StoreListValueWithDataType(oldValue)
+		e := NewKeyValueEntry(key, changeValue, model.XCDB_List, model.XCDB_ListLPOP)
+		storeLocal, err := db.StorageManager.StoreData(e)
+		if err != nil {
+			return nil, err
+		}
+
+		datainfo = &lsm.DataInfo{
+			DataMeta:        *e.DataMeta,
+			StorageLocation: storeLocal,
+		}
+
+		err = list.Insert(key, datainfo)
+		if err != nil {
+			return nil, err
+		}
+
+		return head, nil
+	}
+	return nil, errors.New("List not found")
+}
+
+// RPOP 从列表中移除并返回尾部元素
+func (db *XcDB) RPOP(key []byte) ([]byte, error) {
+	data, err := db.doRPOP(key)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+// doRPOP 实际执行RPOP操作
+func (db *XcDB) doRPOP(key []byte) ([]byte, error) {
+	db.Mu.Lock()
+	defer db.Mu.Unlock()
+
+	lsmMap := *db.Lsm
+	list := lsmMap[model.XCDB_List]
+	datainfo, err := list.Get(key)
+	if err != nil {
+		return nil, err
+	}
+	if datainfo != nil {
+		offset := datainfo.Offset
+		fileName := datainfo.FileName
+		size := datainfo.Size
+
+		data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
+		if err != nil {
+			return nil, err
+		}
+
+		if isExpired(data) {
+			return nil, errors.New("Data has expired")
+		}
+
+		// 解析列表值
+		oldValue, err := RetrieveListValueWithDataType(data.Value)
+		if err != nil {
+			return nil, err
+		}
+
+		// 移除并返回尾部元素
+		var tail []byte
+		if len(oldValue) > 0 {
+			lastIndex := len(oldValue) - 1
+			tail = oldValue[lastIndex]
+			oldValue = oldValue[:lastIndex]
+		} else {
+			// 如果列表为空，则返回空
+			return nil, errors.New("List is empty")
+		}
+
+		// 更新数据并存储
+		changeValue := StoreListValueWithDataType(oldValue)
+		e := NewKeyValueEntry(key, changeValue, model.XCDB_List, model.XCDB_ListRPOP)
+		storeLocal, err := db.StorageManager.StoreData(e)
+		if err != nil {
+			return nil, err
+		}
+
+		datainfo = &lsm.DataInfo{
+			DataMeta:        *e.DataMeta,
+			StorageLocation: storeLocal,
+		}
+
+		err = list.Insert(key, datainfo)
+		if err != nil {
+			return nil, err
+		}
+
+		return tail, nil
+	}
+	return nil, errors.New("List not found")
 }

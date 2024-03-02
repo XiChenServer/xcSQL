@@ -7,6 +7,11 @@ import (
 const (
 	XCDB_List      uint16 = 11
 	XCDB_ListLPUSH uint16 = 12
+	XCDB_ListLPOP  uint16 = 13
+	XCDB_ListRPOP  uint16 = 14
+)
+
+const (
 	XCDB_String    uint16 = 1
 	XCDB_StringSet uint16 = 2
 )
