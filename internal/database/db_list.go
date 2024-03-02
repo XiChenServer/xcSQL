@@ -8,7 +8,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -26,24 +25,80 @@ func (db *XcDB) RPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 func (db *XcDB) doRPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 	db.Mu.Lock()
 	defer db.Mu.Unlock()
+
 	var timeSlice []time.Duration
 	for _, t := range ttl {
 		timeSlice = append(timeSlice, time.Duration(t)*time.Second)
 	}
+
+	lsmMap := *db.Lsm
+	list := lsmMap[model.XCDB_List]
+	datainfo, _ := list.Get(key)
+	if datainfo != nil {
+		offset := datainfo.Offset
+		fileName := datainfo.FileName
+		size := datainfo.Size
+
+		data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+
+		if isExpired(data) {
+			return errors.New("Data has expired")
+		}
+
+		oldValue, err := RetrieveListValueWithDataType(data.Value)
+
+		// 创建一个新的切片用于拼接
+		var combined [][]byte
+
+		// 遍历第一个切片并将其内容逐个添加到新切片中
+		for _, item := range oldValue {
+			combined = append(combined, item)
+		}
+
+		// 遍历第二个切片并将其内容逐个添加到新切片中
+		for _, item := range values {
+			combined = append(combined, item)
+		}
+		changeValue := StoreListValueWithDataType(combined)
+
+		fmt.Println(changeValue)
+		//data.Value = append(data.Value, changeValue...)
+
+		e := NewKeyValueEntry(key, changeValue, model.XCDB_List, model.XCDB_ListLPUSH, timeSlice...)
+		stroeLocal, err := db.StorageManager.StoreData(e)
+		if err != nil {
+			logs.SugarLogger.Error("string set fail:", err)
+			return err
+		}
+
+		datainfo = &lsm.DataInfo{
+			DataMeta:        *e.DataMeta,
+			StorageLocation: stroeLocal,
+		}
+
+		err = list.Insert(key, datainfo)
+		return err
+	}
+
 	changeValue := StoreListValueWithDataType(values)
 	e := NewKeyValueEntry(key, changeValue, model.XCDB_List, model.XCDB_ListLPUSH, timeSlice...)
+	fmt.Println(e.Value)
 	stroeLocal, err := db.StorageManager.StoreData(e)
 	if err != nil {
 		logs.SugarLogger.Error("string set fail:", err)
 		return err
 	}
-	datainfo := &lsm.DataInfo{
+
+	datainfo = &lsm.DataInfo{
 		DataMeta:        *e.DataMeta,
 		StorageLocation: stroeLocal,
 	}
-	lsmMap := *db.Lsm
-	tree := lsmMap[model.XCDB_List]
-	tree.Insert(key, datainfo)
+
+	list.Insert(key, datainfo)
 	return nil
 }
 
@@ -65,13 +120,10 @@ func (db *XcDB) doLRANGE(key []byte, left, right int) ([][]byte, error) {
 	offset := datainfo.Offset
 	fileName := datainfo.FileName
 	size := datainfo.Size
-
 	data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
-
 	if isExpired(data) {
 		err = errors.New("Data has expired")
 		return nil, err
@@ -96,12 +148,13 @@ func getValueByRange(data []byte, left, rignt int) ([][]byte, error) {
 	}
 	var string1 []string
 	for _, b := range value {
+		fmt.Println(string(b))
 		string1 = append(string1, string(b))
 	}
 
-	// 使用 strings.Join 将 []string 拼接成一个字符串并打印
-	result := fmt.Sprintf("[%s]", strings.Join(string1, ", "))
-	fmt.Println(result)
+	//// 使用 strings.Join 将 []string 拼接成一个字符串并打印
+	//result := fmt.Sprintf("[%s]", strings.Join(string1, ", "))
+	//fmt.Println(result)
 	return nil, nil
 }
 

@@ -152,7 +152,7 @@ func TestDB_Strlen(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
-	key := []byte("NG9tAX3q3V")
+	key := []byte("Lykig5qLNL")
 	data, err := db.Strlen(key)
 	if err != nil {
 		fmt.Println(err)

@@ -1,1 +1,7 @@
+Key: 0EjaveFCcq, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/string_test/data_7.gz, Offset: 8528, Size: 427
+Key: 1euO4mQ9BE, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/string_test/data_7.gz, Offset: 6227, Size: 271
+Key: 8egQ8q9CuK, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/string_test/data_7.gz, Offset: 921, Size: 312
+Key: Lykig5qLNL, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/string_test/data_7.gz, Offset: 7369, Size: 330
 Key: ffQXFXVHXv, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/string_test/data_7.gz, Offset: 612, Size: 309
+Key: wAUA23ZgF1, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/string_test/data_7.gz, Offset: 9492, Size: 282
+Key: yN7egfU6gJ, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/string_test/data_7.gz, Offset: 3356, Size: 290
