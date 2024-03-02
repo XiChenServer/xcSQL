@@ -32,8 +32,7 @@ func TestDB_LPUSH(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
-
-	fmt.Println("Insert ok")
+	fmt.Println("Get ok")
 	fmt.Println(string(key))
 	fmt.Println(string(lsmType.LsmPath))
 	lsmType.SaveActiveToDiskOnExit()
@@ -55,15 +54,44 @@ func TestDB_Range(t *testing.T) {
 	//}
 	key := []byte("wAUA23ZgF1")
 
-	_, err := db.LRANGE(key, 0, 0)
+	data, err := db.LRANGE(key, 0, -1)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, v := range data {
+		fmt.Println(string(v))
+	}
+	fmt.Println("Insert ok")
+	fmt.Println(string(key))
+
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}
+
+// 简单的测试数据可以取出来
+func TestDB_Index(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_List]
+	//// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	key := []byte("wAUA23ZgF1")
+
+	data, err := db.LINDEX(key, 6)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	fmt.Println("Insert ok")
-	fmt.Println(string(key))
-
+	fmt.Println("Get ok")
+	fmt.Println(string(data))
 	lsmType.SaveActiveToDiskOnExit()
 	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
 	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")

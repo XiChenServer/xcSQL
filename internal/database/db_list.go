@@ -8,6 +8,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"math"
 	"time"
 )
 
@@ -51,21 +52,15 @@ func (db *XcDB) doRPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 
 		oldValue, err := RetrieveListValueWithDataType(data.Value)
 
-		// 创建一个新的切片用于拼接
-		var combined [][]byte
-
-		// 遍历第一个切片并将其内容逐个添加到新切片中
-		for _, item := range oldValue {
-			combined = append(combined, item)
-		}
-
-		// 遍历第二个切片并将其内容逐个添加到新切片中
+		//
+		// 将新值插入到旧值的后面
 		for _, item := range values {
-			combined = append(combined, item)
+			oldValue = append(oldValue, item)
 		}
-		changeValue := StoreListValueWithDataType(combined)
 
-		fmt.Println(changeValue)
+		changeValue := StoreListValueWithDataType(oldValue)
+
+		//fmt.Println(changeValue)
 		//data.Value = append(data.Value, changeValue...)
 
 		e := NewKeyValueEntry(key, changeValue, model.XCDB_List, model.XCDB_ListLPUSH, timeSlice...)
@@ -86,7 +81,7 @@ func (db *XcDB) doRPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 
 	changeValue := StoreListValueWithDataType(values)
 	e := NewKeyValueEntry(key, changeValue, model.XCDB_List, model.XCDB_ListLPUSH, timeSlice...)
-	fmt.Println(e.Value)
+	//fmt.Println(e.Value)
 	stroeLocal, err := db.StorageManager.StoreData(e)
 	if err != nil {
 		logs.SugarLogger.Error("string set fail:", err)
@@ -98,12 +93,18 @@ func (db *XcDB) doRPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 		StorageLocation: stroeLocal,
 	}
 
-	list.Insert(key, datainfo)
+	err = list.Insert(key, datainfo)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 // 对于list进行查找的操作，
 func (db *XcDB) LRANGE(key []byte, left, right int) ([][]byte, error) {
+	if (left == 0 && right == 0) || math.Abs(float64(left)) > math.Abs(float64(right)) {
+		return nil, errors.New("both left and right values are required")
+	}
 	data, err := db.doLRANGE(key, left, right)
 	return data, err
 }
@@ -141,21 +142,81 @@ func (db *XcDB) doLRANGE(key []byte, left, right int) ([][]byte, error) {
 	return value, nil
 }
 
-func getValueByRange(data []byte, left, rignt int) ([][]byte, error) {
+// 对于list进行查找的操作，
+func (db *XcDB) LINDEX(key []byte, index int) ([]byte, error) {
+	if index < 0 {
+		return nil, errors.New("both left and right values are required")
+	}
+	data, err := db.doLINDEX(key, index)
+	return data, err
+}
+
+func (db *XcDB) doLINDEX(key []byte, index int) ([]byte, error) {
+	db.Mu.RLock()
+	defer db.Mu.RUnlock()
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.XCDB_List]
+	datainfo, err := tree.Get(key)
+	if err != nil {
+		return nil, err
+	}
+	offset := datainfo.Offset
+	fileName := datainfo.FileName
+	size := datainfo.Size
+	data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
+	if err != nil {
+		return nil, err
+	}
+	if isExpired(data) {
+		err = errors.New("Data has expired")
+		return nil, err
+	}
+	value, err := getValueAtIndex(data.Value, index)
+	err = db.reSet(data)
+	if err != nil {
+		return nil, err
+	}
+
+	if data == nil {
+		err := errors.New("No data found")
+		return nil, err
+	}
+	return value, nil
+}
+
+// 根据下标获取值
+func getValueAtIndex(data []byte, index int) ([]byte, error) {
 	value, err := RetrieveListValueWithDataType(data)
 	if err != nil {
 		return nil, err
 	}
-	var string1 []string
-	for _, b := range value {
-		fmt.Println(string(b))
-		string1 = append(string1, string(b))
+	if index < 0 || index >= len(data) {
+		return nil, errors.New("index out of range")
 	}
 
-	//// 使用 strings.Join 将 []string 拼接成一个字符串并打印
-	//result := fmt.Sprintf("[%s]", strings.Join(string1, ", "))
-	//fmt.Println(result)
-	return nil, nil
+	return value[index], nil
+}
+
+// 根据左右的范围获取值
+func getValueByRange(data []byte, left, right int) ([][]byte, error) {
+
+	value, err := RetrieveListValueWithDataType(data)
+	if err != nil {
+		return nil, err
+	}
+
+	// 如果 left 为 0，right 为 -1，返回所有数据
+	if left == 0 && right == -1 {
+		return value, nil
+	}
+
+	// 如果 left 或 right 超出范围，则返回空
+	if left >= len(value) || right >= len(value) {
+		return nil, nil
+	}
+
+	// 根据 left 和 right 范围取值
+	return value[left : right+1], nil
 }
 
 // 存储列表类型的值，使用标记区分数据类型
