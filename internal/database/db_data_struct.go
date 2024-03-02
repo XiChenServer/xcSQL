@@ -29,14 +29,16 @@ func NewKeyValuePair(key, value, extra []byte, t, m uint16, ttl time.Duration) *
 	currentTime := time.Now()
 	return &model.KeyValue{
 		DataMeta: &model.DataMeta{
-			Key:       key,
-			Value:     value,
-			Extra:     extra,
-			KeySize:   uint32(len(key)),
-			ValueSize: uint32(len(key)),
+			Key: key,
+			//
+			Extra:   extra,
+			KeySize: uint32(len(key)),
+			//
 			ExtraSize: uint32(len(key)),
 			TTL:       ttl,
 		},
+		ValueSize:  uint32(len(key)),
+		Value:      value,
 		Version:    0,
 		CreateTime: currentTime,
 		UpdateTime: currentTime,

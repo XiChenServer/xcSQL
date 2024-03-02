@@ -58,9 +58,9 @@ func TestDB_SetMore(t *testing.T) {
 	// 等待所有 goroutine 完成
 	wg.Wait()
 
-	defer tree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test1.txt")
-	defer tree.SaveActiveToDiskOnExit()
-	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	tree.SaveActiveToDiskOnExit()
+	tree.PrintDiskDataToFile(string(tree.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 }
 
 // 简单的测试数据可以存入
@@ -84,7 +84,7 @@ func TestDB_Set(t *testing.T) {
 	}
 
 	fmt.Println("Insert ok")
-	fmt.Println(string(key))
+	fmt.Println(string(key), string(value))
 
 	lsmType.SaveActiveToDiskOnExit()
 	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
@@ -118,13 +118,13 @@ func TestDB_Get(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading data from disk: %v", err)
 	}
-	key := []byte("PFW9khA2ho")
+	key := []byte("LtAkGhMNFf")
 	data, err := db.Get(key)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("Get ok:", string(data.DataMeta.Key), string(data.DataMeta.Value))
+	fmt.Println("Get ok:", string(data.DataMeta.Key), string(data.Value))
 	defer tree.PrintDiskDataToFile(string(tree.LsmPath))
 	defer tree.SaveActiveToDiskOnExit()
 	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")

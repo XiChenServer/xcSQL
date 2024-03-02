@@ -44,7 +44,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 		typeName = "XCDB_List"
 	}
 	tree := &LSMTree{
-		LsmPath:          []byte(("../../data/testdata/lsm_tree/") + typeName + ("/test1.gz")),
+		LsmPath:          []byte(("../../data/testdata/lsm_tree/") + typeName + ("/test1.txt")),
 		activeMemTable:   NewSkipList(16),
 		readOnlyMemTable: NewSkipList(16),
 		diskLevels:       make([]*LevelInfo, maxDiskLevels),
@@ -196,7 +196,7 @@ func (lsm *LSMTree) Get1(key []byte) (*DataInfo, error) {
 	}
 
 	for node := skipList.Head.Next[0]; node != nil; node = node.Next[0] {
-		fmt.Println(string(node.Key), string(node.DataInfo.Value), string(node.DataInfo.Key))
+		//fmt.Println(string(node.Key), string(node.DataInfo.Value), string(node.DataInfo.Key))
 		if bytes.Equal(node.Key, key) {
 			return node.DataInfo, nil
 		}

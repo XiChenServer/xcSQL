@@ -1,0 +1,1 @@
+Key: ffQXFXVHXv, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/string_test/data_7.gz, Offset: 612, Size: 309

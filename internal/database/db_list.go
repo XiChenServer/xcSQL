@@ -6,6 +6,9 @@ import (
 	"SQL/logs"
 	"bytes"
 	"encoding/binary"
+	"errors"
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -42,6 +45,64 @@ func (db *XcDB) doRPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 	tree := lsmMap[model.XCDB_List]
 	tree.Insert(key, datainfo)
 	return nil
+}
+
+// 对于list进行查找的操作，
+func (db *XcDB) LRANGE(key []byte, left, right int) ([][]byte, error) {
+	data, err := db.doLRANGE(key, left, right)
+	return data, err
+}
+
+func (db *XcDB) doLRANGE(key []byte, left, right int) ([][]byte, error) {
+	db.Mu.RLock()
+	defer db.Mu.RUnlock()
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.XCDB_List]
+	datainfo, err := tree.Get(key)
+	if err != nil {
+		return nil, err
+	}
+	offset := datainfo.Offset
+	fileName := datainfo.FileName
+	size := datainfo.Size
+
+	data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	if isExpired(data) {
+		err = errors.New("Data has expired")
+		return nil, err
+	}
+	value, err := getValueByRange(data.Value, left, right)
+	err = db.reSet(data)
+	if err != nil {
+		return nil, err
+	}
+
+	if data == nil {
+		err := errors.New("No data found")
+		return nil, err
+	}
+	return value, nil
+}
+
+func getValueByRange(data []byte, left, rignt int) ([][]byte, error) {
+	value, err := RetrieveListValueWithDataType(data)
+	if err != nil {
+		return nil, err
+	}
+	var string1 []string
+	for _, b := range value {
+		string1 = append(string1, string(b))
+	}
+
+	// 使用 strings.Join 将 []string 拼接成一个字符串并打印
+	result := fmt.Sprintf("[%s]", strings.Join(string1, ", "))
+	fmt.Println(result)
+	return nil, nil
 }
 
 // 存储列表类型的值，使用标记区分数据类型

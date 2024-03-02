@@ -114,7 +114,7 @@ func (sl *SkipList) PrintToFile(filePath string) error {
 	// 遍历跳表中的所有节点并写入文件
 	node := sl.Head.Next[0] // 跳过头节点
 	for node != nil {
-		line := "Key: " + string(node.Key) + ", Value: " + string(node.DataInfo.Value) + ", Extra: " + string(node.DataInfo.Extra) + ", TTL: " + strconv.FormatInt(int64(node.DataInfo.TTL.Seconds()), 10) + "\n"
+		line := "Key: " + string(node.Key) + ", Extra: " + string(node.DataInfo.Extra) + ", TTL: " + strconv.FormatInt(int64(node.DataInfo.TTL.Seconds()), 10) + "\n"
 		writer.WriteString(line)
 		node = node.Next[0]
 	}

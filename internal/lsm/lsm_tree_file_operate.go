@@ -222,7 +222,7 @@ func ReadAndDecompressFromFile(filePath string) ([]byte, error) {
 	return ioutil.ReadAll(gzipReader)
 }
 
-func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
+func (lsm *LSMTree) PrintDiskDataToFile1(filePath string) error {
 	lsm.mu.RLock()
 	defer lsm.mu.RUnlock()
 
@@ -237,7 +237,7 @@ func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 				skipList.ForEach(func(key []byte, value *DataInfo) bool {
 					size := strconv.FormatInt(value.Size, 10)
 					offset := strconv.FormatInt(value.Offset, 10)
-					line := fmt.Sprintf("Key: %s, Value: %v, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(value.Key), value.Value, string(value.Extra), value.TTL.String(), string(value.FileName), offset, size)
+					line := fmt.Sprintf("Key: %s, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(value.Key), string(value.Extra), value.TTL.String(), string(value.FileName), offset, size)
 					sb.WriteString(line)
 					return true
 				})
@@ -258,7 +258,7 @@ func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 }
 
 // LoadDataFromFile 从文件加载数据到 LSM 树中
-func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
+func (lsm *LSMTree) LoadDataFromFile1(filePath string) error {
 	// 从文件读取并解压缩数据
 	compressedData, err := ReadAndDecompressFromFile(filePath)
 	if err != nil {
@@ -275,11 +275,11 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 
 		// 解析行数据
 		keyValuePairs := strings.Split(line, ", ")
-		if len(keyValuePairs) != 7 {
+		if len(keyValuePairs) != 6 {
 			return errors.New("invalid data format")
 		}
 
-		var key, value, extra, ttl, fileName, offsetStr, sizeStr string
+		var key, extra, ttl, fileName, offsetStr, sizeStr string
 
 		for _, pair := range keyValuePairs {
 			splitPair := strings.Split(pair, ": ")
@@ -289,8 +289,8 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 			switch splitPair[0] {
 			case "Key":
 				key = splitPair[1]
-			case "Value":
-				value = splitPair[1]
+			/*case "Value":
+			value = splitPair[1]*/
 			case "Extra":
 				extra = splitPair[1]
 			case "TTL":
@@ -322,11 +322,138 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 		// 创建 DataInfo 对象
 		data := DataInfo{
 			DataMeta: model.DataMeta{
-				Key:       []byte(key),
-				Value:     []byte(value),
-				Extra:     []byte(extra),
-				KeySize:   uint32(len(key)),
-				ValueSize: uint32(len(value)),
+				Key: []byte(key),
+				//Value:     []byte(value),
+				Extra:   []byte(extra),
+				KeySize: uint32(len(key)),
+				//	ValueSize: uint32(len(value)),
+				ExtraSize: uint32(len(extra)),
+				TTL:       ttl1,
+			},
+			StorageLocation: storage.StorageLocation{
+				FileName: []byte(fileName),
+				Offset:   offsetInt,
+				Size:     sizeInt,
+			},
+		}
+		// 打印解析后的数据
+		//fmt.Printf("Parsed data: key=%s, value=%s, extra=%s, ttl=%s, fileName=%s, offset=%d, size=%d\n", key, value, extra, ttl, fileName, offsetInt, sizeInt)
+
+		// 将数据信息添加到 LSM 树中
+
+		lsm.Insert([]byte(key), &data)
+
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
+	lsm.mu.RLock()
+	defer lsm.mu.RUnlock()
+
+	// 创建文件
+	file, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// 遍历每个层级的跳表进行查找
+	for _, level := range lsm.diskLevels {
+		for _, skipList := range level.SkipLists {
+			if skipList != nil {
+				// 遍历跳表中的所有键值对并写入文件
+				skipList.ForEach(func(key []byte, value *DataInfo) bool {
+					size := strconv.FormatInt(value.Size, 10)
+					offset := strconv.FormatInt(value.Offset, 10)
+					line := fmt.Sprintf("Key: %s, Extra: %s, TTL: %s, FileName: %s, Offset: %s, Size: %s\n", string(value.Key), string(value.Extra), value.TTL.String(), string(value.FileName), offset, size)
+					_, err := file.WriteString(line)
+					if err != nil {
+						return false // stop iteration if error occurs
+					}
+					return true
+				})
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadDataFromFile 从文件加载数据到 LSM 树中
+func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
+	// 从文件读取数据
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	// 将数据转换为字符串
+	dataString := string(data)
+
+	// 使用字符串扫描器逐行解析数据
+	scanner := bufio.NewScanner(strings.NewReader(dataString))
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		// 解析行数据
+		keyValuePairs := strings.Split(line, ", ")
+		if len(keyValuePairs) != 6 {
+			return errors.New("invalid data format")
+		}
+
+		var key, extra, ttl, fileName, offsetStr, sizeStr string
+
+		for _, pair := range keyValuePairs {
+			splitPair := strings.Split(pair, ": ")
+			if len(splitPair) != 2 {
+				return errors.New("invalid data format")
+			}
+			switch splitPair[0] {
+			case "Key":
+				key = splitPair[1]
+			/*case "Value":
+			value = splitPair[1]*/
+			case "Extra":
+				extra = splitPair[1]
+			case "TTL":
+				ttl = splitPair[1]
+			case "FileName":
+				fileName = splitPair[1]
+			case "Offset":
+				offsetStr = splitPair[1]
+			case "Size":
+				sizeStr = splitPair[1]
+			default:
+				return errors.New("unknown key in data")
+			}
+		}
+		ttl1, err := time.ParseDuration(ttl)
+		if err != nil {
+			return fmt.Errorf("failed to parse TTL: %v", err)
+		}
+		// 转换字符串为整数
+		offsetInt, err := strconv.ParseInt(offsetStr, 10, 64)
+		if err != nil {
+			return err
+		}
+		sizeInt, err := strconv.ParseInt(sizeStr, 10, 64)
+		if err != nil {
+			return err
+		}
+
+		// 创建 DataInfo 对象
+		data := DataInfo{
+			DataMeta: model.DataMeta{
+				Key: []byte(key),
+				//Value:     []byte(value),
+				Extra:   []byte(extra),
+				KeySize: uint32(len(key)),
+				//	ValueSize: uint32(len(value)),
 				ExtraSize: uint32(len(extra)),
 				TTL:       ttl1,
 			},

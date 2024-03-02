@@ -29,6 +29,7 @@ func (db *XcDB) doSet(key, value []byte, ttl ...uint64) error {
 	}
 
 	e := NewKeyValueEntry(key, value, model.XCDB_String, model.XCDB_StringSet, timeSlice...)
+
 	stroeLocal, err := db.StorageManager.StoreData(e)
 	if err != nil {
 		logs.SugarLogger.Error("string set fail:", err)
@@ -68,7 +69,6 @@ func (db *XcDB) doGet(key []byte) (*model.KeyValue, error) {
 	size := datainfo.Size
 
 	data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
-
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -93,7 +93,7 @@ func (db *XcDB) doGet(key []byte) (*model.KeyValue, error) {
 
 // 访问之后，对于数据进行一定的修改，重新保存
 func (db *XcDB) reSet(data *model.KeyValue) error {
-	data.DataMeta.ValueSize = uint32(len(data.DataMeta.Value))
+	data.ValueSize = uint32(len(data.Value))
 	now := time.Now()
 	data.AccessTime = now
 
@@ -173,7 +173,7 @@ func (db *XcDB) doGetStrLen(key []byte) (uint32, error) {
 		return 0, err
 	}
 
-	return datainfo.ValueSize, nil
+	return data.ValueSize, nil
 }
 
 // 对于字符串进行添加的操作
@@ -208,7 +208,7 @@ func (db *XcDB) doAppend(key, value []byte) error {
 		err = errors.New("Data has expired")
 		return err
 	}
-	data.DataMeta.Value = append(data.DataMeta.Value, value...)
+	data.Value = append(data.Value, value...)
 	err = db.reSet(data)
 	if err != nil {
 		return err
