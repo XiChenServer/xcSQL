@@ -31,7 +31,6 @@ func (db *XcDB) doHset(key []byte, value map[string]string, ttl ...uint64) error
 	}
 
 	e := NewKeyValueEntry(key, values, model.XCDB_Hash, model.XCDB_HSet, timeSlice...)
-	//fmt.Println(e.Value)
 	stroeLocal, err := db.StorageManager.StoreData(e)
 	if err != nil {
 		logs.SugarLogger.Error("string set fail:", err)

@@ -23,8 +23,8 @@ func TestDB_LPUSH(t *testing.T) {
 	//if err != nil {
 	//	t.Fatalf("Error loading data from disk: %v", err)
 	//}
-	//key := []byte(generateRandomKey())
-	key := []byte("UDVGKnSAsp")
+	key := []byte(generateRandomKey())
+	//key := []byte("UDVGKnSAsp")
 
 	value := generateRandomByteSlices(4, 6)
 	for _, v := range value {

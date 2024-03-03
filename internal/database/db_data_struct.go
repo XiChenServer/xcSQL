@@ -20,6 +20,8 @@ func NewKeyValueEntry(key, value []byte, t, m uint16, ttl ...time.Duration) *mod
 		extra = []byte("XCDB_String")
 	} else if t == model.XCDB_List {
 		extra = []byte("XCDB_List")
+	} else if t == model.XCDB_Hash {
+		extra = []byte("XCDB_Hash")
 	}
 	return NewKeyValuePair(key, value, extra, t, m, expireTime)
 }

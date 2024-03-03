@@ -1,10 +1,40 @@
 package database
 
 import (
+	"SQL/internal/model"
+	"SQL/internal/storage"
+	"SQL/logs"
+	"fmt"
 	"math/rand"
 	"reflect"
 	"testing"
 )
+
+func Test_HSET(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_Hash]
+	// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	//key := []byte("UDVGKnSAsp")
+	key := []byte(generateRandomKey())
+	value := generateRandomMap(4, 5)
+	err := db.Hset(key, value)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("HSET ok")
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}
 
 func Test_MapToBytesAndBytesToMap(t *testing.T) {
 	// 定义一个 map[string]string
