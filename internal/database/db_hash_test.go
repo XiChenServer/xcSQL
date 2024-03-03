@@ -22,15 +22,81 @@ func Test_HSET(t *testing.T) {
 	//	t.Fatalf("Error loading data from disk: %v", err)
 	//}
 	//key := []byte("UDVGKnSAsp")
-	key := []byte(generateRandomKey())
-	value := generateRandomMap(4, 5)
-	err := db.Hset(key, value)
+	//key := []byte(generateRandomKey())
+	//value := generateRandomMap(4, 5)
+
+	key := []byte("people")
+	myMap := map[string]string{
+		"name":    "John",
+		"age":     "30",
+		"address": "123 Main St",
+	}
+
+	err := db.Hset(key, myMap)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	fmt.Println("HSET ok")
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}
+
+func Test_HGET(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_Hash]
+	// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	//key := []byte("UDVGKnSAsp")
+	//key := []byte(generateRandomKey())
+	//value := generateRandomMap(4, 5)
+	key := []byte("people")
+	field := "1232"
+	data, err := db.HGet(key, field)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("HGET ok")
+	fmt.Println(string(data))
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}
+
+func Test_HGETALL(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_Hash]
+	// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	//key := []byte("UDVGKnSAsp")
+	//key := []byte(generateRandomKey())
+	//value := generateRandomMap(4, 5)
+	key := []byte("people")
+	//field := "1232"
+	data, err := db.HGETALL(key)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("HGET ok")
+	fmt.Println(data)
 	lsmType.SaveActiveToDiskOnExit()
 	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
 	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
@@ -55,6 +121,176 @@ func Test_MapToBytesAndBytesToMap(t *testing.T) {
 	if !reflect.DeepEqual(value, m) {
 		t.Errorf("mapToBytes and bytesToMap result mismatch: %v != %v", value, m)
 	}
+}
+
+func Test_HDEL(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_Hash]
+	// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	//key := []byte("UDVGKnSAsp")
+	//key := []byte(generateRandomKey())
+	//value := generateRandomMap(4, 5)
+
+	key := []byte("people")
+	//myMap := map[string]string{
+	//	"name":    "John",
+	//	"age":     "30",
+	//	"address": "123 Main St",
+	//}
+
+	err := db.HDel(key, "name")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("HSET ok")
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}
+
+func Test_HExists(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_Hash]
+	// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	//key := []byte("UDVGKnSAsp")
+	//key := []byte(generateRandomKey())
+	//value := generateRandomMap(4, 5)
+
+	key := []byte("people")
+	//myMap := map[string]string{
+	//	"name":    "John",
+	//	"age":     "30",
+	//	"address": "123 Main St",
+	//}
+
+	flag, err := db.HExists(key, "age")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(flag)
+	fmt.Println("HSET ok")
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}
+
+func Test_HKeys(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_Hash]
+	// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	//key := []byte("UDVGKnSAsp")
+	//key := []byte(generateRandomKey())
+	//value := generateRandomMap(4, 5)
+
+	key := []byte("people")
+	//myMap := map[string]string{
+	//	"name":    "John",
+	//	"age":     "30",
+	//	"address": "123 Main St",
+	//}
+
+	flag, err := db.HKeys(key)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(flag)
+	fmt.Println("HSET ok")
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}
+
+func Test_HVals(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_Hash]
+	// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	//key := []byte("UDVGKnSAsp")
+	//key := []byte(generateRandomKey())
+	//value := generateRandomMap(4, 5)
+
+	key := []byte("people")
+	//myMap := map[string]string{
+	//	"name":    "John",
+	//	"age":     "30",
+	//	"address": "123 Main St",
+	//}
+
+	flag, err := db.HVals(key)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(flag)
+	fmt.Println("HSET ok")
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}
+
+func Test_HLen(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_Hash]
+	// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	//key := []byte("UDVGKnSAsp")
+	//key := []byte(generateRandomKey())
+	//value := generateRandomMap(4, 5)
+
+	key := []byte("people")
+	//myMap := map[string]string{
+	//	"name":    "John",
+	//	"age":     "30",
+	//	"address": "123 Main St",
+	//}
+
+	flag, err := db.HLen(key)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(flag)
+	fmt.Println("HSET ok")
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 }
 
 // 随机生成指定长度的字符串
