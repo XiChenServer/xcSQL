@@ -94,10 +94,8 @@ func (db *XcDB) doRPUSH(key []byte, values [][]byte, ttl ...uint64) error {
 	}
 
 	err = list.Insert(key, datainfo)
-	if err != nil {
-		return err
-	}
-	return nil
+
+	return err
 }
 
 // 注意这里的操作是对于list的头部进行插入的操作
@@ -501,4 +499,41 @@ func (db *XcDB) doRPOP(key []byte) ([]byte, error) {
 		return tail, nil
 	}
 	return nil, errors.New("List not found")
+}
+
+func (db *XcDB) LLEN(key []byte) (int, error) {
+	value, err := db.doLLEN(key)
+	if err != nil {
+		return 0, err
+	}
+	return value, nil
+}
+
+// LLEN 返回列表的长度
+func (db *XcDB) doLLEN(key []byte) (int, error) {
+	db.Mu.Lock()
+	defer db.Mu.Unlock()
+
+	lsmMap := *db.Lsm
+	list := lsmMap[model.XCDB_List]
+	datainfo, err := list.Get(key)
+	if err != nil {
+		return 0, err
+	}
+	if datainfo != nil {
+		// 获取列表数据
+		data, err := db.StorageManager.DecompressAndFillData(string(datainfo.FileName), datainfo.Offset, datainfo.Size)
+		if err != nil {
+			return 0, err
+		}
+
+		// 解析列表值
+		listValue, err := RetrieveListValueWithDataType(data.Value)
+		if err != nil {
+			return 0, err
+		}
+		// 返回列表长度
+		return len(listValue), nil
+	}
+	return 0, errors.New("List not found")
 }

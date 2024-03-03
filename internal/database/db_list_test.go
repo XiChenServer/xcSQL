@@ -231,3 +231,29 @@ func generateRandomByteSlices(n, maxSliceLength int) [][]byte {
 
 	return result
 }
+
+func TestDB_LLEN(t *testing.T) {
+	logs.InitLogger()
+	db := NewXcDB()
+	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+	lsmMap := *db.Lsm
+	lsmType := lsmMap[model.XCDB_List]
+	//// 加载模拟的数据文件到 LSM 树中
+	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
+	//if err != nil {
+	//	t.Fatalf("Error loading data from disk: %v", err)
+	//}
+	key := []byte("1euO4mQ9BE")
+
+	data, err := db.LLEN(key)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("Get ok")
+	fmt.Println(data)
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}

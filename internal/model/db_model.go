@@ -12,6 +12,11 @@ const (
 )
 
 const (
+	XCDB_Hash uint16 = 21
+	XCDB_HSet uint16 = 22
+)
+
+const (
 	XCDB_String    uint16 = 1
 	XCDB_StringSet uint16 = 2
 )
