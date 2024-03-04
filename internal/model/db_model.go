@@ -5,20 +5,23 @@ import (
 )
 
 const (
+	XCDB_String    uint16 = 1
+	XCDB_StringSet uint16 = 2
+)
+const (
 	XCDB_List      uint16 = 11
 	XCDB_ListLPUSH uint16 = 12
 	XCDB_ListLPOP  uint16 = 13
 	XCDB_ListRPOP  uint16 = 14
 )
-
 const (
 	XCDB_Hash uint16 = 21
 	XCDB_HSet uint16 = 22
 )
 
 const (
-	XCDB_String    uint16 = 1
-	XCDB_StringSet uint16 = 2
+	XCDB_Set     = 31
+	XCDB_SetSADD = 32
 )
 
 // KeyValue 表示键值对

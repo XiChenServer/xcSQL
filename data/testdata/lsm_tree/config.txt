@@ -1,1 +1,1 @@
-StoragePath: ../../data/testdata/string_test, MaxFileSize: 10240, CurrentFile: ../../data/testdata/string_test/data_12.gz, CurrentSize: 4873, FileNumber: 12
+StoragePath: ../../data/testdata/string_test, MaxFileSize: 10240, CurrentFile: ../../data/testdata/string_test/data_12.gz, CurrentSize: 6499, FileNumber: 12

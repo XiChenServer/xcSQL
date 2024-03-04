@@ -44,6 +44,8 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 		typeName = "XCDB_List"
 	} else if Type == model.XCDB_Hash {
 		typeName = "XCDB_Hash"
+	} else if Type == model.XCDB_Set {
+		typeName = "XCDB_Set"
 	}
 	tree := &LSMTree{
 		LsmPath:          []byte(("../../data/testdata/lsm_tree/") + typeName + ("/test1.txt")),

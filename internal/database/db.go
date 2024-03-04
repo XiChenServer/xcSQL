@@ -33,9 +33,11 @@ func NewXcDB() *XcDB {
 	lsmString := lsm.NewLSMTree(16, 10000, model.XCDB_String)
 	lsmList := lsm.NewLSMTree(16, 10000, model.XCDB_List)
 	lsmHash := lsm.NewLSMTree(16, 10000, model.XCDB_Hash)
+	lsmSet := lsm.NewLSMTree(16, 10000, model.XCDB_Set)
 	lsmMap[model.XCDB_List] = lsmList
 	lsmMap[model.XCDB_String] = lsmString
 	lsmMap[model.XCDB_Hash] = lsmHash
+	lsmMap[model.XCDB_Set] = lsmSet
 	storageManager, err := storage.LoadStorageManager("../../data/testdata/lsm_tree/config.txt")
 
 	if err != nil {
