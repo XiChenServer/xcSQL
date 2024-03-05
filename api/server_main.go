@@ -6,55 +6,67 @@ import (
 	"SQL/internal/model"
 	"SQL/internal/storage"
 	"SQL/logs"
-	"context"
 	"log"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
 
+	db_grpc "SQL/internal/grpc"
 	"google.golang.org/grpc"
 )
 
-type server struct {
-	db *database.XcDB // 假设你的数据库实例叫做 XcDB
-	db_hash.UnimplementedHashDatabaseServer
-}
-
-func (s *server) HSet(ctx context.Context, req *db_hash.HSetRequest) (*db_hash.HSetResponse, error) {
-	err := s.db.HSet(req.Key, req.Values, req.Ttl...)
-	if err != nil {
-		return &db_hash.HSetResponse{Success: false}, err
-	}
-
-	return &db_hash.HSetResponse{Success: true}, nil
-}
-
-func (s *server) HGet(ctx context.Context, req *db_hash.HGetRequest) (*db_hash.HGetResponse, error) {
-	value, err := s.db.HGet(req.Key, req.Field)
-	if err != nil {
-		return nil, err
-	}
-	return &db_hash.HGetResponse{Value: value}, nil
-}
-
 func main() {
+	// 初始化日志记录器
 	logs.InitLogger()
+
+	// 设置 TCP 监听器
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalf("无法监听: %v", err)
 	}
+	defer lis.Close()
+
+	// 创建 gRPC 服务器
 	s := grpc.NewServer()
+
+	// 初始化哈希数据库
 	db := database.NewXcDB()
-	db_hash.RegisterHashDatabaseServer(s, &server{
-		db: db,
+
+	// 将哈希数据库服务器注册到 gRPC 服务器
+	db_hash.RegisterHashDatabaseServer(s, &db_grpc.Server{
+		DB: db,
 	})
 
-	log.Println("Server started at :50051")
+	// 打印服务器启动消息
+	log.Println("服务器启动在 :50051")
 
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	// 在单独的 goroutine 中开始处理传入的 gRPC 请求
+	go func() {
+		if err := s.Serve(lis); err != nil {
+			log.Fatalf("无法提供服务: %v", err)
+		}
+	}()
+
+	// 设置信号通道以捕获终止信号
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+	// 等待终止信号
+	sig := <-sigChan
+	log.Printf("收到信号 %v，开始优雅关闭...\n", sig)
+
+	// 优雅关闭 gRPC 服务器
+	s.GracefulStop()
+
+	// 在退出时保存活动数据到磁盘，并将磁盘数据打印到文件中以供 LSM 树使用
 	lsmMap := *db.Lsm
-	lsmType := lsmMap[model.XCDB_Set]
+	lsmType := lsmMap[model.XCDB_Hash]
+
 	lsmType.SaveActiveToDiskOnExit()
 	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	lsmType.Printf()
+	// 将存储管理器配置保存到文件
 	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	log.Println("服务器优雅关闭")
 }

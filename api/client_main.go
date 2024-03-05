@@ -21,8 +21,8 @@ func main() {
 
 	// 调用 HSet 方法
 	hSetReq := &db_hash.HSetRequest{
-		Key:    []byte("mykey"),
-		Values: map[string]string{"field1": "value1", "field2": "value2"},
+		Key:    []byte("123"),
+		Values: map[string]string{"field1": "2323", "field2": "value2"},
 		Ttl:    []uint64{3600}, // 设置 TTL 为 3600 秒
 	}
 	hSetResp, err := client.HSet(context.Background(), hSetReq)
@@ -33,7 +33,7 @@ func main() {
 
 	// 调用 HGet 方法
 	hGetReq := &db_hash.HGetRequest{
-		Key:   []byte("mykey"),
+		Key:   []byte("123"),
 		Field: "field1",
 	}
 	hGetResp, err := client.HGet(context.Background(), hGetReq)

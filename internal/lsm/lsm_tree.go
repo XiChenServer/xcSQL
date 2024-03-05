@@ -48,7 +48,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 		typeName = "XCDB_Set"
 	}
 	tree := &LSMTree{
-		LsmPath:          []byte(("../../data/testdata/lsm_tree/") + typeName + ("/test1.txt")),
+		LsmPath:          []byte(("../data/testdata/lsm_tree/") + typeName + ("/test1.txt")),
 		activeMemTable:   NewSkipList(16),
 		readOnlyMemTable: NewSkipList(16),
 		diskLevels:       make([]*LevelInfo, maxDiskLevels),
@@ -72,10 +72,10 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 		}
 		skipLists *= 10 // 每个层级的跳表数量按4的幂级增加
 	}
-	_ = tree.LoadDataFromFile(string(tree.LsmPath))
-	//if err != nil {
-	//	//fmt.Println("Error loading data from disk: %v", err)
-	//}
+	err := tree.LoadDataFromFile(string(tree.LsmPath))
+	if err != nil {
+		fmt.Println("Error loading data from disk: %v", err)
+	}
 	return tree
 }
 
@@ -257,7 +257,7 @@ func (lsm *LSMTree) searchInSkipList(skipList *SkipList, key []byte) (*DataInfo,
 func (lsm *LSMTree) Printf() {
 	node := lsm.activeMemTable.Head
 	for node != nil {
-		fmt.Println("1", string(node.Key))
+		fmt.Println(string(node.Key))
 		node = node.Next[0]
 	}
 }

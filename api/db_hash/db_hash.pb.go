@@ -232,6 +232,586 @@ func (x *HGetResponse) GetValue() []byte {
 	return nil
 }
 
+type HGetAllRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key []byte `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+}
+
+func (x *HGetAllRequest) Reset() {
+	*x = HGetAllRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HGetAllRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HGetAllRequest) ProtoMessage() {}
+
+func (x *HGetAllRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HGetAllRequest.ProtoReflect.Descriptor instead.
+func (*HGetAllRequest) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *HGetAllRequest) GetKey() []byte {
+	if x != nil {
+		return x.Key
+	}
+	return nil
+}
+
+type HGetAllResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Values map[string]string `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *HGetAllResponse) Reset() {
+	*x = HGetAllResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HGetAllResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HGetAllResponse) ProtoMessage() {}
+
+func (x *HGetAllResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HGetAllResponse.ProtoReflect.Descriptor instead.
+func (*HGetAllResponse) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *HGetAllResponse) GetValues() map[string]string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+type HDelRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key    []byte   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Fields []string `protobuf:"bytes,2,rep,name=fields,proto3" json:"fields,omitempty"`
+}
+
+func (x *HDelRequest) Reset() {
+	*x = HDelRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HDelRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HDelRequest) ProtoMessage() {}
+
+func (x *HDelRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HDelRequest.ProtoReflect.Descriptor instead.
+func (*HDelRequest) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *HDelRequest) GetKey() []byte {
+	if x != nil {
+		return x.Key
+	}
+	return nil
+}
+
+func (x *HDelRequest) GetFields() []string {
+	if x != nil {
+		return x.Fields
+	}
+	return nil
+}
+
+type HDelResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+}
+
+func (x *HDelResponse) Reset() {
+	*x = HDelResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HDelResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HDelResponse) ProtoMessage() {}
+
+func (x *HDelResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HDelResponse.ProtoReflect.Descriptor instead.
+func (*HDelResponse) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *HDelResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type HExistsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key   []byte `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Field string `protobuf:"bytes,2,opt,name=field,proto3" json:"field,omitempty"`
+}
+
+func (x *HExistsRequest) Reset() {
+	*x = HExistsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HExistsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HExistsRequest) ProtoMessage() {}
+
+func (x *HExistsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HExistsRequest.ProtoReflect.Descriptor instead.
+func (*HExistsRequest) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *HExistsRequest) GetKey() []byte {
+	if x != nil {
+		return x.Key
+	}
+	return nil
+}
+
+func (x *HExistsRequest) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+type HExistsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Exists bool `protobuf:"varint,1,opt,name=exists,proto3" json:"exists,omitempty"`
+}
+
+func (x *HExistsResponse) Reset() {
+	*x = HExistsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HExistsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HExistsResponse) ProtoMessage() {}
+
+func (x *HExistsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HExistsResponse.ProtoReflect.Descriptor instead.
+func (*HExistsResponse) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *HExistsResponse) GetExists() bool {
+	if x != nil {
+		return x.Exists
+	}
+	return false
+}
+
+type HKeysRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key []byte `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+}
+
+func (x *HKeysRequest) Reset() {
+	*x = HKeysRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HKeysRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HKeysRequest) ProtoMessage() {}
+
+func (x *HKeysRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HKeysRequest.ProtoReflect.Descriptor instead.
+func (*HKeysRequest) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *HKeysRequest) GetKey() []byte {
+	if x != nil {
+		return x.Key
+	}
+	return nil
+}
+
+type HKeysResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Keys []string `protobuf:"bytes,1,rep,name=keys,proto3" json:"keys,omitempty"`
+}
+
+func (x *HKeysResponse) Reset() {
+	*x = HKeysResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HKeysResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HKeysResponse) ProtoMessage() {}
+
+func (x *HKeysResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HKeysResponse.ProtoReflect.Descriptor instead.
+func (*HKeysResponse) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *HKeysResponse) GetKeys() []string {
+	if x != nil {
+		return x.Keys
+	}
+	return nil
+}
+
+type HValsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key []byte `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+}
+
+func (x *HValsRequest) Reset() {
+	*x = HValsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HValsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HValsRequest) ProtoMessage() {}
+
+func (x *HValsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HValsRequest.ProtoReflect.Descriptor instead.
+func (*HValsRequest) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *HValsRequest) GetKey() []byte {
+	if x != nil {
+		return x.Key
+	}
+	return nil
+}
+
+type HValsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Values []string `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
+}
+
+func (x *HValsResponse) Reset() {
+	*x = HValsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HValsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HValsResponse) ProtoMessage() {}
+
+func (x *HValsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HValsResponse.ProtoReflect.Descriptor instead.
+func (*HValsResponse) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *HValsResponse) GetValues() []string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+type HLenRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key []byte `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+}
+
+func (x *HLenRequest) Reset() {
+	*x = HLenRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HLenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HLenRequest) ProtoMessage() {}
+
+func (x *HLenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HLenRequest.ProtoReflect.Descriptor instead.
+func (*HLenRequest) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *HLenRequest) GetKey() []byte {
+	if x != nil {
+		return x.Key
+	}
+	return nil
+}
+
+type HLenResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Length int32 `protobuf:"varint,1,opt,name=length,proto3" json:"length,omitempty"`
+}
+
+func (x *HLenResponse) Reset() {
+	*x = HLenResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_db_hash_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HLenResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HLenResponse) ProtoMessage() {}
+
+func (x *HLenResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_db_hash_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HLenResponse.ProtoReflect.Descriptor instead.
+func (*HLenResponse) Descriptor() ([]byte, []int) {
+	return file_db_hash_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *HLenResponse) GetLength() int32 {
+	if x != nil {
+		return x.Length
+	}
+	return 0
+}
+
 var File_db_hash_proto protoreflect.FileDescriptor
 
 var file_db_hash_proto_rawDesc = []byte{
@@ -256,17 +836,78 @@ var file_db_hash_proto_rawDesc = []byte{
 	0x01, 0x28, 0x09, 0x52, 0x05, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x22, 0x24, 0x0a, 0x0c, 0x48, 0x47,
 	0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61,
 	0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
-	0x32, 0x88, 0x01, 0x0a, 0x0c, 0x48, 0x61, 0x73, 0x68, 0x44, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73,
-	0x65, 0x12, 0x3b, 0x0a, 0x04, 0x48, 0x53, 0x65, 0x74, 0x12, 0x18, 0x2e, 0x61, 0x70, 0x69, 0x5f,
-	0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73,
-	0x68, 0x2e, 0x48, 0x53, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b,
-	0x0a, 0x04, 0x48, 0x47, 0x65, 0x74, 0x12, 0x18, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f,
-	0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x19, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48,
-	0x47, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0d, 0x5a, 0x0b, 0x61,
-	0x70, 0x69, 0x2f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x22, 0x22, 0x0a, 0x0e, 0x48, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52,
+	0x03, 0x6b, 0x65, 0x79, 0x22, 0x8e, 0x01, 0x0a, 0x0f, 0x48, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x40, 0x0a, 0x06, 0x76, 0x61, 0x6c, 0x75,
+	0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x28, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64,
+	0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x52, 0x06, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x1a, 0x39, 0x0a, 0x0b, 0x56, 0x61,
+	0x6c, 0x75, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75,
+	0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x37, 0x0a, 0x0b, 0x48, 0x44, 0x65, 0x6c, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0c, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x73, 0x22, 0x28,
+	0x0a, 0x0c, 0x48, 0x44, 0x65, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x38, 0x0a, 0x0e, 0x48, 0x45, 0x78, 0x69,
+	0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
+	0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05,
+	0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x66, 0x69, 0x65,
+	0x6c, 0x64, 0x22, 0x29, 0x0a, 0x0f, 0x48, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x22, 0x20, 0x0a,
+	0x0c, 0x48, 0x4b, 0x65, 0x79, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a,
+	0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x22,
+	0x23, 0x0a, 0x0d, 0x48, 0x4b, 0x65, 0x79, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x6b, 0x65, 0x79, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04,
+	0x6b, 0x65, 0x79, 0x73, 0x22, 0x20, 0x0a, 0x0c, 0x48, 0x56, 0x61, 0x6c, 0x73, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0c, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x22, 0x27, 0x0a, 0x0d, 0x48, 0x56, 0x61, 0x6c, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x22,
+	0x1f, 0x0a, 0x0b, 0x48, 0x4c, 0x65, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10,
+	0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x03, 0x6b, 0x65, 0x79,
+	0x22, 0x26, 0x0a, 0x0c, 0x48, 0x4c, 0x65, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x16, 0x0a, 0x06, 0x6c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x06, 0x6c, 0x65, 0x6e, 0x67, 0x74, 0x68, 0x32, 0x8e, 0x04, 0x0a, 0x0c, 0x48, 0x61, 0x73,
+	0x68, 0x44, 0x61, 0x74, 0x61, 0x62, 0x61, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x04, 0x48, 0x53, 0x65,
+	0x74, 0x12, 0x18, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e,
+	0x48, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x61, 0x70,
+	0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x53, 0x65, 0x74, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x04, 0x48, 0x47, 0x65, 0x74, 0x12, 0x18,
+	0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x47, 0x65,
+	0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64,
+	0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x47, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x44, 0x0a, 0x07, 0x48, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x12, 0x1b,
+	0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x47, 0x65,
+	0x74, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x61, 0x70,
+	0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x47, 0x65, 0x74, 0x41, 0x6c,
+	0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x04, 0x48, 0x44, 0x65,
+	0x6c, 0x12, 0x18, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e,
+	0x48, 0x44, 0x65, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x61, 0x70,
+	0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x44, 0x65, 0x6c, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x44, 0x0a, 0x07, 0x48, 0x45, 0x78, 0x69, 0x73, 0x74,
+	0x73, 0x12, 0x1b, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e,
+	0x48, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c,
+	0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x45, 0x78,
+	0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3e, 0x0a, 0x05,
+	0x48, 0x4b, 0x65, 0x79, 0x73, 0x12, 0x19, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68,
+	0x61, 0x73, 0x68, 0x2e, 0x48, 0x4b, 0x65, 0x79, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x1a, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48,
+	0x4b, 0x65, 0x79, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3e, 0x0a, 0x05,
+	0x48, 0x56, 0x61, 0x6c, 0x73, 0x12, 0x19, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68,
+	0x61, 0x73, 0x68, 0x2e, 0x48, 0x56, 0x61, 0x6c, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x1a, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48,
+	0x56, 0x61, 0x6c, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x04,
+	0x48, 0x4c, 0x65, 0x6e, 0x12, 0x18, 0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61,
+	0x73, 0x68, 0x2e, 0x48, 0x4c, 0x65, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19,
+	0x2e, 0x61, 0x70, 0x69, 0x5f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x2e, 0x48, 0x4c, 0x65,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0d, 0x5a, 0x0b, 0x61, 0x70, 0x69,
+	0x2f, 0x64, 0x62, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -281,25 +922,51 @@ func file_db_hash_proto_rawDescGZIP() []byte {
 	return file_db_hash_proto_rawDescData
 }
 
-var file_db_hash_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_db_hash_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_db_hash_proto_goTypes = []interface{}{
-	(*HSetRequest)(nil),  // 0: api_db_hash.HSetRequest
-	(*HSetResponse)(nil), // 1: api_db_hash.HSetResponse
-	(*HGetRequest)(nil),  // 2: api_db_hash.HGetRequest
-	(*HGetResponse)(nil), // 3: api_db_hash.HGetResponse
-	nil,                  // 4: api_db_hash.HSetRequest.ValuesEntry
+	(*HSetRequest)(nil),     // 0: api_db_hash.HSetRequest
+	(*HSetResponse)(nil),    // 1: api_db_hash.HSetResponse
+	(*HGetRequest)(nil),     // 2: api_db_hash.HGetRequest
+	(*HGetResponse)(nil),    // 3: api_db_hash.HGetResponse
+	(*HGetAllRequest)(nil),  // 4: api_db_hash.HGetAllRequest
+	(*HGetAllResponse)(nil), // 5: api_db_hash.HGetAllResponse
+	(*HDelRequest)(nil),     // 6: api_db_hash.HDelRequest
+	(*HDelResponse)(nil),    // 7: api_db_hash.HDelResponse
+	(*HExistsRequest)(nil),  // 8: api_db_hash.HExistsRequest
+	(*HExistsResponse)(nil), // 9: api_db_hash.HExistsResponse
+	(*HKeysRequest)(nil),    // 10: api_db_hash.HKeysRequest
+	(*HKeysResponse)(nil),   // 11: api_db_hash.HKeysResponse
+	(*HValsRequest)(nil),    // 12: api_db_hash.HValsRequest
+	(*HValsResponse)(nil),   // 13: api_db_hash.HValsResponse
+	(*HLenRequest)(nil),     // 14: api_db_hash.HLenRequest
+	(*HLenResponse)(nil),    // 15: api_db_hash.HLenResponse
+	nil,                     // 16: api_db_hash.HSetRequest.ValuesEntry
+	nil,                     // 17: api_db_hash.HGetAllResponse.ValuesEntry
 }
 var file_db_hash_proto_depIdxs = []int32{
-	4, // 0: api_db_hash.HSetRequest.values:type_name -> api_db_hash.HSetRequest.ValuesEntry
-	0, // 1: api_db_hash.HashDatabase.HSet:input_type -> api_db_hash.HSetRequest
-	2, // 2: api_db_hash.HashDatabase.HGet:input_type -> api_db_hash.HGetRequest
-	1, // 3: api_db_hash.HashDatabase.HSet:output_type -> api_db_hash.HSetResponse
-	3, // 4: api_db_hash.HashDatabase.HGet:output_type -> api_db_hash.HGetResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	16, // 0: api_db_hash.HSetRequest.values:type_name -> api_db_hash.HSetRequest.ValuesEntry
+	17, // 1: api_db_hash.HGetAllResponse.values:type_name -> api_db_hash.HGetAllResponse.ValuesEntry
+	0,  // 2: api_db_hash.HashDatabase.HSet:input_type -> api_db_hash.HSetRequest
+	2,  // 3: api_db_hash.HashDatabase.HGet:input_type -> api_db_hash.HGetRequest
+	4,  // 4: api_db_hash.HashDatabase.HGetAll:input_type -> api_db_hash.HGetAllRequest
+	6,  // 5: api_db_hash.HashDatabase.HDel:input_type -> api_db_hash.HDelRequest
+	8,  // 6: api_db_hash.HashDatabase.HExists:input_type -> api_db_hash.HExistsRequest
+	10, // 7: api_db_hash.HashDatabase.HKeys:input_type -> api_db_hash.HKeysRequest
+	12, // 8: api_db_hash.HashDatabase.HVals:input_type -> api_db_hash.HValsRequest
+	14, // 9: api_db_hash.HashDatabase.HLen:input_type -> api_db_hash.HLenRequest
+	1,  // 10: api_db_hash.HashDatabase.HSet:output_type -> api_db_hash.HSetResponse
+	3,  // 11: api_db_hash.HashDatabase.HGet:output_type -> api_db_hash.HGetResponse
+	5,  // 12: api_db_hash.HashDatabase.HGetAll:output_type -> api_db_hash.HGetAllResponse
+	7,  // 13: api_db_hash.HashDatabase.HDel:output_type -> api_db_hash.HDelResponse
+	9,  // 14: api_db_hash.HashDatabase.HExists:output_type -> api_db_hash.HExistsResponse
+	11, // 15: api_db_hash.HashDatabase.HKeys:output_type -> api_db_hash.HKeysResponse
+	13, // 16: api_db_hash.HashDatabase.HVals:output_type -> api_db_hash.HValsResponse
+	15, // 17: api_db_hash.HashDatabase.HLen:output_type -> api_db_hash.HLenResponse
+	10, // [10:18] is the sub-list for method output_type
+	2,  // [2:10] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_db_hash_proto_init() }
@@ -356,6 +1023,150 @@ func file_db_hash_proto_init() {
 				return nil
 			}
 		}
+		file_db_hash_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HGetAllRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HGetAllResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HDelRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HDelResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HExistsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HExistsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HKeysRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HKeysResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HValsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HValsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HLenRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_db_hash_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*HLenResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -363,7 +1174,7 @@ func file_db_hash_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_db_hash_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

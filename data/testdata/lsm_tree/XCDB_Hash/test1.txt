@@ -15,6 +15,7 @@ Key: pwAGToG74u, Extra: XCDB_Hash, TTL: 0s, FileName: ../../data/testdata/string
 Key: vhL5IBGw7N, Extra: XCDB_Hash, TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 307, Size: 308
 Key: zO728BwNN0, Extra: XCDB_Hash, TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 615, Size: 312
 Key: 0qMxrSNc8Z, Extra: XCDB_Hash, TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 3107, Size: 312
+Key: 123, Extra: XCDB_Hash, TTL: 1h0m0s, FileName: ../../data/testdata/string_test/data_0.gz, Offset: 5728, Size: 278
 Key: DUYOHVLNT4, Extra: XCDB_Hash, TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 3419, Size: 316
 Key: iaaSYouYQ1, Extra: XCDB_Hash, TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 3735, Size: 312
 Key: people, Extra: XCDB_Hash, TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 4603, Size: 270

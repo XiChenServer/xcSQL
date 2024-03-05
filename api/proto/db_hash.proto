@@ -7,6 +7,12 @@ package api_db_hash;
 service HashDatabase {
   rpc HSet(HSetRequest) returns (HSetResponse);
   rpc HGet(HGetRequest) returns (HGetResponse);
+  rpc HGetAll(HGetAllRequest) returns (HGetAllResponse);
+  rpc HDel(HDelRequest) returns (HDelResponse);
+  rpc HExists(HExistsRequest) returns (HExistsResponse);
+  rpc HKeys(HKeysRequest) returns (HKeysResponse);
+  rpc HVals(HValsRequest) returns (HValsResponse);
+  rpc HLen(HLenRequest) returns (HLenResponse);
 }
 
 message HSetRequest {
@@ -26,4 +32,54 @@ message HGetRequest {
 
 message HGetResponse {
   bytes value = 1;
+}
+
+message HGetAllRequest {
+  bytes key = 1;
+}
+
+message HGetAllResponse {
+  map<string, string> values = 1;
+}
+
+message HDelRequest {
+  bytes key = 1;
+  repeated string fields = 2;
+}
+
+message HDelResponse {
+  bool success = 1;
+}
+
+message HExistsRequest {
+  bytes key = 1;
+  string field = 2;
+}
+
+message HExistsResponse {
+  bool exists = 1;
+}
+
+message HKeysRequest {
+  bytes key = 1;
+}
+
+message HKeysResponse {
+  repeated string keys = 1;
+}
+
+message HValsRequest {
+  bytes key = 1;
+}
+
+message HValsResponse {
+  repeated string values = 1;
+}
+
+message HLenRequest {
+  bytes key = 1;
+}
+
+message HLenResponse {
+  int32 length = 1;
 }
