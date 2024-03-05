@@ -22,6 +22,7 @@ const (
 const (
 	XCDB_Set     = 31
 	XCDB_SetSADD = 32
+	XCDB_SetSREM = 33
 )
 
 // KeyValue 表示键值对

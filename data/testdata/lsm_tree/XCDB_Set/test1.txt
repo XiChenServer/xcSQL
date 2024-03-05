@@ -1,4 +1,4 @@
-Key: GHz2eStnJL, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 5687, Size: 273
+Key: GHz2eStnJL, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 6758, Size: 246
 Key: VCGALQgJUd, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 6230, Size: 269
 Key: aizFTEcIhF, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 5423, Size: 264
 Key: sxqdezjusl, Extra: , TTL: 0s, FileName: ../../data/testdata/string_test/data_12.gz, Offset: 5960, Size: 270

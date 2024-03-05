@@ -32,7 +32,7 @@ func Test_HSET(t *testing.T) {
 		"address": "123 Main St",
 	}
 
-	err := db.Hset(key, myMap)
+	err := db.HSet(key, myMap)
 	if err != nil {
 		fmt.Println(err)
 		return

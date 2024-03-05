@@ -168,14 +168,6 @@ func (lsm *LSMTree) SaveActiveToDiskOnExit() {
 	defer lsm.writeReadOnlyToDisk()
 }
 
-// 在程序退出时将活跃表保存到磁盘
-func (lsm *LSMTree) SaveActiveToDiskOnExit1() {
-
-	lsm.readOnlyMemTable = lsm.activeMemTable
-	// 在程序退出时保存活跃表到磁盘
-	defer lsm.writeReadOnlyToDisk()
-}
-
 // 压缩数据并写入文件
 func CompressAndWriteToFile(data []byte, filePath string) error {
 	// 创建文件
@@ -351,6 +343,7 @@ func (lsm *LSMTree) LoadDataFromFile1(filePath string) error {
 
 	return nil
 }
+
 func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 	lsm.mu.RLock()
 	defer lsm.mu.RUnlock()

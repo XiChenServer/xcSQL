@@ -1,0 +1,20 @@
+syntax = "proto3";
+option go_package = "api/db_init";
+package api_db_init;
+
+// 定义服务
+service XcDB {
+  rpc InitNewXcDB(InitNewXcDBRequest) returns (InitNewXcDBResponse);
+}
+
+// 定义请求消息
+message InitNewXcDBRequest {
+  string configFilePath = 1;
+  string testDataPath = 2;
+}
+
+// 定义响应消息
+message InitNewXcDBResponse {
+  bool success = 1;
+  string errorMessage = 2;
+}

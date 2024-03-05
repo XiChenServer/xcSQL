@@ -10,7 +10,7 @@ import (
 )
 
 // 对于hash进行的建立
-func (db *XcDB) Hset(key []byte, value map[string]string, ttl ...uint64) error {
+func (db *XcDB) HSet(key []byte, value map[string]string, ttl ...uint64) error {
 	err := db.doHset(key, value, ttl...)
 	return err
 }
