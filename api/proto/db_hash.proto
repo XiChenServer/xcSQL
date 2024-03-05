@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package = "api/db_hash";
+
+package api_db_hash;
+
+service HashDatabase {
+  rpc HSet(HSetRequest) returns (HSetResponse);
+  rpc HGet(HGetRequest) returns (HGetResponse);
+}
+
+message HSetRequest {
+  bytes key = 1;
+  map<string, string> values = 2;
+  repeated uint64 ttl = 3;
+}
+
+message HSetResponse {
+  bool success = 1;
+}
+
+message HGetRequest {
+  bytes key = 1;
+  string field = 2;
+}
+
+message HGetResponse {
+  bytes value = 1;
+}
