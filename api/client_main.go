@@ -21,7 +21,7 @@ func main() {
 
 	// 调用 HSet 方法
 	hSetReq := &db_hash.HSetRequest{
-		Key:    []byte("123"),
+		Key:    []byte("12323"),
 		Values: map[string]string{"field1": "2323", "field2": "value2"},
 		Ttl:    []uint64{3600}, // 设置 TTL 为 3600 秒
 	}

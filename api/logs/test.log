@@ -23,3 +23,9 @@
 2024-03-05T22:01:01.293+0800	ERROR	database/db.go:45	failed to create storage manager: %v<nil>
 2024-03-05T22:01:19.427+0800	ERROR	database/db.go:45	failed to create storage manager: %v<nil>
 2024-03-05T22:03:39.334+0800	ERROR	database/db.go:45	failed to create storage manager: %v<nil>
+2024-03-06T19:22:02.283+0800	ERROR	database/db.go:45	failed to create storage manager: %v<nil>
+2024-03-06T19:27:39.256+0800	ERROR	database/db.go:45	failed to create storage manager: %v<nil>
+2024-03-06T19:31:44.574+0800	ERROR	database/db.go:45	failed to create storage manager: %v<nil>
+2024-03-06T21:20:52.937+0800	ERROR	database/db.go:45	failed to create storage manager: %v<nil>
+2024-03-06T21:23:08.113+0800	ERROR	database/db.go:45	failed to create storage manager: %v<nil>
+2024-03-06T21:25:05.986+0800	ERROR	database/db.go:45	failed to create storage manager: %v<nil>

@@ -2,21 +2,16 @@ package grpc
 
 import (
 	"SQL/api/db_hash"
-	"SQL/internal/database"
 	"context"
+	"fmt"
 )
 
-type Server struct {
-	DB *database.XcDB // 假设你的数据库实例叫做 XcDB
-	db_hash.UnimplementedHashDatabaseServer
-}
-
 func (s *Server) HSet(ctx context.Context, req *db_hash.HSetRequest) (*db_hash.HSetResponse, error) {
+	fmt.Println(string(req.Key))
 	err := s.DB.HSet(req.Key, req.Values, req.Ttl...)
 	if err != nil {
 		return &db_hash.HSetResponse{Success: false}, err
 	}
-
 	return &db_hash.HSetResponse{Success: true}, nil
 }
 

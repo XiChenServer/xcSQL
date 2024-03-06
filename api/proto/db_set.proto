@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+option go_package = "api/db_set";
+package api_db_set;
+
+// XcDB 表示数据库实例。
+service SetDatabase {
+  // SAdd 将一个或多个成员添加到集合中。
+  rpc SAdd(SAddRequest) returns (SAddResponse);
+
+  // SRem 从集合中移除一个或多个成员。
+  rpc SRem(SRemRequest) returns (SRemResponse);
+
+  // SMembers 获取集合中的所有成员。
+  rpc SMembers(SMembersRequest) returns (SMembersResponse);
+
+  // SIsMember 判断一个成员是否是集合的成员。
+  rpc SIsMember(SIsMemberRequest) returns (SIsMemberResponse);
+
+  // SCard 获取集合中成员的数量。
+  rpc SCard(SCardRequest) returns (SCardResponse);
+}
+
+// SAddRequest 表示 SAdd RPC 的请求消息。
+message SAddRequest {
+  bytes key = 1;
+  repeated bytes members = 2;
+  repeated uint64 ttl = 3;
+}
+
+// SAddResponse 表示 SAdd RPC 的响应消息。
+message SAddResponse {
+  bool success = 1;
+}
+
+// SRemRequest 表示 SRem RPC 的请求消息。
+message SRemRequest {
+  bytes key = 1;
+  repeated bytes members = 2;
+}
+
+// SRemResponse 表示 SRem RPC 的响应消息。
+message SRemResponse {
+  bool success = 1;
+}
+
+// SMembersRequest 表示 SMembers RPC 的请求消息。
+message SMembersRequest {
+  bytes key = 1;
+}
+
+// SMembersResponse 表示 SMembers RPC 的响应消息。
+message SMembersResponse {
+  repeated bytes members = 1;
+}
+
+// SIsMemberRequest 表示 SIsMember RPC 的请求消息。
+message SIsMemberRequest {
+  bytes key = 1;
+  bytes member = 2;
+}
+
+// SIsMemberResponse 表示 SIsMember RPC 的响应消息。
+message SIsMemberResponse {
+  bool exists = 1;
+}
+
+// SCardRequest 表示 SCard RPC 的请求消息。
+message SCardRequest {
+  bytes key = 1;
+}
+
+// SCardResponse 表示 SCard RPC 的响应消息。
+message SCardResponse {
+  int32 length = 1;
+}
+
+// 其他消息和枚举

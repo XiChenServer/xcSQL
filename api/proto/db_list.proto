@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+option go_package = "api/db_list";
+
+package api_db_list;
+
+service HashDatabase {
+  rpc RPUSH(RPUSHRequest) returns (RPUSHResponse);
+  rpc LPUSH(LPUSHRequest) returns (LPUSHResponse);
+  rpc LRANGE(LRANGERequest) returns (LRANGEResponse);
+  rpc LINDEX(LINDEXRequest) returns (LINDEXResponse);
+  rpc LPOP(LPOPRequest) returns (LPOPResponse);
+  rpc RPOP(RPOPRequest) returns (RPOPResponse);
+  rpc LLEN(LLENRequest) returns (LLENResponse);
+}
+
+message RPUSHRequest {
+  bytes key = 1;
+  repeated bytes values = 2;
+  repeated uint64 ttl = 3;
+}
+
+message RPUSHResponse {
+  bool success = 1;
+}
+
+message LPUSHRequest {
+  bytes key = 1;
+  repeated bytes values = 2;
+  repeated uint64 ttl = 3;
+}
+
+message LPUSHResponse {
+  bool success = 1;
+}
+
+message LRANGERequest {
+  bytes key = 1;
+  int32 left = 2;
+  int32 right = 3;
+}
+
+message LRANGEResponse {
+  repeated bytes values = 1;
+}
+
+message LINDEXRequest {
+  bytes key = 1;
+  int32 index = 2;
+}
+
+message LINDEXResponse {
+  bytes value = 1;
+}
+
+message LPOPRequest {
+  bytes key = 1;
+}
+
+message LPOPResponse {
+  bytes value = 1;
+}
+
+message RPOPRequest {
+  bytes key = 1;
+}
+
+message RPOPResponse {
+  bytes value = 1;
+}
+
+message LLENRequest {
+  bytes key = 1;
+}
+
+message LLENResponse {
+  int32 length = 1;
+}
