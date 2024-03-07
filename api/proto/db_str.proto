@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option go_package = "api/db_str";
+
+package api_db_str;
+service XcDB {
+  rpc Set(SetRequest) returns (SetResponse) {}
+  rpc Get(GetRequest) returns (GetResponse) {}
+  rpc Strlen(StrlenRequest) returns (StrlenResponse) {}
+  rpc Append(AppendRequest) returns (AppendResponse) {}
+}
+
+message SetRequest {
+  bytes key = 1;
+  bytes value = 2;
+  repeated uint64 ttl = 3;
+}
+
+message SetResponse {
+  string error_message = 1;
+}
+
+message GetRequest {
+  bytes key = 1;
+}
+
+message GetResponse {
+  bytes value = 1;
+  string error_message = 2;
+}
+
+message StrlenRequest {
+  bytes key = 1;
+}
+
+message StrlenResponse {
+  uint32 length = 1;
+  string error_message = 2;
+}
+
+message AppendRequest {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+message AppendResponse {
+  string error_message = 1;
+}

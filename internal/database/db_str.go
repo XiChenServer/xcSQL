@@ -9,8 +9,6 @@ import (
 	"time"
 )
 
-const ()
-
 // 对于字符串进行建立的操作
 func (db *XcDB) Set(key, value []byte, ttl ...uint64) error {
 	err := db.doSet(key, value, ttl...)
@@ -47,7 +45,7 @@ func (db *XcDB) doSet(key, value []byte, ttl ...uint64) error {
 }
 
 // 获取字符串的操作
-func (db *XcDB) Get(key []byte) (*model.KeyValue, error) {
+func (db *XcDB) Get(key []byte) ([]byte, error) {
 	data, err := db.doGet(key)
 	if err != nil {
 		return nil, err
@@ -55,7 +53,7 @@ func (db *XcDB) Get(key []byte) (*model.KeyValue, error) {
 	return data, nil
 }
 
-func (db *XcDB) doGet(key []byte) (*model.KeyValue, error) {
+func (db *XcDB) doGet(key []byte) ([]byte, error) {
 	db.Mu.RLock()
 	defer db.Mu.RUnlock()
 	lsmMap := *db.Lsm
@@ -88,47 +86,7 @@ func (db *XcDB) doGet(key []byte) (*model.KeyValue, error) {
 		err := errors.New("No data found")
 		return nil, err
 	}
-	return data, nil
-}
-
-// 访问之后，对于数据进行一定的修改，重新保存
-func (db *XcDB) reSet(data *model.KeyValue) error {
-	data.ValueSize = uint32(len(data.Value))
-	now := time.Now()
-	data.AccessTime = now
-
-	stroeLocal, err := db.StorageManager.StoreData(data)
-	if err != nil {
-		logs.SugarLogger.Error("string set fail:", err)
-		return err
-	}
-	datainfo := &lsm.DataInfo{
-		DataMeta:        *data.DataMeta,
-		StorageLocation: stroeLocal,
-	}
-	lsmMap := *db.Lsm
-	tree := lsmMap[model.XCDB_String]
-	err = tree.Insert(data.DataMeta.Key, datainfo)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// 验证过期时间
-func isExpired(kv *model.KeyValue) bool {
-	// 获取当前时间
-	currentTime := time.Now()
-
-	// 如果TTL为0，表示永不过期
-	if kv.DataMeta.TTL == 0 {
-		return false
-	}
-	// 计算过期时间
-	expirationTime := kv.CreateTime.Add(kv.DataMeta.TTL)
-
-	// 判断当前时间是否已经超过过期时间
-	return currentTime.After(expirationTime)
+	return data.Value, nil
 }
 
 // 获取数据的长度
@@ -214,4 +172,44 @@ func (db *XcDB) doAppend(key, value []byte) error {
 		return err
 	}
 	return nil
+}
+
+// 访问之后，对于数据进行一定的修改，重新保存
+func (db *XcDB) reSet(data *model.KeyValue) error {
+	data.ValueSize = uint32(len(data.Value))
+	now := time.Now()
+	data.AccessTime = now
+
+	stroeLocal, err := db.StorageManager.StoreData(data)
+	if err != nil {
+		logs.SugarLogger.Error("string set fail:", err)
+		return err
+	}
+	datainfo := &lsm.DataInfo{
+		DataMeta:        *data.DataMeta,
+		StorageLocation: stroeLocal,
+	}
+	lsmMap := *db.Lsm
+	tree := lsmMap[model.XCDB_String]
+	err = tree.Insert(data.DataMeta.Key, datainfo)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// 验证过期时间
+func isExpired(kv *model.KeyValue) bool {
+	// 获取当前时间
+	currentTime := time.Now()
+
+	// 如果TTL为0，表示永不过期
+	if kv.DataMeta.TTL == 0 {
+		return false
+	}
+	// 计算过期时间
+	expirationTime := kv.CreateTime.Add(kv.DataMeta.TTL)
+
+	// 判断当前时间是否已经超过过期时间
+	return currentTime.After(expirationTime)
 }
