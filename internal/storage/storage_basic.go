@@ -28,12 +28,15 @@ func SaveStorageManager(storageManager *StorageManager, filePath string) error {
 
 // 将StorageManager信息从文件里面取出来
 func LoadStorageManager(filePath string) (*StorageManager, error) {
+
 	file, err := os.Open(filePath)
 	if err != nil {
-		return nil, err
+		if os.IsNotExist(err) {
+			return nil, nil // 文件不存在，返回空
+		}
+		return nil, err // 其他错误情况
 	}
 	defer file.Close()
-
 	scanner := bufio.NewScanner(file)
 	var storageManager StorageManager
 

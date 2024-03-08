@@ -34,7 +34,7 @@ type LSMTree struct {
 }
 
 // 初始化 LSMTree
-func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
+func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16, name string) *LSMTree {
 	maxSkipLists := uint16(10) // 第一个层级的跳表数量
 	maxDiskLevels := uint16(7) // 最多的磁盘层级数量
 	var typeName string
@@ -48,7 +48,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16) *LSMTree {
 		typeName = "XCDB_Set"
 	}
 	tree := &LSMTree{
-		LsmPath:          []byte(("../data/testdata/lsm_tree/") + typeName + ("/test1.txt")),
+		LsmPath:          []byte(("../../data/testdata/manager/" + name + "/lsm_tree/") + typeName + ("/test1.txt")),
 		activeMemTable:   NewSkipList(16),
 		readOnlyMemTable: NewSkipList(16),
 		diskLevels:       make([]*LevelInfo, maxDiskLevels),

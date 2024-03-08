@@ -24,7 +24,7 @@ func generateRandomData(size int) []byte {
 // 简单的测试数据可以存入
 func TestDB_SetMore(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 
 	// 加载模拟的数据文件到 LSM 树中
@@ -66,7 +66,7 @@ func TestDB_SetMore(t *testing.T) {
 // 简单的测试数据可以存入
 func TestDB_Set(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_String]
@@ -110,7 +110,7 @@ func TestDB_GetEasy(t *testing.T) {
 // 简单的测试数据可以存入
 func TestDB_Get(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	lsmMap := *db.Lsm
 	tree := lsmMap[model.XCDB_String]
 	// 加载模拟的数据文件到 LSM 树中
@@ -124,7 +124,7 @@ func TestDB_Get(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("Get ok:", string(data.DataMeta.Key), string(data.Value))
+	fmt.Println("Get ok:", string(data))
 	defer tree.PrintDiskDataToFile(string(tree.LsmPath))
 	defer tree.SaveActiveToDiskOnExit()
 	defer storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
@@ -144,7 +144,7 @@ func generateRandomKey() string {
 // 简单的测试数据可以获取长度
 func TestDB_Strlen(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	lsmMap := *db.Lsm
 	tree := lsmMap[model.XCDB_String]
 	// 加载模拟的数据文件到 LSM 树中
@@ -167,7 +167,7 @@ func TestDB_Strlen(t *testing.T) {
 // 进行追加操作
 func TestDB_Append(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	lsmMap := *db.Lsm
 	tree := lsmMap[model.XCDB_String]
 	// 加载模拟的数据文件到 LSM 树中

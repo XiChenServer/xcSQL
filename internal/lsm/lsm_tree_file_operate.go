@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -347,7 +348,6 @@ func (lsm *LSMTree) LoadDataFromFile1(filePath string) error {
 func (lsm *LSMTree) PrintDiskDataToFile(filePath string) error {
 	lsm.mu.RLock()
 	defer lsm.mu.RUnlock()
-	lsm.Printf()
 	// 创建文件
 	file, err := os.Create(filePath)
 	if err != nil {
@@ -478,9 +478,16 @@ func (lsm *LSMTree) LoadDataFromFile(filePath string) error {
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			// 如果文件不存在，创建文件并返回空
+			// 获取文件所在的目录路径
+			dir := filepath.Dir(filePath)
+			// 创建目录以及其所有父目录
+			if err := os.MkdirAll(dir, 0755); err != nil {
+				return fmt.Errorf("failed to create directory: %v", err)
+			}
+			// 创建文件
 			file, err := os.Create(filePath)
 			if err != nil {
+				fmt.Println("Error creating file:", err)
 				return fmt.Errorf("failed to create file: %v", err)
 			}
 			defer file.Close()

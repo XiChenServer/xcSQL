@@ -11,7 +11,7 @@ import (
 // 简单的测试数据可以存入
 func TestDB_SADD(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Set]
@@ -43,7 +43,7 @@ func TestDB_SADD(t *testing.T) {
 // 简单的测试数据可以取出
 func TestDB_SMembers(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Set]
@@ -75,7 +75,7 @@ func TestDB_SMembers(t *testing.T) {
 // 简单的测试数据可以移除
 func TestDB_SRem(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Set]
@@ -108,7 +108,7 @@ func TestDB_SRem(t *testing.T) {
 // 简单的测试数据可以移除
 func TestDB_SIsMember(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Set]
@@ -142,7 +142,7 @@ func TestDB_SIsMember(t *testing.T) {
 // 简单的测试数据可以移除
 func TestDB_SCard(t *testing.T) {
 	logs.InitLogger()
-	db := NewXcDB()
+	db := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Set]
