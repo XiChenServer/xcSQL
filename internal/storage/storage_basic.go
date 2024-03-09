@@ -1,7 +1,9 @@
 package storage
 
 import (
+	"SQL/logs"
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,6 +13,7 @@ import (
 
 // 将StorageManager保存到文件中
 func SaveStorageManager(storageManager *StorageManager, filePath string) error {
+	fmt.Println(filePath)
 	file, err := os.Create(filePath)
 	if err != nil {
 		return err
@@ -20,7 +23,10 @@ func SaveStorageManager(storageManager *StorageManager, filePath string) error {
 	writer := bufio.NewWriter(file)
 	defer writer.Flush()
 	name := storageManager.CurrentFile.Name()
-
+	//name := storageManager.CurrentFile.Name()
+	if name == "" {
+		return errors.New("file name is nil")
+	}
 	writer.WriteString(fmt.Sprintf("StoragePath: %s, MaxFileSize: %d, CurrentFile: %s, CurrentSize: %d, FileNumber: %d\n", string(storageManager.StoragePath),
 		storageManager.MaxFileSize, name, storageManager.CurrentSize, storageManager.FileNumber))
 	return nil
@@ -29,14 +35,44 @@ func SaveStorageManager(storageManager *StorageManager, filePath string) error {
 // 将StorageManager信息从文件里面取出来
 func LoadStorageManager(filePath string) (*StorageManager, error) {
 
-	file, err := os.Open(filePath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, nil // 文件不存在，返回空
+	// 检查文件是否存在
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		index := strings.LastIndex(filePath, "/")
+		if index != -1 {
+			filePath = filePath[:index]
 		}
-		return nil, err // 其他错误情况
+		// 文件不存在，创建文件
+		storageManager, err := NewStorageManager(filePath, 10*1024) // 1MB 文件大小限制
+		if err != nil {
+			logs.SugarLogger.Error("failed to create storage manager: %v", err)
+			return nil, err
+		}
+		return storageManager, nil
+		//file, err := os.Create(filePath)
+		//if err != nil {
+		//	return nil, err
+		//}
+		//defer file.Close()
+	} else if err != nil {
+		// 其他错误情况
+		return nil, err
+	}
+	fmt.Println("1233")
+	// 文件已存在或已创建，继续打开文件
+	file, err := os.OpenFile(filePath, os.O_RDWR, 0644)
+	if err != nil {
+		return nil, err
 	}
 	defer file.Close()
+
+	//file, err := os.Open(filePath)
+	//if err != nil {
+	//	if os.IsNotExist(err) {
+	//		return nil, err // 其他错误情况
+	//	}
+	//	return nil, err // 其他错误情况
+	//}
+	//defer file.Close()
 	scanner := bufio.NewScanner(file)
 	var storageManager StorageManager
 

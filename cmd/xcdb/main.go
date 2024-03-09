@@ -29,11 +29,11 @@ var CliDB = &cobra.Command{
 			fmt.Print("Enter command: ")
 			scanner.Scan()
 			input := scanner.Text()
-			if input == "exit" {
-				fmt.Println("Exiting...")
-				db.Close()
-				os.Exit(0)
-			}
+			//if input == "exit" {
+			//	fmt.Println("Exiting...")
+			//	db.Close()
+			//	os.Exit(0)
+			//}
 			err := handleCommand(input, db)
 			if err != nil {
 				fmt.Println("Error:", err)
@@ -70,8 +70,10 @@ func handleCommand(input string, db *database.XcDB) error {
 		}
 		fmt.Println("Value:", string(value))
 	case "exit":
-		fmt.Println("Exiting...")
 		database.DBExit(db)
+		fmt.Println("sfdf")
+		//fmt.Println("Exiting...")
+
 		os.Exit(0)
 	default:
 		return fmt.Errorf("Unknown command: %s", cmd)

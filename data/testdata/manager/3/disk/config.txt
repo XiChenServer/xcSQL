@@ -1,0 +1,1 @@
+StoragePath: ../../data/testdata/manager/3/disk, MaxFileSize: 10240, CurrentFile: ../../data/testdata/manager/3/disk/data_0.gz, CurrentSize: 0, FileNumber: 0

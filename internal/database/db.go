@@ -5,6 +5,7 @@ import (
 	"SQL/internal/model"
 	"SQL/internal/storage"
 	"SQL/logs"
+	"fmt"
 	"sync"
 )
 
@@ -38,7 +39,7 @@ func NewXcDB(name string) *XcDB {
 	lsmMap[model.XCDB_String] = lsmString
 	lsmMap[model.XCDB_Hash] = lsmHash
 	lsmMap[model.XCDB_Set] = lsmSet
-	storageManager, err := storage.LoadStorageManager(("../../data/testdata/manager/") + name + ("/lsm_tree/config.txt"))
+	storageManager, err := storage.LoadStorageManager(("../../data/testdata/manager/") + name + ("/disk/config.txt"))
 
 	if err != nil {
 		storageManager, err = storage.NewStorageManager("../../data/testdata/manager/"+name+"/disk", 10*1024) // 1MB 文件大小限制
@@ -66,8 +67,9 @@ func DBConnect(name string) *XcDB {
 func DBExit(db *XcDB) error {
 	// 在退出时保存活动数据到磁盘并将磁盘数据打印到文件中以供 LSM 树使用
 	// 将存储管理器配置保存到文件
-
-	err := storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	fmt.Println("dfsd")
+	err := storage.SaveStorageManager(db.StorageManager, string(db.StorageManager.StoragePath)+"/config.txt")
+	//err := storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 	if err != nil {
 		return err
 	}
@@ -81,4 +83,8 @@ func saveAndPrintDiskData(lsmMap *map[uint16]*lsm.LSMTree) {
 		lsm.SaveActiveToDiskOnExit()
 		lsm.PrintDiskDataToFile(string(lsm.LsmPath))
 	}
+}
+
+func (db *XcDB) Close() {
+
 }

@@ -1,0 +1,1 @@
+Key: 1, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/2/disk/data_0.gz, Offset: 1587, Size: 230

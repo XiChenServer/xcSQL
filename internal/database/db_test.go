@@ -26,7 +26,7 @@ func TestDB_S(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
-
+	fmt.Println(string(db.StorageManager.StoragePath))
 	fmt.Println("Insert ok")
 	fmt.Println(string(key), string(value))
 

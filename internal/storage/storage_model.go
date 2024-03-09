@@ -31,7 +31,6 @@ type StorageLocation struct {
 
 // NewStorageManager 创建一个新的存储管理器
 func NewStorageManager(storagePath string, maxFileSize uint64) (*StorageManager, error) {
-	fmt.Println(storagePath)
 	// 创建存储路径
 	err := os.MkdirAll(storagePath, 0755)
 	if err != nil {
