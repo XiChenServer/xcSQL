@@ -37,6 +37,7 @@ var CliDB = &cobra.Command{
 			//	db.Close()
 			//	os.Exit(0)
 			//}
+			db.Wal.Write(input)
 			err := handleCommand(input, db)
 			if err != nil {
 				fmt.Println("Error:", err)
@@ -63,7 +64,11 @@ func handleCommand(input string, db *database.XcDB) error {
 		}
 		key := []byte(parts[1])
 		value := []byte(parts[2])
-		ttl, _ := strconv.Atoi(string(parts[3]))
+		ttl := 0
+		if len(parts) == 4 {
+			ttl, _ = strconv.Atoi(string(parts[3]))
+		}
+
 		logs.SugarLogger.Info(" set [key] [value] [ttl]...")
 		return db.Set(key, value, []uint64{uint64(ttl)}...)
 	case "get":
@@ -77,6 +82,31 @@ func handleCommand(input string, db *database.XcDB) error {
 			return err
 		}
 		fmt.Println("Value:", string(value))
+
+	case "strlen":
+		if len(parts) != 2 {
+			logs.SugarLogger.Error("Usage: strlen [key]")
+			return fmt.Errorf("Usage: strlen [key]")
+		}
+		key := []byte(parts[1])
+		value, err := db.Strlen(key)
+		if err != nil {
+			return err
+		}
+		fmt.Println("Value:", value)
+	case "append":
+		if len(parts) != 3 {
+			logs.SugarLogger.Error("Usage: append [key] [value]")
+			return fmt.Errorf("Usage: append [key] [value]")
+		}
+		key := []byte(parts[1])
+		value := []byte(parts[2])
+		err := db.Append(key, value)
+		if err != nil {
+			return err
+		}
+		//fmt.Println("Value:", string(value))
+
 	case "exit":
 		database.DBExit(db)
 		//fmt.Println("Exiting...")

@@ -4,6 +4,7 @@ import (
 	"SQL/internal/lsm"
 	"SQL/internal/model"
 	"SQL/internal/storage"
+	"SQL/internal/wal"
 	"SQL/logs"
 	"fmt"
 	"sync"
@@ -12,11 +13,12 @@ import (
 type XcDB struct {
 	StorageManager *storage.StorageManager
 	Lsm            *map[uint16]*lsm.LSMTree
+	Wal            *wal.WAL
 	// 读写锁，用于并发读写控制
 	Mu sync.RWMutex
 }
 
-func NewXcDB(name string) *XcDB {
+func NewXcDB(name string) (*XcDB, error) {
 	var lsmMap = make(map[uint16]*lsm.LSMTree)
 	// 启动一个协程来初始化字符串类型的LSM树
 	//go func() {
@@ -45,14 +47,21 @@ func NewXcDB(name string) *XcDB {
 		storageManager, err = storage.NewStorageManager("../../data/testdata/manager/"+name+"/disk", 10*1024) // 1MB 文件大小限制
 		if err != nil {
 			logs.SugarLogger.Error("failed to create storage manager: %v", err)
+			return nil, err
 		}
 
+	}
+	wal, err := wal.NewWAL("../../data/testdata/manager/"+name+"/wal.log", "../../data/testdata/manager/"+name+"/walInfo.log")
+	if err != nil {
+		logs.SugarLogger.Error("wal.log create fail")
+		return nil, err
 	}
 	return &XcDB{
 		Lsm:            &lsmMap,
 		StorageManager: storageManager,
 		Mu:             sync.RWMutex{},
-	}
+		Wal:            wal,
+	}, nil
 }
 
 func DBConnect(name string) *XcDB {
@@ -60,7 +69,10 @@ func DBConnect(name string) *XcDB {
 	logs.InitLogger()
 
 	// 连接数据库
-	db := NewXcDB(name)
+	db, err := NewXcDB(name)
+	if err != nil {
+		logs.SugarLogger.Panic("new db fail")
+	}
 
 	return db
 }
