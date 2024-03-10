@@ -1,7 +1,9 @@
 package lsm
 
 import (
+	"SQL/internal/bloomfilter"
 	"SQL/internal/model"
+	"SQL/logs"
 	"bytes"
 	"errors"
 	"fmt"
@@ -28,8 +30,9 @@ type LSMTree struct {
 	maxDiskTableSize     uint32       // 磁盘表的最大大小
 	maxSkipLists         uint16       // 每个层级的最大跳表数量
 	maxDiskLevels        uint16
-	writeToDiskWaitGroup sync.RWMutex  // 用于等待将只读表写入磁盘的协程完成
-	writeToDiskChan      chan struct{} // 添加一个通道来控制磁盘写入的并发数
+	writeToDiskWaitGroup sync.RWMutex                   // 用于等待将只读表写入磁盘的协程完成
+	writeToDiskChan      chan struct{}                  // 添加一个通道来控制磁盘写入的并发数
+	BloomServer          *bloomfilter.LocalBloomService //每个树都有一个布隆过滤器
 
 }
 
@@ -47,6 +50,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16, name string
 	} else if Type == model.XCDB_Set {
 		typeName = "XCDB_Set"
 	}
+	encry := bloomfilter.NewEncryptor()
 	tree := &LSMTree{
 		LsmPath:          []byte(("../../data/testdata/manager/" + name + "/lsm_tree/") + typeName + ("/test1.txt")),
 		activeMemTable:   NewSkipList(16),
@@ -57,6 +61,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16, name string
 		maxSkipLists:     maxSkipLists,
 		maxDiskLevels:    maxDiskLevels,
 		writeToDiskChan:  make(chan struct{}, 1), // 初始化 writeToDiskChan，缓冲大小为 1，表示同时只能有一个磁盘写入操作
+		BloomServer:      bloomfilter.NewLocalBloomService(10000000, 3, encry),
 	}
 	// 初始化每个层级的跳表数量
 	skipLists := maxSkipLists
@@ -83,7 +88,7 @@ func NewLSMTree(maxActiveSize, maxDiskTableSize uint32, Type uint16, name string
 func (lsm *LSMTree) Insert(key []byte, value *DataInfo) error {
 	lsm.mu.Lock()
 	defer lsm.mu.Unlock()
-
+	lsm.BloomServer.Set(string(key))
 	// 检查活跃内存表的大小是否达到最大值，若达到则将活跃表转换为只读表，并写入磁盘
 	if lsm.activeMemTable.Size >= lsm.maxActiveSize {
 		lsm.convertActiveToReadOnly()
@@ -214,6 +219,11 @@ func (lsm *LSMTree) Get1(key []byte) (*DataInfo, error) {
 
 // 修改 Get 函数，先在活跃表、只读表、LSM 树的层级中的跳表中进行查找
 func (lsm *LSMTree) Get(key []byte) (*DataInfo, error) {
+	flag := lsm.BloomServer.Exist(string(key))
+	if flag == false {
+		logs.SugarLogger.Info("BloomServer don't find")
+	}
+
 	lsm.mu.RLock()
 	defer lsm.mu.RUnlock()
 

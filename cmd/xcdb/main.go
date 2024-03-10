@@ -2,9 +2,11 @@ package main
 
 import (
 	"SQL/internal/database"
+	"SQL/logs"
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -22,6 +24,7 @@ var CliDB = &cobra.Command{
 		}
 		dbName = args[0]
 		db := database.DBConnect(dbName)
+		logs.SugarLogger.Infof("Connected to database:", dbName)
 		fmt.Println("Connected to database:", dbName)
 		// 循环接受用户输入的命令
 		scanner := bufio.NewScanner(os.Stdin)
@@ -53,14 +56,19 @@ func handleCommand(input string, db *database.XcDB) error {
 	cmd := parts[0]
 	switch cmd {
 	case "set":
-		if len(parts) != 3 {
-			return fmt.Errorf("Usage: set [key] [value]")
+		if len(parts) != 3 && len(parts) != 4 {
+			logs.SugarLogger.Error("Usage: set [key] [value] [ttl]...")
+			return fmt.Errorf("Usage: set [key] [value] [ttl]...")
+
 		}
 		key := []byte(parts[1])
 		value := []byte(parts[2])
-		return db.Set(key, value)
+		ttl, _ := strconv.Atoi(string(parts[3]))
+		logs.SugarLogger.Info(" set [key] [value] [ttl]...")
+		return db.Set(key, value, []uint64{uint64(ttl)}...)
 	case "get":
 		if len(parts) != 2 {
+			logs.SugarLogger.Error("Usage: get [key]")
 			return fmt.Errorf("Usage: get [key]")
 		}
 		key := []byte(parts[1])
@@ -71,7 +79,6 @@ func handleCommand(input string, db *database.XcDB) error {
 		fmt.Println("Value:", string(value))
 	case "exit":
 		database.DBExit(db)
-		fmt.Println("sfdf")
 		//fmt.Println("Exiting...")
 
 		os.Exit(0)
@@ -87,7 +94,6 @@ func main() {
 	rootCmd := &cobra.Command{Use: "app"}
 	rootCmd.AddCommand(CliDB)
 	// 添加其他命令...
-
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 	}

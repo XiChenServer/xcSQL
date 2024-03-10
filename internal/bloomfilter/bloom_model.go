@@ -1,6 +1,9 @@
 package bloomfilter
 
-import "github.com/demdxx/gocast"
+import (
+	"SQL/logs"
+	"github.com/demdxx/gocast"
+)
 
 type LocalBloomService struct {
 	m, k, n   int32
@@ -8,6 +11,7 @@ type LocalBloomService struct {
 	encryptor *Encryptor
 }
 
+// NewLocalBloomService 新建布隆过滤器
 func NewLocalBloomService(m, k int32, encryptor *Encryptor) *LocalBloomService {
 	return &LocalBloomService{
 		m:         m,
@@ -16,6 +20,8 @@ func NewLocalBloomService(m, k int32, encryptor *Encryptor) *LocalBloomService {
 		encryptor: encryptor,
 	}
 }
+
+// Exist 判断是否存在于布隆过滤器里面
 func (l *LocalBloomService) Exist(val string) bool {
 	for _, offset := range l.getKEncrypted(val) {
 		index := offset >> 5     // 等价于 / 32
@@ -28,6 +34,8 @@ func (l *LocalBloomService) Exist(val string) bool {
 
 	return true
 }
+
+// getKEncrypted 获取一个元素 val 对应 k 个 bit 位偏移量 offset
 func (l *LocalBloomService) getKEncrypted(val string) []int32 {
 	encrypteds := make([]int32, 0, l.k)
 	origin := val
@@ -42,7 +50,9 @@ func (l *LocalBloomService) getKEncrypted(val string) []int32 {
 	return encrypteds
 }
 
+// Set 添加进布隆过滤器
 func (l *LocalBloomService) Set(val string) {
+	logs.SugarLogger.Info("LocalBloomService is setting")
 	l.n++
 	for _, offset := range l.getKEncrypted(val) {
 		index := offset >> 5     // 等价于 / 32

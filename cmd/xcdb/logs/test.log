@@ -1,0 +1,18 @@
+2024-03-10T15:45:08.612+0800	INFO	xcdb/main.go:27	Connected to database:%!(EXTRA string=2)
+2024-03-10T15:45:13.927+0800	ERROR	xcdb/main.go:60	Usage: set [key] [value] [ttl]...
+2024-03-10T15:45:22.950+0800	ERROR	xcdb/main.go:60	Usage: set [key] [value] [ttl]...
+2024-03-10T15:45:45.815+0800	INFO	xcdb/main.go:27	Connected to database:%!(EXTRA string=2)
+2024-03-10T15:45:50.670+0800	INFO	xcdb/main.go:67	 set [key] [value] [ttl]...
+2024-03-10T15:52:29.505+0800	INFO	bloomfilter/bloom_model.go:56	LocalBloomService is setting
+2024-03-10T15:52:29.506+0800	INFO	bloomfilter/bloom_model.go:56	LocalBloomService is setting
+2024-03-10T15:52:29.507+0800	INFO	xcdb/main.go:27	Connected to database:%!(EXTRA string=2)
+2024-03-10T15:52:48.867+0800	INFO	bloomfilter/bloom_model.go:26	LocalBloomService is Existing
+2024-03-10T15:52:48.870+0800	INFO	bloomfilter/bloom_model.go:56	LocalBloomService is setting
+2024-03-10T15:53:09.044+0800	INFO	bloomfilter/bloom_model.go:26	LocalBloomService is Existing
+2024-03-10T15:53:09.046+0800	INFO	bloomfilter/bloom_model.go:56	LocalBloomService is setting
+2024-03-10T15:53:41.523+0800	INFO	bloomfilter/bloom_model.go:26	LocalBloomService is Existing
+2024-03-10T15:53:41.523+0800	INFO	lsm/lsm_tree.go:224	BloomServer don't find
+2024-03-10T15:53:45.059+0800	INFO	bloomfilter/bloom_model.go:26	LocalBloomService is Existing
+2024-03-10T15:56:11.269+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-10T15:56:11.269+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-10T15:56:11.271+0800	INFO	xcdb/main.go:27	Connected to database:%!(EXTRA string=2)
