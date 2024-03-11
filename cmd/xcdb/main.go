@@ -1,14 +1,15 @@
 package main
 
 import (
+	"SQL/internal/command"
 	"SQL/internal/database"
+	"SQL/internal/wal"
 	"SQL/logs"
 	"bufio"
-	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
+	"log"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -26,7 +27,10 @@ var CliDB = &cobra.Command{
 		db := database.DBConnect(dbName)
 		logs.SugarLogger.Infof("Connected to database:", dbName)
 		fmt.Println("Connected to database:", dbName)
-		handleCommands(db)
+		// 启动守护协程
+		go daemon(db.Wal, db)
+		// 处理用户命令
+		handleCommands(db, db.Wal)
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		// 这里什么都不做，所有的逻辑在 PersistentPreRun 钩子中处理
@@ -42,7 +46,7 @@ func main() {
 	}
 }
 
-func handleCommands(db *database.XcDB) {
+func handleCommands(db *database.XcDB, wal *wal.WAL) {
 	// 循环接受用户输入的命令
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
@@ -54,13 +58,42 @@ func handleCommands(db *database.XcDB) {
 			database.DBExit(db)
 			os.Exit(0)
 		}
-		db.Wal.Write(input)
-		err := handleCommand(input, db)
-		if err != nil {
+		// 将命令记录到 WAL 中
+		if err := wal.Write(input); err != nil {
+			fmt.Println("Error writing to WAL:", err)
+			continue
+		}
+		// 执行命令
+		if err := handleCommand(input, db); err != nil {
 			fmt.Println("Error:", err)
 		}
 	}
 }
+
+// 启动一个守护协程
+func daemon(wal *wal.WAL, db *database.XcDB) {
+	for {
+		// 从 WAL 日志文件中读取新的命令
+		cmd, err := wal.ReadNextCommand()
+		if err != nil {
+			log.Println("Error reading command from WAL:", err)
+			continue
+		}
+		fmt.Println(cmd)
+		//// 执行命令
+		//if err := executeCommand(cmd, db); err != nil {
+		//	log.Println("Error executing command:", err)
+		//	continue
+		//}
+		//
+		//// 更新数据库状态
+		//if err := updateDatabaseState(db); err != nil {
+		//	log.Println("Error updating database state:", err)
+		//	continue
+		//}
+	}
+}
+
 func handleCommand(input string, db *database.XcDB) error {
 	parts := strings.Fields(input)
 	if len(parts) == 0 {
@@ -69,13 +102,13 @@ func handleCommand(input string, db *database.XcDB) error {
 	cmd := strings.ToLower(parts[0]) // 将命令转换为小写
 	switch cmd {
 	case "set":
-		return handleSetCommand(parts, db)
+		return command.HandleSetCommand(parts, db)
 	case "get":
-		return handleGetCommand(parts, db)
+		return command.HandleGetCommand(parts, db)
 	case "append":
-		return handleAppendCommand(parts, db)
+		return command.HandleAppendCommand(parts, db)
 	case "strlen":
-		return handleStrlenCommand(parts, db)
+		return command.HandleStrlenCommand(parts, db)
 	// 添加其他命令的处理逻辑...
 	case "exit":
 		// 在主函数中处理退出逻辑，这里不再需要处理
@@ -83,53 +116,4 @@ func handleCommand(input string, db *database.XcDB) error {
 	default:
 		return fmt.Errorf("Unknown command: %s", cmd)
 	}
-}
-
-func handleSetCommand(parts []string, db *database.XcDB) error {
-	if len(parts) != 3 && len(parts) != 4 {
-		return errors.New("Usage: set [key] [value] [ttl]...")
-	}
-	key := []byte(parts[1])
-	value := []byte(parts[2])
-	ttl := uint64(0)
-	if len(parts) == 4 {
-		ttl, _ = strconv.ParseUint(parts[3], 10, 64)
-	}
-
-	return db.Set(key, value, ttl)
-}
-
-func handleGetCommand(parts []string, db *database.XcDB) error {
-	if len(parts) != 2 {
-		return errors.New("Usage: get [key]")
-	}
-	key := []byte(parts[1])
-	value, err := db.Get(key)
-	if err != nil {
-		return err
-	}
-	fmt.Println("Value:", string(value))
-	return nil
-}
-
-func handleAppendCommand(parts []string, db *database.XcDB) error {
-	if len(parts) != 3 {
-		return errors.New("Usage: append [key] [value]")
-	}
-	key := []byte(parts[1])
-	value := []byte(parts[2])
-	return db.Append(key, value)
-}
-
-func handleStrlenCommand(parts []string, db *database.XcDB) error {
-	if len(parts) != 2 {
-		return errors.New("Usage: strlen [key]")
-	}
-	key := []byte(parts[1])
-	valueLen, err := db.Strlen(key)
-	if err != nil {
-		return err
-	}
-	fmt.Println("Value length:", valueLen)
-	return nil
 }
