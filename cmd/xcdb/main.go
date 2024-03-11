@@ -4,12 +4,12 @@ import (
 	"SQL/internal/database"
 	"SQL/logs"
 	"bufio"
+	"errors"
 	"fmt"
+	"github.com/spf13/cobra"
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/spf13/cobra"
 )
 
 var dbName string
@@ -26,99 +26,12 @@ var CliDB = &cobra.Command{
 		db := database.DBConnect(dbName)
 		logs.SugarLogger.Infof("Connected to database:", dbName)
 		fmt.Println("Connected to database:", dbName)
-		// 循环接受用户输入的命令
-		scanner := bufio.NewScanner(os.Stdin)
-		for {
-			fmt.Print("Enter command: ")
-			scanner.Scan()
-			input := scanner.Text()
-			//if input == "exit" {
-			//	fmt.Println("Exiting...")
-			//	db.Close()
-			//	os.Exit(0)
-			//}
-			db.Wal.Write(input)
-			err := handleCommand(input, db)
-			if err != nil {
-				fmt.Println("Error:", err)
-			}
-		}
+		handleCommands(db)
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		// 这里什么都不做，所有的逻辑在 PersistentPreRun 钩子中处理
 	},
 }
-
-func handleCommand(input string, db *database.XcDB) error {
-	parts := strings.Fields(input)
-	if len(parts) == 0 {
-		return nil
-	}
-	cmd := parts[0]
-	switch cmd {
-	case "set":
-		if len(parts) != 3 && len(parts) != 4 {
-			logs.SugarLogger.Error("Usage: set [key] [value] [ttl]...")
-			return fmt.Errorf("Usage: set [key] [value] [ttl]...")
-
-		}
-		key := []byte(parts[1])
-		value := []byte(parts[2])
-		ttl := 0
-		if len(parts) == 4 {
-			ttl, _ = strconv.Atoi(string(parts[3]))
-		}
-
-		logs.SugarLogger.Info(" set [key] [value] [ttl]...")
-		return db.Set(key, value, []uint64{uint64(ttl)}...)
-	case "get":
-		if len(parts) != 2 {
-			logs.SugarLogger.Error("Usage: get [key]")
-			return fmt.Errorf("Usage: get [key]")
-		}
-		key := []byte(parts[1])
-		value, err := db.Get(key)
-		if err != nil {
-			return err
-		}
-		fmt.Println("Value:", string(value))
-
-	case "strlen":
-		if len(parts) != 2 {
-			logs.SugarLogger.Error("Usage: strlen [key]")
-			return fmt.Errorf("Usage: strlen [key]")
-		}
-		key := []byte(parts[1])
-		value, err := db.Strlen(key)
-		if err != nil {
-			return err
-		}
-		fmt.Println("Value:", value)
-	case "append":
-		if len(parts) != 3 {
-			logs.SugarLogger.Error("Usage: append [key] [value]")
-			return fmt.Errorf("Usage: append [key] [value]")
-		}
-		key := []byte(parts[1])
-		value := []byte(parts[2])
-		err := db.Append(key, value)
-		if err != nil {
-			return err
-		}
-		//fmt.Println("Value:", string(value))
-
-	case "exit":
-		database.DBExit(db)
-		//fmt.Println("Exiting...")
-
-		os.Exit(0)
-	default:
-		return fmt.Errorf("Unknown command: %s", cmd)
-	}
-	return nil
-}
-
-// 添加其他命令...
 
 func main() {
 	rootCmd := &cobra.Command{Use: "app"}
@@ -127,4 +40,96 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 	}
+}
+
+func handleCommands(db *database.XcDB) {
+	// 循环接受用户输入的命令
+	scanner := bufio.NewScanner(os.Stdin)
+	for {
+		fmt.Print("Enter command: ")
+		scanner.Scan()
+		input := scanner.Text()
+		if strings.ToLower(input) == "exit" { // 将输入转换为小写，以便匹配退出命令
+			fmt.Println("Exiting...")
+			database.DBExit(db)
+			os.Exit(0)
+		}
+		db.Wal.Write(input)
+		err := handleCommand(input, db)
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+	}
+}
+func handleCommand(input string, db *database.XcDB) error {
+	parts := strings.Fields(input)
+	if len(parts) == 0 {
+		return nil
+	}
+	cmd := strings.ToLower(parts[0]) // 将命令转换为小写
+	switch cmd {
+	case "set":
+		return handleSetCommand(parts, db)
+	case "get":
+		return handleGetCommand(parts, db)
+	case "append":
+		return handleAppendCommand(parts, db)
+	case "strlen":
+		return handleStrlenCommand(parts, db)
+	// 添加其他命令的处理逻辑...
+	case "exit":
+		// 在主函数中处理退出逻辑，这里不再需要处理
+		return nil
+	default:
+		return fmt.Errorf("Unknown command: %s", cmd)
+	}
+}
+
+func handleSetCommand(parts []string, db *database.XcDB) error {
+	if len(parts) != 3 && len(parts) != 4 {
+		return errors.New("Usage: set [key] [value] [ttl]...")
+	}
+	key := []byte(parts[1])
+	value := []byte(parts[2])
+	ttl := uint64(0)
+	if len(parts) == 4 {
+		ttl, _ = strconv.ParseUint(parts[3], 10, 64)
+	}
+
+	return db.Set(key, value, ttl)
+}
+
+func handleGetCommand(parts []string, db *database.XcDB) error {
+	if len(parts) != 2 {
+		return errors.New("Usage: get [key]")
+	}
+	key := []byte(parts[1])
+	value, err := db.Get(key)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Value:", string(value))
+	return nil
+}
+
+func handleAppendCommand(parts []string, db *database.XcDB) error {
+	if len(parts) != 3 {
+		return errors.New("Usage: append [key] [value]")
+	}
+	key := []byte(parts[1])
+	value := []byte(parts[2])
+	return db.Append(key, value)
+}
+
+func handleStrlenCommand(parts []string, db *database.XcDB) error {
+	if len(parts) != 2 {
+		return errors.New("Usage: strlen [key]")
+	}
+	key := []byte(parts[1])
+	valueLen, err := db.Strlen(key)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Value length:", valueLen)
+	return nil
 }

@@ -1,49 +1,86 @@
 package affairs
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
-// 事务结构体
-type Txn struct {
-	startTime  uint64   // 事务开始时间戳
-	commitTime uint64   // 事务提交时间戳
-	readSet    [][]byte // 读操作的键列表
-	writeSet   [][]byte // 写操作的键列表
+// TransactionStatus 表示事务状态的常量
+const (
+	TxnPending    = iota // 事务进行中
+	TxnCommitted         // 事务已提交
+	TxnRolledBack        // 事务已回滚
+)
+
+// Transaction 表示事务的结构体
+type Transaction struct {
+	ID           uint64              // 事务ID
+	Status       int                 // 事务状态
+	StartTime    uint64              // 事务开始时间戳
+	CommitTime   uint64              // 事务提交时间戳
+	ReadSet      [][]byte            // 读操作的键列表
+	WriteSet     [][]byte            // 写操作的键列表
+	ConflictKeys map[string]struct{} // 冲突检测用的键集合
 }
 
-// Oracle 结构体
+// Oracle 表示事务管理器的结构体
 type Oracle struct {
-	recentTxns      []*Txn // 最近提交的事务列表
-	globalTimestamp uint64 // 全局时间戳
-	txnMarker       uint64 // 事务授时标记
-	readMarker      uint64 // 当前活跃事务的最早时间戳
+	sync.Mutex
+	committedTxns   []*Transaction // 最近提交的事务列表
+	globalTimestamp uint64         // 全局时间戳
 }
 
 // NewOracle 创建一个新的Oracle对象
 func NewOracle() *Oracle {
 	return &Oracle{
-		recentTxns:      []*Txn{},
+		committedTxns:   []*Transaction{},
 		globalTimestamp: 0,
-		txnMarker:       0,
-		readMarker:      0,
 	}
 }
 
-// 开始事务
-func (t *Txn) Begin() {
-	t.startTime = getCurrentTimestamp() // 设置事务的开始时间戳
-	t.commitTime = 0                    // 初始化事务的提交时间戳
-	t.readSet = make([][]byte, 0)       // 初始化读操作的键列表
-	t.writeSet = make([][]byte, 0)      // 初始化写操作的键列表
+// BeginTransaction 开始一个新的事务
+func (o *Oracle) BeginTransaction() *Transaction {
+	o.Lock()
+	defer o.Unlock()
+	o.globalTimestamp++
+	return &Transaction{
+		ID:           o.globalTimestamp,
+		Status:       TxnPending,
+		StartTime:    getCurrentTimestamp(),
+		ConflictKeys: make(map[string]struct{}),
+	}
 }
 
-// 获取当前时间戳的示例函数
+// CommitTransaction 提交事务
+func (o *Oracle) CommitTransaction(txn *Transaction) {
+	txn.CommitTime = getCurrentTimestamp()
+	txn.Status = TxnCommitted
+	o.Lock()
+	defer o.Unlock()
+	o.committedTxns = append(o.committedTxns, txn)
+}
+
+// RollbackTransaction 回滚事务
+func (o *Oracle) RollbackTransaction(txn *Transaction) {
+	txn.Status = TxnRolledBack
+}
+
+// AddReadKey 添加读操作的键到事务的读集合
+func (t *Transaction) AddReadKey(key []byte) {
+	t.ReadSet = append(t.ReadSet, key)
+}
+
+// AddWriteKey 添加写操作的键到事务的写集合
+func (t *Transaction) AddWriteKey(key []byte) {
+	t.WriteSet = append(t.WriteSet, key)
+}
+
+// AddConflictKey 添加冲突检测的键到事务的冲突键集合
+func (t *Transaction) AddConflictKey(key []byte) {
+	t.ConflictKeys[string(key)] = struct{}{}
+}
+
+// getCurrentTimestamp 获取当前时间戳的函数
 func getCurrentTimestamp() uint64 {
-	// 在这里实现获取当前时间戳的逻辑，具体实现会根据您的环境和需求而有所不同
-	// 这里仅作为示例，返回一个固定的时间戳值
 	return uint64(time.Now().UnixNano())
-}
-
-// 添加事务到Oracle
-func (o *Oracle) AddTransaction(txn *Txn) {
-	o.recentTxns = append(o.recentTxns, txn)
 }
