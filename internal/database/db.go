@@ -1,6 +1,7 @@
 package database
 
 import (
+	"SQL/internal/log"
 	"SQL/internal/lsm"
 	"SQL/internal/model"
 	"SQL/internal/storage"
@@ -12,8 +13,9 @@ import (
 
 type XcDB struct {
 	StorageManager *storage.StorageManager
-	Lsm            *map[uint16]*lsm.LSMTree
-	Wal            *wal.WAL
+	Lsm            *map[uint16]*lsm.LSMTree //lsm书
+	Wal            *wal.WAL                 // redo.log之类的，有关事务的
+	BinLog         *log.BinlogFile
 	// 读写锁，用于并发读写控制
 	Mu sync.RWMutex
 }
@@ -52,6 +54,9 @@ func NewXcDB(name string) (*XcDB, error) {
 
 	}
 	wal, err := wal.NewWAL("../../data/testdata/manager/"+name+"/wal.log", "../../data/testdata/manager/"+name+"/walInfo.log")
+
+	binlog, err := log.NewBinlogFile(name, 10, 5)
+
 	if err != nil {
 		logs.SugarLogger.Error("wal.log create fail")
 		return nil, err
@@ -61,12 +66,13 @@ func NewXcDB(name string) (*XcDB, error) {
 		StorageManager: storageManager,
 		Mu:             sync.RWMutex{},
 		Wal:            wal,
+		BinLog:         binlog,
 	}, nil
 }
 
 func DBConnect(name string) *XcDB {
 	// 初始化日志记录器
-	logs.InitLogger()
+	logs.InitLogger(name)
 
 	// 连接数据库
 	db, err := NewXcDB(name)
@@ -85,7 +91,7 @@ func DBExit(db *XcDB) error {
 	if err != nil {
 		return err
 	}
-
+	db.BinLog.WriteInfoToBinlogInfo()
 	saveAndPrintDiskData(db.Lsm)
 	return nil
 }

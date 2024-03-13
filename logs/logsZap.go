@@ -9,8 +9,8 @@ import (
 
 var SugarLogger *zap.SugaredLogger
 
-func InitLogger() {
-	writeSyncer := getLogWriter()
+func InitLogger(name string) {
+	writeSyncer := getLogWriter(name)
 
 	// 添加终端写入器
 	termWriteSyncer := zapcore.AddSync(os.Stdout)
@@ -32,9 +32,9 @@ func getEncoder() zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(encoderConfig)
 }
 
-func getLogWriter() zapcore.WriteSyncer {
+func getLogWriter(name string) zapcore.WriteSyncer {
 	lumberJackLogger := &lumberjack.Logger{
-		Filename:   "logs/test.log",
+		Filename:   "../../data/testdata/manager/" + name + "/logs/test.log",
 		MaxSize:    1,
 		MaxBackups: 5,
 		MaxAge:     30,

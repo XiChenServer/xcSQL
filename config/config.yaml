@@ -1,0 +1,9 @@
+binlogInfo:
+  FilePath: xcDB/data/testdata/manager
+  CurrFile:
+  BinLogInfo:
+  FileSizeMax:
+  FileCurrSize:
+  MaxFileNumber:
+  RetainDays:
+  binlog_info.log:
