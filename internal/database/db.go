@@ -55,7 +55,7 @@ func NewXcDB(name string) (*XcDB, error) {
 	}
 	wal, err := wal.NewWAL("../../data/testdata/manager/"+name+"/wal.log", "../../data/testdata/manager/"+name+"/walInfo.log")
 
-	binlog, err := log.NewBinlogFile(name, 10, 5)
+	binlog, err := log.NewBinlogFile(name, 0.5*1024*1024, 5)
 
 	if err != nil {
 		logs.SugarLogger.Error("wal.log create fail")

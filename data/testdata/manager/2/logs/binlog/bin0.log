@@ -1,0 +1,6 @@
+2024-03-14T11:34:32+08:00 [get] Key:2 Value: TTL:0
+2024-03-14T11:34:39+08:00 [set] Key:4 Value:4 TTL:0
+2024-03-14T11:34:42+08:00 [get] Key:4 Value: TTL:0
+2024-03-14T11:35:00+08:00 [strlen] Key:4 Value: TTL:0
+2024-03-14T11:35:03+08:00 [get] Key:3 Value: TTL:0
+2024-03-14T11:39:33+08:00 [get] Key:2 Value: TTL:0

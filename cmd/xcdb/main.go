@@ -28,7 +28,7 @@ var CliDB = &cobra.Command{
 		logs.SugarLogger.Infof("Connected to database:", dbName)
 		fmt.Println("Connected to database:", dbName)
 		// 启动守护协程
-		go daemon(db.Wal, db)
+		//go daemon(db.Wal, db)
 		// 处理用户命令
 		handleCommands(db, db.Wal)
 	},
@@ -58,11 +58,11 @@ func handleCommands(db *database.XcDB, wal *wal.WAL) {
 			database.DBExit(db)
 			os.Exit(0)
 		}
-		// 将命令记录到 WAL 中
-		if err := wal.Write(input); err != nil {
-			fmt.Println("Error writing to WAL:", err)
-			continue
-		}
+		//// 将命令记录到 WAL 中
+		//if err := wal.Write(input); err != nil {
+		//	fmt.Println("Error writing to WAL:", err)
+		//	continue
+		//}
 		// 执行命令
 		if err := handleCommand(input, db); err != nil {
 			fmt.Println("Error:", err)

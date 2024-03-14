@@ -24,6 +24,7 @@ type BinlogFile struct {
 
 // NewBinlogFile 初始化 BinlogFile
 func NewBinlogFile(name string, fileSizeMax uint64, retainDays int) (*BinlogFile, error) {
+
 	path, err := os.Getwd()
 	if err != nil {
 		return nil, err
@@ -55,7 +56,7 @@ func NewBinlogFile(name string, fileSizeMax uint64, retainDays int) (*BinlogFile
 	// 读取信息文件中的信息
 	file, size, currNum, err := binlogFile.ReadInfoFromBinlogInfo()
 	if err != nil {
-
+		fmt.Println("sfd", err)
 	}
 
 	if file == nil {
