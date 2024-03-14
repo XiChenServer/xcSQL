@@ -12,7 +12,7 @@ func TestBinlog(t *testing.T) {
 	//}
 
 	// 创建测试用的 BinlogFile 实例
-	bf, err := NewBinlogFile("test", 100, 10)
+	bf, err := NewBinlogFile("test")
 	if err != nil {
 		t.Fatalf("failed to create BinlogFile: %v", err)
 	}

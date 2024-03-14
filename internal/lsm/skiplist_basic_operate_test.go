@@ -25,10 +25,8 @@ func TestDataInfoGenerationAndWrite(t *testing.T) {
 		data := DataInfo{
 			DataMeta: model.DataMeta{
 				Key:       []byte(generateRandomKey()),
-				Value:     []byte(fmt.Sprintf("value%d", i)),
 				Extra:     []byte(fmt.Sprintf("extra%d", i)),
 				KeySize:   uint32(len(fmt.Sprintf("key%d", i))),
-				ValueSize: uint32(len(fmt.Sprintf("value%d", i))),
 				ExtraSize: uint32(len(fmt.Sprintf("extra%d", i))),
 				TTL:       time.Duration(rand.Intn(3600)) * time.Second, // 随机生成 TTL
 			},
@@ -71,8 +69,8 @@ func TestDataInfoGenerationAndWrite(t *testing.T) {
 
 	// 遍历跳表中的每个节点并将数据写入文件
 	sl.ForEach(func(key []byte, value *DataInfo) bool {
-		line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, KeySize: %d, ValueSize: %d, ExtraSize: %d, TTL: %s, FileName: %s, Offset: %d, Size: %d\n",
-			key, value.Value, value.Extra, value.KeySize, value.ValueSize, value.ExtraSize, value.TTL, value.FileName, value.Offset, value.Size)
+		line := fmt.Sprintf("Key: %s,  Extra: %s, KeySize: %d, ExtraSize: %d, TTL: %s, FileName: %s, Offset: %d, Size: %d\n",
+			key, value.Extra, value.KeySize, value.ExtraSize, value.TTL, value.FileName, value.Offset, value.Size)
 		if _, err := file.WriteString(line); err != nil {
 			fmt.Printf("failed to write to file: %v\n", err)
 			return false
@@ -92,8 +90,8 @@ func writeDataToFile(data DataInfo, sl *SkipList) {
 	defer file.Close()
 
 	// 将 DataInfo 格式化为字符串
-	line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, KeySize: %d, ValueSize: %d, ExtraSize: %d, TTL: %s, FileName: %s, Offset: %d, Size: %d\n",
-		data.Key, data.Value, data.Extra, data.KeySize, data.ValueSize, data.ExtraSize, data.TTL, data.FileName, data.Offset, data.Size)
+	line := fmt.Sprintf("Key: %s, Extra: %s, KeySize: %d, ExtraSize: %d, TTL: %s, FileName: %s, Offset: %d, Size: %d\n",
+		data.Key, data.Extra, data.KeySize, data.ExtraSize, data.TTL, data.FileName, data.Offset, data.Size)
 	key := fmt.Sprintf("keyMax: %s, keyMin: %s", sl.SkipListInfo.MaxKey, sl.SkipListInfo.MinKey)
 	// 写入数据到文件
 	_, err = file.WriteString(line)
@@ -146,11 +144,11 @@ func TestDataInfoGenerationAndWrite1(t *testing.T) {
 
 			data := DataInfo{
 				DataMeta: model.DataMeta{
-					Key:       []byte(generateRandomKey()),
-					Value:     []byte(fmt.Sprintf("value%d", i)),
-					Extra:     []byte(fmt.Sprintf("extra%d", i)),
-					KeySize:   uint32(len(fmt.Sprintf("key%d", i))),
-					ValueSize: uint32(len(fmt.Sprintf("value%d", i))),
+					Key: []byte(generateRandomKey()),
+
+					Extra:   []byte(fmt.Sprintf("extra%d", i)),
+					KeySize: uint32(len(fmt.Sprintf("key%d", i))),
+
 					ExtraSize: uint32(len(fmt.Sprintf("extra%d", i))),
 					TTL:       time.Duration(rand.Intn(3600)) * time.Second, // 随机生成 TTL
 				},
@@ -181,8 +179,8 @@ func TestDataInfoGenerationAndWrite1(t *testing.T) {
 
 	// 遍历跳表中的每个节点并将数据写入文件
 	sl.ForEach(func(key []byte, value *DataInfo) bool {
-		line := fmt.Sprintf("Key: %s, Value: %s, Extra: %s, KeySize: %d, ValueSize: %d, ExtraSize: %d, TTL: %s, FileName: %s, Offset: %d, Size: %d\n",
-			key, value.Value, value.Extra, value.KeySize, value.ValueSize, value.ExtraSize, value.TTL, value.FileName, value.Offset, value.Size)
+		line := fmt.Sprintf("Key: %s,  Extra: %s, KeySize: %d, ExtraSize: %d, TTL: %s, FileName: %s, Offset: %d, Size: %d\n",
+			key, value.Extra, value.KeySize, value.ExtraSize, value.TTL, value.FileName, value.Offset, value.Size)
 		if _, err := file.WriteString(line); err != nil {
 			fmt.Printf("failed to write to file: %v\n", err)
 			return false

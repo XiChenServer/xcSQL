@@ -109,6 +109,20 @@ func handleCommand(input string, db *database.XcDB) error {
 		return command.HandleAppendCommand(parts, db)
 	case "strlen":
 		return command.HandleStrlenCommand(parts, db)
+	case "hset":
+		return command.HandleHSetCommand(parts, db)
+	case "hget":
+		return command.HandleHGetCommand(parts, db)
+	case "hgetall":
+		return command.HandleHGetAllCommand(parts, db)
+	case "hdel":
+		return command.HandleHDelCommand(parts, db)
+	case "hexists":
+		return command.HandleHExistsCommand(parts, db)
+	case "hkeys":
+		return command.HandleHKeysCommand(parts, db)
+	case "hvals":
+		return command.HandleHValsCommand(parts, db)
 	// 添加其他命令的处理逻辑...
 	case "exit":
 		// 在主函数中处理退出逻辑，这里不再需要处理

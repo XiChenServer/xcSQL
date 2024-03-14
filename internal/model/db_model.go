@@ -39,11 +39,9 @@ type KeyValue struct {
 	ValueSize  uint32
 }
 type DataMeta struct {
-	Key []byte // 键
-	//
-	Extra   []byte // 其他的
-	KeySize uint32
-	//
+	Key       []byte // 键
+	Extra     []byte // 其他的
+	KeySize   uint32
 	ExtraSize uint32
 	TTL       time.Duration // 生存时间，0 表示永不过期
 }
