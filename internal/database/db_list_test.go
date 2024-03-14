@@ -13,8 +13,8 @@ import (
 
 // 简单的测试数据可以存入
 func TestDB_LPUSH(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
@@ -46,8 +46,8 @@ func TestDB_LPUSH(t *testing.T) {
 
 // 简单的测试数据可以存入
 func TestDB_RPUSH(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_List]
@@ -75,8 +75,8 @@ func TestDB_RPUSH(t *testing.T) {
 
 // 简单的测试数据可以取出来
 func TestDB_Range(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_List]
@@ -105,8 +105,8 @@ func TestDB_Range(t *testing.T) {
 
 // 简单的测试数据可以取出来
 func TestDB_Index(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_List]
@@ -132,8 +132,8 @@ func TestDB_Index(t *testing.T) {
 
 // 简单的测试数据可以取出来
 func TestDB_LPOP(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_List]
@@ -159,8 +159,8 @@ func TestDB_LPOP(t *testing.T) {
 
 // 简单的测试数据可以取出来
 func TestDB_RPOP(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_List]
@@ -234,8 +234,8 @@ func generateRandomByteSlices(n, maxSliceLength int) [][]byte {
 }
 
 func TestDB_LLEN(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_List]

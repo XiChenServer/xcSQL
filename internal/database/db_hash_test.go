@@ -11,8 +11,8 @@ import (
 )
 
 func Test_HSET(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]
@@ -45,8 +45,8 @@ func Test_HSET(t *testing.T) {
 }
 
 func Test_HGET(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]
@@ -74,8 +74,8 @@ func Test_HGET(t *testing.T) {
 }
 
 func Test_HGETALL(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]
@@ -124,8 +124,8 @@ func Test_MapToBytesAndBytesToMap(t *testing.T) {
 }
 
 func Test_HDEL(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]
@@ -158,8 +158,8 @@ func Test_HDEL(t *testing.T) {
 }
 
 func Test_HExists(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]
@@ -192,8 +192,8 @@ func Test_HExists(t *testing.T) {
 }
 
 func Test_HKeys(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]
@@ -226,8 +226,8 @@ func Test_HKeys(t *testing.T) {
 }
 
 func Test_HVals(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]
@@ -260,8 +260,8 @@ func Test_HVals(t *testing.T) {
 }
 
 func Test_HLen(t *testing.T) {
-	logs.InitLogger()
-	db := NewXcDB("")
+	logs.InitLogger("")
+	db, _ := NewXcDB("")
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
 	lsmMap := *db.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]

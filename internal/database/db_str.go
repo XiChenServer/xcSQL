@@ -159,6 +159,7 @@ func (db *XcDB) doAppend(key, value []byte) error {
 	data, err := db.StorageManager.DecompressAndFillData(string(fileName), offset, size)
 
 	if err != nil {
+
 		fmt.Println(err)
 		return err
 	}

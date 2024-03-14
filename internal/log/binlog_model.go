@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"github.com/spf13/viper"
 	"io"
 	"os"
 	"path/filepath"
@@ -23,12 +24,25 @@ type BinlogFile struct {
 }
 
 // NewBinlogFile 初始化 BinlogFile
-func NewBinlogFile(name string, fileSizeMax uint64, retainDays int) (*BinlogFile, error) {
-
+func NewBinlogFile(name string) (*BinlogFile, error) {
 	path, err := os.Getwd()
 	if err != nil {
 		return nil, err
 	}
+	// 初始化 Viper
+	v := viper.New()
+
+	// 设置配置文件名
+	v.SetConfigFile(path + "/../../config/config.yaml")
+
+	// 读取配置文件
+	if err := v.ReadInConfig(); err != nil {
+		fmt.Printf("Error reading config file: %v\n", err)
+		return nil, err
+	}
+
+	fileSizeMax := uint64(v.GetFloat64("binlogInfo.FileSizeMax"))
+	retainDays := v.GetInt("binlogInfo.RetainDays")
 
 	// 创建 BinlogFile 实例
 	binlogFile := &BinlogFile{
@@ -39,7 +53,6 @@ func NewBinlogFile(name string, fileSizeMax uint64, retainDays int) (*BinlogFile
 
 	// 打开记录 binlog 信息的文件
 	binLogInfoPath := binlogFile.FilePath + "bin_info.log"
-	fmt.Println(binLogInfoPath)
 
 	// 确保目录存在，如果不存在则递归创建
 	err = os.MkdirAll(filepath.Dir(binLogInfoPath), os.ModePerm)
@@ -52,11 +65,15 @@ func NewBinlogFile(name string, fileSizeMax uint64, retainDays int) (*BinlogFile
 	if err != nil {
 		return nil, fmt.Errorf("failed to open binlog info file: %v", err)
 	}
+	if binLogInfo == nil {
+		return nil, errors.New("failed to create binlog info file")
+	} else {
 
+	}
 	// 读取信息文件中的信息
 	file, size, currNum, err := binlogFile.ReadInfoFromBinlogInfo()
 	if err != nil {
-		fmt.Println("sfd", err)
+		fmt.Println(err)
 	}
 
 	if file == nil {

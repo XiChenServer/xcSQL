@@ -1,9 +1,6 @@
 binlogInfo:
-  FilePath: xcDB/data/testdata/manager
-  CurrFile:
-  BinLogInfo:
-  FileSizeMax:
-  FileCurrSize:
-  MaxFileNumber:
-  RetainDays:
-  binlog_info.log:
+  FileSizeMax: 524288    # 0.5 * 1024 * 1024
+  RetainDays: 5
+lsmTree:
+  maxActiveSize: 16
+  maxDiskTableSize: 10000

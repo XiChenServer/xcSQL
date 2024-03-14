@@ -88,16 +88,22 @@ func (sm *StorageManager) StoreData(data *model.KeyValue) (StorageLocation, erro
 	offset := int64(sm.CurrentSize)
 	size := int64(len(compressedData))
 	sm.FileLock.Unlock()
-
+	fmt.Println(offset+size, sm.MaxFileSize)
 	// 如果当前文件大小超过最大限制，则创建新文件
 	if offset+size > int64(sm.MaxFileSize) {
+		fmt.Println("111")
 		sm.FileLock.Lock()
 		sm.CurrentFile.Close()
 		sm.FileNumber++
-		fileName := filepath.Join(string(sm.StoragePath), "data_"+strconv.Itoa(int(sm.FileNumber))+".gz")
-		file, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+		file, err := os.OpenFile(filepath.Join(string(sm.StoragePath), "data_"+strconv.Itoa(int(sm.FileNumber))+".gz"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+		//if err != nil {
+		//	return nil, err
+		//}
+		//
+		//fileName := filepath.Join(string(sm.StoragePath), "data_"+strconv.Itoa(int(sm.FileNumber))+".gz")
+		//file, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 		if err != nil {
-			fmt.Println("sdfs", fileName)
+			fmt.Println("sdfs", string(sm.StoragePath))
 			sm.FileLock.Unlock()
 			return StorageLocation{}, err
 		}

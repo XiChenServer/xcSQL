@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/gob"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -37,7 +38,7 @@ func (sm *StorageManager) compressData(data model.KeyValue) ([]byte, error) {
 	return compressedData.Bytes(), nil
 }
 
-func DecompressData(fileName string, offset, size int64) ([]byte, error) {
+func DecompressData1(fileName string, offset, size int64) ([]byte, error) {
 	// 打开文件
 	file, err := os.OpenFile(fileName, os.O_RDONLY, 0)
 	if err != nil {
@@ -55,6 +56,7 @@ func DecompressData(fileName string, offset, size int64) ([]byte, error) {
 	// 设置读取范围
 	_, err = file.Seek(offset, 0)
 	if err != nil {
+		fmt.Println("vbc")
 		return nil, err
 	}
 
@@ -82,7 +84,7 @@ func DecompressData(fileName string, offset, size int64) ([]byte, error) {
 	return decompressedData, nil
 }
 
-func (sm *StorageManager) DecompressAndFillData(fileName string, offset, size int64) (*model.KeyValue, error) {
+func (sm *StorageManager) DecompressAndFillData1(fileName string, offset, size int64) (*model.KeyValue, error) {
 	// 解压数据
 	decompressedData, err := DecompressData(fileName, offset, size)
 	if err != nil {
@@ -94,5 +96,53 @@ func (sm *StorageManager) DecompressAndFillData(fileName string, offset, size in
 	if err != nil {
 		return nil, err
 	}
+	return &keyValue, nil
+}
+
+func DecompressData(fileName string, offset, size int64) ([]byte, error) {
+	// 打开文件
+	file, err := os.OpenFile(fileName, os.O_RDONLY, 0)
+	if err != nil {
+		fmt.Printf("无法打开文件 '%s': %v\n", fileName, err)
+		return nil, err
+	}
+	defer file.Close()
+
+	// 创建一个 SectionReader 来读取指定范围的数据
+	sectionReader := io.NewSectionReader(file, offset, size)
+
+	// 创建 gzip.Reader
+	reader, err := gzip.NewReader(sectionReader)
+	if err != nil {
+		fmt.Printf("创建 gzip 读取器失败: %v\n", err)
+		return nil, err
+	}
+	defer reader.Close()
+
+	// 读取解压后的数据
+	decompressedData, err := ioutil.ReadAll(reader)
+	if err != nil {
+		fmt.Printf("读取解压后的数据失败: %v\n", err)
+		return nil, err
+	}
+
+	return decompressedData, nil
+}
+
+func (sm *StorageManager) DecompressAndFillData(fileName string, offset, size int64) (*model.KeyValue, error) {
+	// 解压数据
+	decompressedData, err := DecompressData(fileName, offset, size)
+	if err != nil {
+		return nil, err
+	}
+
+	// 解码数据到 KeyValue 结构体
+	var keyValue model.KeyValue
+	err = gob.NewDecoder(bytes.NewReader(decompressedData)).Decode(&keyValue)
+	if err != nil {
+		fmt.Printf("解码数据失败: %v\n", err)
+		return nil, err
+	}
+
 	return &keyValue, nil
 }
