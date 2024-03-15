@@ -123,6 +123,14 @@ func handleCommand(input string, db *database.XcDB) error {
 		return command.HandleHKeysCommand(parts, db)
 	case "hvals":
 		return command.HandleHValsCommand(parts, db)
+	case "rpush": // 列表操作：向列表尾部添加元素
+		return command.HandleRPushCommand(parts, db)
+	case "lpush": // 列表操作：向列表头部添加元素
+		return command.HandleLPushCommand(parts, db)
+	case "lrange": // 列表操作：获取列表指定范围的元素
+		return command.HandleLRANGECommand(parts, db)
+	case "lindex": // 列表操作：获取列表指定索引的元素
+		return command.HandleLINDEXCommand(parts, db)
 	// 添加其他命令的处理逻辑...
 	case "exit":
 		// 在主函数中处理退出逻辑，这里不再需要处理
