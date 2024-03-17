@@ -1,0 +1,1 @@
+Key: 2, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/manager/2/disk/data_1.gz, Offset: 3454, Size: 243

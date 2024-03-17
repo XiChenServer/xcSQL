@@ -123,19 +123,35 @@ func handleCommand(input string, db *database.XcDB) error {
 		return command.HandleHKeysCommand(parts, db)
 	case "hvals":
 		return command.HandleHValsCommand(parts, db)
-	case "rpush": // 列表操作：向列表尾部添加元素
-		return command.HandleRPushCommand(parts, db)
-	case "lpush": // 列表操作：向列表头部添加元素
-		return command.HandleLPushCommand(parts, db)
-	case "lrange": // 列表操作：获取列表指定范围的元素
+	case "lpush":
+		return command.HandleLPUSHCommand(parts, db)
+	case "lrange":
 		return command.HandleLRANGECommand(parts, db)
-	case "lindex": // 列表操作：获取列表指定索引的元素
+	case "lindex":
 		return command.HandleLINDEXCommand(parts, db)
-	// 添加其他命令的处理逻辑...
+	case "lpop":
+		return command.HandleLPOPCommand(parts, db)
+	case "rpop":
+		return command.HandleRPOPCommand(parts, db)
+	case "llen":
+		return command.HandleLLENCommand(parts, db)
+	case "rpush":
+		return command.HandleRPUSHCommand(parts, db) // 添加其他命令的处理逻辑...
+	case "sadd":
+		return command.HandleSAddCommand(parts, db)
+	case "srem":
+		return command.HandleSRemCommand(parts, db)
+	case "smembers":
+		return command.HandleSMembersCommand(parts, db)
+	case "sismember":
+		return command.HandleSIsMemberCommand(parts, db)
+	case "scard":
+		return command.HandleSCardCommand(parts, db)
 	case "exit":
 		// 在主函数中处理退出逻辑，这里不再需要处理
 		return nil
 	default:
 		return fmt.Errorf("Unknown command: %s", cmd)
 	}
+	return nil
 }

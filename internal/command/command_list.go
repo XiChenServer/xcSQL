@@ -7,26 +7,6 @@ import (
 	"strconv"
 )
 
-// HandleRPUSHCommand 处理 RPUSH 命令
-func HandleRPUSHCommand(parts []string, db *database.XcDB) error {
-	if len(parts) < 3 {
-		return errors.New("Usage: rpush [key] [value1] [value2] ... [valueN]")
-	}
-
-	key := []byte(parts[1])
-	values := make([][]byte, len(parts)-2)
-	for i := 2; i < len(parts); i++ {
-		values[i-2] = []byte(parts[i])
-	}
-
-	err := db.RPUSH(key, values)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // HandleLPUSHCommand 处理 LPUSH 命令
 func HandleLPUSHCommand(parts []string, db *database.XcDB) error {
 	if len(parts) < 3 {
@@ -93,23 +73,73 @@ func HandleLINDEXCommand(parts []string, db *database.XcDB) error {
 	return nil
 }
 
-// RegisterListCommands 注册列表相关命令
-func RegisterListCommands(db *database.XcDB) {
-	command.RegisterCommand("rpush", func(parts []string) error {
-		return HandleRPUSHCommand(parts, db)
-	})
+// HandleLPOPCommand 处理 LPOP 命令
+func HandleLPOPCommand(parts []string, db *database.XcDB) error {
+	if len(parts) != 2 {
+		return errors.New("Usage: lpop [key]")
+	}
 
-	command.RegisterCommand("lpush", func(parts []string) error {
-		return HandleLPUSHCommand(parts, db)
-	})
+	key := []byte(parts[1])
 
-	command.RegisterCommand("lrange", func(parts []string) error {
-		return HandleLRANGECommand(parts, db)
-	})
+	data, err := db.LPOP(key)
+	if err != nil {
+		return err
+	}
 
-	command.RegisterCommand("lindex", func(parts []string) error {
-		return HandleLINDEXCommand(parts, db)
-	})
+	fmt.Println("LPOP result:", data)
+	return nil
+}
 
-	// 注册其他列表相关命令...
+// HandleRPUSHCommand 处理 RPUSH 命令
+func HandleRPUSHCommand(parts []string, db *database.XcDB) error {
+	if len(parts) < 3 {
+		return errors.New("Usage: rpush [key] [value1] [value2] ... [valueN]")
+	}
+
+	key := []byte(parts[1])
+	values := make([][]byte, len(parts)-2)
+	for i := 2; i < len(parts); i++ {
+		values[i-2] = []byte(parts[i])
+	}
+
+	err := db.RPUSH(key, values)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// HandleRPOPCommand 处理 RPOP 命令
+func HandleRPOPCommand(parts []string, db *database.XcDB) error {
+	if len(parts) != 2 {
+		return errors.New("Usage: rpop [key]")
+	}
+
+	key := []byte(parts[1])
+
+	data, err := db.RPOP(key)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("RPOP result:", data)
+	return nil
+}
+
+// HandleLLENCommand 处理 LLEN 命令
+func HandleLLENCommand(parts []string, db *database.XcDB) error {
+	if len(parts) != 2 {
+		return errors.New("Usage: llen [key]")
+	}
+
+	key := []byte(parts[1])
+
+	data, err := db.LLEN(key)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("LLEN result:", data)
+	return nil
 }

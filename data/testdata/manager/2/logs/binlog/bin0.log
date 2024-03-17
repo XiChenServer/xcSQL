@@ -87,3 +87,4 @@
 2024-03-14T16:31:37+08:00 [get] Key:7 Value: TTL:0
 2024-03-14T18:07:32+08:00 [get] Key:2 Value: TTL:0
 2024-03-14T18:07:38+08:00 [get] Key:5 Value: TTL:0
+2024-03-17T21:12:34+08:00 [get] Key:2 Fields: Values: TTL:0

@@ -27,9 +27,9 @@ func HandleSetCommand(parts []string, db *database.XcDB) error {
 		Timestamp: time.Now(),
 		Operation: "set",
 		Key:       key,
-		Value:     value,
 		TTL:       ttl,
 	}
+	bin.Value = append(bin.Value, value)
 	db.BinLog.WriteEntry(bin)
 
 	// 执行操作
@@ -76,8 +76,8 @@ func HandleAppendCommand(parts []string, db *database.XcDB) error {
 		Timestamp: time.Now(),
 		Operation: "append",
 		Key:       key,
-		Value:     value,
 	}
+	bin.Value = append(bin.Value, value)
 	db.BinLog.WriteEntry(bin)
 
 	// 执行操作

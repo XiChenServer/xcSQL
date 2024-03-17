@@ -519,3 +519,35 @@
 2024-03-14T18:08:38.919+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
 2024-03-14T18:08:38.919+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
 2024-03-14T18:08:38.922+0800	INFO	xcdb/main.go:28	Connected to database:%!(EXTRA string=2)
+2024-03-17T21:12:32.110+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.112+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.113+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:32.119+0800	INFO	xcdb/main.go:28	Connected to database:%!(EXTRA string=2)
+2024-03-17T21:12:34.277+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:12:53.780+0800	INFO	lsm/lsm_tree.go:224	BloomServer don't find
+2024-03-17T21:12:53.782+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:13:37.682+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.057+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.058+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.059+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.059+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting
+2024-03-17T21:14:30.061+0800	INFO	xcdb/main.go:28	Connected to database:%!(EXTRA string=2)
+2024-03-17T21:14:33.079+0800	INFO	bloomfilter/bloom_model.go:55	LocalBloomService is setting

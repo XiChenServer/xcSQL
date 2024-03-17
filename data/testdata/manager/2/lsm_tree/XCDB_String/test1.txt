@@ -1,5 +1,5 @@
 Key: 1, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/2/disk/data_1.gz, Offset: 4817, Size: 240
-Key: 2, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/2/disk/data_1.gz, Offset: 2257, Size: 232
+Key: 2, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/manager/2/disk/data_1.gz, Offset: 3199, Size: 255
 Key: 3, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/2/disk/data_1.gz, Offset: 7575, Size: 234
 Key: 332, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/2/disk/data_1.gz, Offset: 5992, Size: 223
 Key: 34, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/2/disk/data_1.gz, Offset: 2315, Size: 230
