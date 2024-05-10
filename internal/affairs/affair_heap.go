@@ -2,7 +2,7 @@ package affairs
 
 // WaterMark 结构体
 type WaterMark struct {
-	heap []Txn // 事务开始和结束时间戳的堆
+	heap []*Tx // 事务开始和结束时间戳的堆
 }
 
 func (w WaterMark) Len() int {
@@ -11,7 +11,7 @@ func (w WaterMark) Len() int {
 
 func (w WaterMark) Less(i, j int) bool {
 	// 按开始时间戳升序排序
-	return w.heap[i].startTime < w.heap[j].startTime
+	return w.heap[i].Meta.StartTime < w.heap[j].Meta.StartTime
 }
 
 func (w WaterMark) Swap(i, j int) {
@@ -19,7 +19,7 @@ func (w WaterMark) Swap(i, j int) {
 }
 
 func (w *WaterMark) Push(x interface{}) {
-	w.heap = append(w.heap, x.(Txn))
+	w.heap = append(w.heap, x.(*Tx))
 }
 
 func (w *WaterMark) Pop() interface{} {

@@ -127,3 +127,39 @@ func saveAndPrintDiskData(lsmMap *map[uint16]*lsm.LSMTree) {
 func (db *XcDB) Close() {
 
 }
+
+// GetVersion 获取指定键的版本号
+func (db *XcDB) GetVersion(key []byte) (uint32, error) {
+	//// 根据数据类型进行版本号查询
+	//switch db.GetDataType(key) {
+	//case XCDB_String:
+	//	// 根据键获取版本号
+	//	return db.GetVersionForString(key)
+	//case XCDB_StringSet:
+	//	// 根据键获取版本号
+	//	return db.GetVersionForStringSet(key)
+	//case XCDB_List:
+	//	// 根据键获取版本号
+	//	return db.GetVersionForList(key)
+	//case XCDB_Hash:
+	//	// 根据键获取版本号
+	//	return db.GetVersionForHash(key)
+	//case XCDB_Set:
+	//	// 根据键获取版本号
+	//	return db.GetVersionForSet(key)
+	//default:
+	//	return 0, fmt.Errorf("unsupported data type")
+	//}
+}
+
+// GetVersionForString 根据键获取 String 类型数据的版本号
+func (db *XcDB) GetVersionForString(key []byte) (uint32, error) {
+	// 实现具体的逻辑来获取 String 类型数据的版本号
+	// 例如从数据库中查询版本号等操作
+}
+
+// GetVersionForStringSet 根据键获取 StringSet 类型数据的版本号
+func (db *XcDB) GetVersionForStringSet(key []byte) (uint32, error) {
+	// 实现具体的逻辑来获取 StringSet 类型数据的版本号
+	// 例如从数据库中查询版本号等操作
+}

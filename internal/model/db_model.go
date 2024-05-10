@@ -28,14 +28,14 @@ const (
 // KeyValue 表示键值对
 type KeyValue struct {
 	DataMeta   *DataMeta
-	Version    uint32    // 版本号
-	CreateTime time.Time // 创建时间
-	UpdateTime time.Time // 修改时间
-	AccessTime time.Time // 访问时间
-	DataType   uint16    // 数据类型
-	DataMark   uint16    // 权限控制信息
-	checksum   uint32    //校验和
-	Value      []byte    // 值，可以根据需要选择不同的数据类型
+	Version    uint32      // 版本号
+	CreateTime time.Time   // 创建时间
+	UpdateTime time.Time   // 修改时间
+	AccessTime time.Time   // 访问时间
+	DataType   uint16      // 数据类型
+	DataMark   uint16      // 权限控制信息
+	checksum   uint32      //校验和
+	Value      interface{} // 值，可以根据需要选择不同的数据类型
 	ValueSize  uint32
 }
 type DataMeta struct {
