@@ -9,12 +9,12 @@ import (
 
 type WAL struct {
 	mu         sync.Mutex
-	logFile    *os.File    // 日志文件
-	curLine    uint64      // 当前行数
-	infoFile   *os.File    // 用于存储额外信息的文件
-	offset     int64       // 文件偏移量
-	lastOffset int64       // 上次读取的文件偏移量
-	cmdChan    chan string // 用于接收命令的管道
+	logFile    *os.File         // 日志文件
+	curLine    uint64           // 当前行数
+	infoFile   *os.File         // 用于存储额外信息的文件
+	offset     int64            // 文件偏移量
+	lastOffset int64            // 上次读取的文件偏移量
+	cmdChan    chan interface{} // 用于接收命令的管道
 }
 
 func NewWAL(logFile, infoFile string) (*WAL, error) {
@@ -47,7 +47,7 @@ func NewWAL(logFile, infoFile string) (*WAL, error) {
 	}
 
 	// 创建命令管道
-	cmdChan := make(chan string)
+	cmdChan := make(chan interface{})
 
 	// 返回 WAL 实例
 	return &WAL{
@@ -61,7 +61,7 @@ func NewWAL(logFile, infoFile string) (*WAL, error) {
 }
 
 // 将命令写入管道和日志文件，并更新信息文件中的当前行数和文件偏移量
-func (wal *WAL) Write(data string) error {
+func (wal *WAL) Write(data interface{}) error {
 	wal.mu.Lock()
 	defer wal.mu.Unlock()
 
@@ -96,7 +96,7 @@ func (wal *WAL) Write(data string) error {
 }
 
 // 从管道中读取下一个命令
-func (wal *WAL) ReadNextCommand() (string, error) {
+func (wal *WAL) ReadNextCommand() (interface{}, error) {
 	// 从管道中读取命令
 	cmd := <-wal.cmdChan
 	return cmd, nil
@@ -128,6 +128,5 @@ func (wal *WAL) RecoverFromWAL() error {
 	if err := scanner.Err(); err != nil {
 		return err
 	}
-
 	return nil
 }

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"SQL/internal/affairs"
 	"SQL/internal/log"
 	"SQL/internal/lsm"
 	"SQL/internal/model"
@@ -15,11 +16,12 @@ import (
 
 type XcDB struct {
 	StorageManager *storage.StorageManager
-	Lsm            *map[uint16]*lsm.LSMTree //lsm书
+	Lsm            *map[uint16]*lsm.LSMTree //lsm树
 	Wal            *wal.WAL                 // redo.log之类的，有关事务的
 	BinLog         *log.BinlogFile
 	// 读写锁，用于并发读写控制
 	Mu sync.RWMutex
+	TX *affairs.Oracle //事务的操作
 }
 
 func NewXcDB(name string) (*XcDB, error) {
@@ -78,7 +80,7 @@ func NewXcDB(name string) (*XcDB, error) {
 	wal, err := wal.NewWAL("../../data/testdata/manager/"+name+"/wal.log", "../../data/testdata/manager/"+name+"/walInfo.log")
 
 	binlog, err := log.NewBinlogFile(name)
-
+	txOracle := affairs.NewOracle()
 	if err != nil {
 		logs.SugarLogger.Error("wal.log create fail")
 		return nil, err
@@ -89,6 +91,7 @@ func NewXcDB(name string) (*XcDB, error) {
 		Mu:             sync.RWMutex{},
 		Wal:            wal,
 		BinLog:         binlog,
+		TX:             txOracle,
 	}, nil
 }
 
@@ -150,16 +153,19 @@ func (db *XcDB) GetVersion(key []byte) (uint32, error) {
 	//default:
 	//	return 0, fmt.Errorf("unsupported data type")
 	//}
+	return 0, nil
 }
 
 // GetVersionForString 根据键获取 String 类型数据的版本号
 func (db *XcDB) GetVersionForString(key []byte) (uint32, error) {
 	// 实现具体的逻辑来获取 String 类型数据的版本号
 	// 例如从数据库中查询版本号等操作
+	return 0, nil
 }
 
 // GetVersionForStringSet 根据键获取 StringSet 类型数据的版本号
 func (db *XcDB) GetVersionForStringSet(key []byte) (uint32, error) {
 	// 实现具体的逻辑来获取 StringSet 类型数据的版本号
 	// 例如从数据库中查询版本号等操作
+	return 0, nil
 }

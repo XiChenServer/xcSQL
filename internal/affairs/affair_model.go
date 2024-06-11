@@ -2,7 +2,9 @@ package affairs
 
 import (
 	"SQL/internal/database"
+	"SQL/internal/model"
 	"fmt"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -31,16 +33,10 @@ type TxMeta struct {
 	ReadSet      map[string]interface{} // 读操作的键列表，键为键名，值为读取的数据
 	WriteSet     map[string]interface{} // 写操作的键列表，键为键名，值为写入的数据
 	ConflictKeys map[string]struct{}    // 冲突检测用的键集合
+	Snapshot     database.XcDB          //生成一个快照
 }
 
-// 初始化一个事务
-func (tx *Tx) init(db *database.XcDB) {
-	tx.DB = db
-	tx.Meta = &TxMeta{}
-	tx.Meta.ID++
-}
-
-// 获取事务的id
+// ID 获取事务的id
 func (tx *Tx) ID() uint64 {
 	return tx.Meta.ID
 }
@@ -50,6 +46,7 @@ type Oracle struct {
 	sync.Mutex
 	committedTxns   []*Tx  // 最近提交的事务列表
 	globalTimestamp uint64 // 全局时间戳
+	db              *database.XcDB
 }
 
 // NewOracle 创建一个新的Oracle对象
@@ -60,19 +57,33 @@ func NewOracle() *Oracle {
 	}
 }
 
+type dataTx struct {
+	Key         []byte //key键
+	Version     uint32 // 版本号
+	OperateTime time.Time
+	DataType    uint16      // 数据类型
+	DataMark    uint16      // 权限控制信息
+	Value       interface{} // 值，可以根据需要选择不同的数据类型
+	TTL         uint64      // 生存时间，0 表示永不过期
+}
+
 // BeginTransaction 开始一个新的事务
 func (o *Oracle) BeginTransaction() *Tx {
 	o.Lock()
 	defer o.Unlock()
 	o.globalTimestamp++
-	return &Tx{
+	tx := &Tx{
 		Meta: &TxMeta{
 			ID:           o.globalTimestamp,
 			Status:       TxnPending,
 			StartTime:    getCurrentTimestamp(),
 			ConflictKeys: make(map[string]struct{}),
+			Snapshot:     *o.db,
 		},
 	}
+	o.committedTxns = append(o.committedTxns, tx)
+	o.db.Wal.Write(tx) //开启事务的时候也是写入
+	return tx
 }
 
 // CommitTransaction 提交事务
@@ -82,11 +93,14 @@ func (o *Oracle) CommitTransaction(txn *Tx) {
 	o.Lock()
 	defer o.Unlock()
 	o.committedTxns = append(o.committedTxns, txn)
+	// 记录事务提交到 Redo Log
+	o.db.Wal.Write(txn)
 }
 
 // RollbackTransaction 回滚事务
 func (o *Oracle) RollbackTransaction(txn *Tx) {
 	txn.Meta.Status = TxnRolledBack
+	o.db.Wal.Write(txn) //开启事务的时候也是写入
 }
 
 // AddReadKey 添加读操作的键到事务的读集合
@@ -109,7 +123,7 @@ func getCurrentTimestamp() uint64 {
 	return uint64(time.Now().UnixNano())
 }
 
-// 提交事务并进行冲突检测和版本检查
+// CommitAndCheckConflict 提交事务并进行冲突检测和版本检查
 func CommitAndCheckConflict(o *Oracle, txn *Tx) error {
 	// 获取所有未提交的事务
 	o.Lock()
@@ -119,17 +133,20 @@ func CommitAndCheckConflict(o *Oracle, txn *Tx) error {
 	// 检查冲突和版本
 	for _, uncommittedTxn := range uncommittedTxns {
 		if hasConflict(uncommittedTxn, txn) {
-			return fmt.Errorf("conflict detected, cannot commit transaction")
+			// 如果检测到冲突，则回滚事务并记录到 Redo Log
+			o.RollbackTransaction(txn)
+			return fmt.Errorf("conflict detected, transaction rolled back")
 		}
 	}
 
 	// 冲突检测通过，提交事务并更新版本信息
 	o.CommitTransaction(txn)
 	txn.UpdateReadVersions()
+
 	return nil
 }
 
-// 检查两个事务是否存在冲突
+// hasConflict 检查两个事务是否存在冲突
 func hasConflict(txn1, txn2 *Tx) bool {
 	// 检查读写集合是否有交集
 	for readKey := range txn1.Meta.ReadSet {
@@ -144,22 +161,80 @@ func hasConflict(txn1, txn2 *Tx) bool {
 			return true
 		}
 	}
-	//// 检查数据版本冲突
-	//for key, version := range txn1.ReadVersions {
-	//	if latestVersion, ok := txn2.DB.GetVersion([]byte(key)); ok && latestVersion > version {
-	//		return true
-	//	}
-	//}
 
 	return false
 }
 
-// 更新事务的读取版本信息
+// UpdateReadVersions 更新事务的读取版本信息
 func (txn *Tx) UpdateReadVersions() {
-	//txn.ReadVersions = make(map[string]uint64)
-	//for key := range txn.Meta.ReadSet {
-	//	if version, ok := txn.DB.GetVersion([]byte(key)); ok {
-	//		txn.ReadVersions[key] = version
-	//	}
-	//}
+	for key, v := range txn.Meta.WriteSet {
+		data := v.(dataTx)
+		switch data.DataType {
+		case model.XCDB_List:
+			switch data.DataMark {
+			case model.XCDB_ListLPOP:
+				txn.DB.LPOP(data.Key)
+			case model.XCDB_ListLPUSH:
+				txn.DB.LPUSH(data.Key, data.Value.([][]byte), data.TTL)
+			case model.XCDB_ListRPOP:
+				txn.DB.RPOP(data.Key)
+			case model.XCDB_RPUSH:
+				txn.DB.RPUSH(data.Key, data.Value.([][]byte), data.TTL)
+			}
+		case model.XCDB_String:
+			switch data.DataMark {
+			case model.XCDB_StringSet:
+				txn.DB.Set([]byte(key), data.Value.([]byte), data.TTL)
+			case model.XCDB_Append:
+				txn.DB.Append([]byte(key), data.Value.([]byte))
+			}
+		case model.XCDB_Hash:
+			switch data.DataMark {
+			case model.XCDB_HSet:
+				txn.DB.HSet(data.Key, data.Value.(map[string]string))
+			case model.XCDB_HDel:
+				txn.DB.HDel(data.Key, data.Value.([]string)...)
+			}
+		case model.XCDB_Set:
+			switch data.DataMark {
+			case model.XCDB_SetSADD:
+				txn.DB.SAdd(data.Key, data.Value.([][]byte))
+			case model.XCDB_SetSREM:
+				txn.DB.SRem(data.Key, data.Value.([][]byte))
+			}
+		}
+	}
+}
+
+// TxGet 事务的字符串读取操作
+func (txn *Tx) TxGet(key []byte) (interface{}, error) {
+	num := strconv.Itoa(int(model.XCDB_StringGet))
+	// 先从事务的 WriteSet 中查找是否有对应的数据
+	if val, ok := txn.Meta.WriteSet[num+string(key)]; ok {
+		return []byte(val.(string)), nil
+	}
+
+	// 再从事务的 ReadSet 中查找是否有对应的数据
+	if val, ok := txn.Meta.ReadSet[num+string(key)]; ok {
+		return []byte(val.(string)), nil
+	}
+
+	// 最后到快照里面获取
+	data, err := txn.Meta.Snapshot.Get(key)
+	if err != nil {
+		return nil, err
+	}
+
+	// 更新事务的 ReadSet
+	DataTx := dataTx{
+		Key:         key,
+		Value:       []byte(data),
+		OperateTime: time.Now(),
+		DataType:    model.XCDB_StringGet,
+		DataMark:    model.XCDB_String,
+		TTL:         0,
+	}
+	txn.Meta.ReadSet[num+string(key)] = DataTx
+	txn.DB.Wal.Write(DataTx) //将数据写入到redolog之中
+	return data, nil
 }
