@@ -6,6 +6,7 @@ import (
 	"SQL/logs"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -15,15 +16,18 @@ func (db *XcDB) HSet(key []byte, value map[string]string, ttl ...uint64) error {
 	return err
 }
 func (db *XcDB) doHset(key []byte, value map[string]string, ttl ...uint64) error {
-	db.Mu.Lock()
-	defer db.Mu.Unlock()
+	//db.Mu.Lock()
+	//defer db.Mu.Unlock()
 
 	var timeSlice []time.Duration
 	for _, t := range ttl {
 		timeSlice = append(timeSlice, time.Duration(t)*time.Second)
 	}
-
+	for k := range *db.Lsm {
+		fmt.Println(k)
+	}
 	lsmMap := *db.Lsm
+
 	Hash := lsmMap[model.XCDB_Hash]
 
 	values, err := mapToBytes(value)

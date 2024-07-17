@@ -82,7 +82,6 @@ func (sm *StorageManager) StoreData(data *model.KeyValue) (StorageLocation, erro
 	if err != nil {
 		return StorageLocation{}, err
 	}
-	fmt.Println(string(sm.StoragePath))
 	// 获取当前文件的偏移量和大小
 	sm.FileLock.Lock()
 	offset := int64(sm.CurrentSize)
@@ -91,7 +90,6 @@ func (sm *StorageManager) StoreData(data *model.KeyValue) (StorageLocation, erro
 	fmt.Println(offset+size, sm.MaxFileSize)
 	// 如果当前文件大小超过最大限制，则创建新文件
 	if offset+size > int64(sm.MaxFileSize) {
-		fmt.Println("111")
 		sm.FileLock.Lock()
 		sm.CurrentFile.Close()
 		sm.FileNumber++

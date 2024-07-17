@@ -30,5 +30,6 @@ Key: lfq1DjdVZW, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/1/disk/
 Key: pawmmC1IAV, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/1/disk/data_0.gz, Offset: 3641, Size: 242
 Key: qmgZDlI9LI, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/1/disk/data_0.gz, Offset: 1218, Size: 242
 Key: vOieeAtN2r, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/1/disk/data_0.gz, Offset: 2919, Size: 238
+Key: AFJG77r4Vp, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/1/disk/data_0.gz, Offset: 5094, Size: 244
 Key: RMPuZjWiqc, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/1/disk/data_0.gz, Offset: 4610, Size: 242
 Key: WVzFsx4rjx, Extra: , TTL: 0s, FileName: ../../data/testdata/manager/1/disk/data_0.gz, Offset: 4852, Size: 242

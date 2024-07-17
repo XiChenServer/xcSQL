@@ -31,10 +31,11 @@ func NewWAL(logFile, infoFile string) (*WAL, error) {
 	}
 
 	// 读取信息文件中的当前行数和文件偏移量
-	var curLine uint64
-	var offset int64
-	var lastOffset int64
+	var curLine uint64 = 0
+	var offset int64 = 0
+	var lastOffset int64 = 0
 	_, err = fmt.Fscanf(info, "curLine: %d\noffset: %d\nlastOffset: %d\n", &curLine, &offset, &lastOffset)
+
 	if err != nil {
 		// 如果无法读取到数据，则写入初始值
 		initialOffset := 0

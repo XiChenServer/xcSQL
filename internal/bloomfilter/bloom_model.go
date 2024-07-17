@@ -1,7 +1,6 @@
 package bloomfilter
 
 import (
-	"SQL/logs"
 	"github.com/demdxx/gocast"
 )
 
@@ -52,7 +51,7 @@ func (l *LocalBloomService) getKEncrypted(val string) []int32 {
 
 // Set 添加进布隆过滤器
 func (l *LocalBloomService) Set(val string) {
-	logs.SugarLogger.Info("LocalBloomService is setting")
+	//logs.SugarLogger.Info("LocalBloomService is setting")
 	l.n++
 	for _, offset := range l.getKEncrypted(val) {
 		index := offset >> 5     // 等价于 / 32

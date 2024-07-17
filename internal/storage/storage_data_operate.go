@@ -56,7 +56,6 @@ func DecompressData1(fileName string, offset, size int64) ([]byte, error) {
 	// 设置读取范围
 	_, err = file.Seek(offset, 0)
 	if err != nil {
-		fmt.Println("vbc")
 		return nil, err
 	}
 

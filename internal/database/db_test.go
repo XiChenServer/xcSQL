@@ -2,12 +2,14 @@ package database
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
 )
 
 func Test_db(t *testing.T) {
 
 	db := DBConnect("1")
+	fmt.Println("------------------------------------------")
 	err := DBExit(db)
 	if err != nil {
 		fmt.Println(err)
@@ -35,4 +37,15 @@ func TestDB_S(t *testing.T) {
 		fmt.Println(err)
 	}
 
+}
+
+// generateRandomKey 生成随机键值
+func generateRandomKey() string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	keyLen := 10
+	b := make([]byte, keyLen)
+	for i := range b {
+		b[i] = charset[rand.Intn(len(charset))]
+	}
+	return string(b)
 }

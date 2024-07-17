@@ -5,7 +5,7 @@ import (
 	"SQL/internal/database"
 	"SQL/internal/lsm"
 	"SQL/internal/storage"
-	"SQL/logs"
+
 	"log"
 	"net"
 	"os"
@@ -18,7 +18,7 @@ import (
 
 func main() {
 	// 初始化日志记录器
-	logs.InitLogger()
+	//logs.InitLogger()
 
 	// 设置 TCP 监听器
 	lis, err := net.Listen("tcp", ":50051")

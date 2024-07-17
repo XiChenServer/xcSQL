@@ -1,0 +1,1 @@
+Key: people, Extra: XCDB_Hash, TTL: 0s, FileName: ../../data/testdata/manager/123/disk/data_0.gz, Offset: 2538, Size: 280

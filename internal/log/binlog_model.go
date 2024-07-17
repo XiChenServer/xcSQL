@@ -53,13 +53,11 @@ func NewBinlogFile(name string) (*BinlogFile, error) {
 
 	// 打开记录 binlog 信息的文件
 	binLogInfoPath := binlogFile.FilePath + "bin_info.log"
-
 	// 确保目录存在，如果不存在则递归创建
 	err = os.MkdirAll(filepath.Dir(binLogInfoPath), os.ModePerm)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create directory for binlog info file: %v", err)
 	}
-
 	// 打开文件
 	binLogInfo, err := os.OpenFile(binLogInfoPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
@@ -68,7 +66,7 @@ func NewBinlogFile(name string) (*BinlogFile, error) {
 	if binLogInfo == nil {
 		return nil, errors.New("failed to create binlog info file")
 	} else {
-
+		binlogFile.BinLogInfo = binLogInfo
 	}
 	// 读取信息文件中的信息
 	file, size, currNum, err := binlogFile.ReadInfoFromBinlogInfo()
@@ -96,35 +94,39 @@ func NewBinlogFile(name string) (*BinlogFile, error) {
 }
 
 // ReadInfoFromBinlogInfo reads information from bin_info.log file.
+// 从 bin_info.log 文件中读取信息。
+// ReadInfoFromBinlogInfo reads information from bin_info.log file.
 func (bf *BinlogFile) ReadInfoFromBinlogInfo() (*os.File, uint64, uint64, error) {
-	// Seek to the beginning of the file
+	if bf.BinLogInfo == nil {
+		return nil, 0, 0, errors.New("binlog info file is not initialized")
+	}
+
 	_, err := bf.BinLogInfo.Seek(0, io.SeekStart)
 	if err != nil {
 		return nil, 0, 0, fmt.Errorf("failed to seek binlog info file: %v", err)
 	}
 
-	// Use bufio.Scanner for convenient file reading
 	scanner := bufio.NewScanner(bf.BinLogInfo)
-
 	var name string
 	var size uint64
 	var fileNum uint64
 	found := false
 
-	// Iterate through each line in the file
 	for scanner.Scan() {
 		line := scanner.Text()
-		// Check if the line contains the required information
 		if strings.Contains(line, "CurrFile") && strings.Contains(line, "FileCurrSize") && strings.Contains(line, "FileCurrNumber") {
-			// Extract file name and size from the line
 			parts := strings.Split(line, ", ")
 			for _, part := range parts {
-				if strings.Contains(part, "CurrFile") {
+				if strings.HasPrefix(part, "CurrFile: ") {
 					name = strings.TrimPrefix(part, "CurrFile: ")
-				} else if strings.Contains(part, "FileCurrSize") {
-					fmt.Sscanf(strings.TrimPrefix(part, "FileCurrSize: "), "%d", &size)
-				} else if strings.Contains(part, "FileCurrNumber") {
-					fmt.Sscanf(strings.TrimPrefix(part, "FileCurrNumber: "), "%d", &fileNum)
+				} else if strings.HasPrefix(part, "FileCurrSize: ") {
+					if size, err = strconv.ParseUint(strings.TrimPrefix(part, "FileCurrSize: "), 10, 64); err != nil {
+						return nil, 0, 0, fmt.Errorf("failed to parse file size: %v", err)
+					}
+				} else if strings.HasPrefix(part, "FileCurrNumber: ") {
+					if fileNum, err = strconv.ParseUint(strings.TrimPrefix(part, "FileCurrNumber: "), 10, 64); err != nil {
+						return nil, 0, 0, fmt.Errorf("failed to parse file number: %v", err)
+					}
 				}
 			}
 			found = true
@@ -132,12 +134,14 @@ func (bf *BinlogFile) ReadInfoFromBinlogInfo() (*os.File, uint64, uint64, error)
 		}
 	}
 
-	// Check if the required information is found
 	if !found {
-		return nil, 0, 0, errors.New("required information not found in binlog info file")
+		name = bf.FilePath + "bin0" + ".log"
+		size = 0
+		fileNum = 0
+
+		//return nil, 0, 0, errors.New("required information not found in binlog info file")
 	}
 
-	// Open the file with the obtained file name
 	file, err := os.Open(name)
 	if err != nil {
 		return nil, 0, 0, fmt.Errorf("failed to open current file: %v", err)

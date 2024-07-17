@@ -1,7 +1,6 @@
 package database
 
 import (
-	"SQL/internal/affairs"
 	"SQL/internal/log"
 	"SQL/internal/lsm"
 	"SQL/internal/model"
@@ -21,11 +20,11 @@ type XcDB struct {
 	BinLog         *log.BinlogFile
 	// 读写锁，用于并发读写控制
 	Mu sync.RWMutex
-	TX *affairs.Oracle //事务的操作
+	//TX   *affairs.Oracle //事务的操作
 }
 
 func NewXcDB(name string) (*XcDB, error) {
-	var lsmMap = make(map[uint16]*lsm.LSMTree)
+	var lsmMap = make(map[uint16]*lsm.LSMTree, 4)
 	// 启动一个协程来初始化字符串类型的LSM树
 	//go func() {
 	//	lsmString := lsm.NewLSMTree(16, 10000, model.XCDB_String)
@@ -58,7 +57,8 @@ func NewXcDB(name string) (*XcDB, error) {
 
 	maxActiveSize := v.GetUint32("lsmTree.maxActiveSize")
 	maxDiskTableSize := v.GetUint32("lsmTree.maxDiskTableSize")
-	fmt.Println(maxActiveSize, maxDiskTableSize)
+	//fmt.Println(maxActiveSize, maxDiskTableSize)
+
 	lsmString := lsm.NewLSMTree(maxActiveSize, maxDiskTableSize, model.XCDB_String, name)
 	lsmList := lsm.NewLSMTree(maxActiveSize, maxDiskTableSize, model.XCDB_List, name)
 	lsmHash := lsm.NewLSMTree(maxActiveSize, maxDiskTableSize, model.XCDB_Hash, name)
@@ -67,6 +67,7 @@ func NewXcDB(name string) (*XcDB, error) {
 	lsmMap[model.XCDB_String] = lsmString
 	lsmMap[model.XCDB_Hash] = lsmHash
 	lsmMap[model.XCDB_Set] = lsmSet
+
 	storageManager, err := storage.LoadStorageManager(("../../data/testdata/manager/") + name + ("/disk/config.txt"))
 	if err != nil {
 
@@ -77,10 +78,11 @@ func NewXcDB(name string) (*XcDB, error) {
 		}
 
 	}
+
 	wal, err := wal.NewWAL("../../data/testdata/manager/"+name+"/wal.log", "../../data/testdata/manager/"+name+"/walInfo.log")
 
 	binlog, err := log.NewBinlogFile(name)
-	txOracle := affairs.NewOracle()
+	//txOracle := affairs.NewOracle()
 	if err != nil {
 		logs.SugarLogger.Error("wal.log create fail")
 		return nil, err
@@ -91,7 +93,7 @@ func NewXcDB(name string) (*XcDB, error) {
 		Mu:             sync.RWMutex{},
 		Wal:            wal,
 		BinLog:         binlog,
-		TX:             txOracle,
+		//TX:             txOracle,
 	}, nil
 }
 
@@ -169,3 +171,20 @@ func (db *XcDB) GetVersionForStringSet(key []byte) (uint32, error) {
 	// 例如从数据库中查询版本号等操作
 	return 0, nil
 }
+
+//
+//// RemoveConnection 从连接池中移除一个连接
+//func (db *XcDB) RemoveConnection(conn *driverConn) {
+//	db.Pool.mu.Lock()
+//	defer db.Pool.mu.Unlock()
+//
+//	for i, c := range db.Pool.freeConn {
+//		if c == conn {
+//			copy(db.Pool.freeConn[i:], db.Pool.freeConn[i+1:])
+//			db.Pool.freeConn[len(db.Pool.freeConn)-1] = nil
+//			db.Pool.freeConn = db.Pool.freeConn[:len(db.Pool.freeConn)-1]
+//			db.Pool.numOpen--
+//			break
+//		}
+//	}
+//}

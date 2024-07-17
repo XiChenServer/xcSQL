@@ -19,3 +19,30 @@ func TestFor(t *testing.T) {
 		fmt.Println(k, "->", *v)
 	}
 }
+
+func SlienceRise(s []int) {
+	s = append(s, 0)
+	for i := range s {
+		s[i]++
+	}
+
+}
+func Test_SclicePrint(t *testing.T) {
+	s1 := []int{1, 2}
+	s2 := s1
+	fmt.Println(&s1[0])
+	s2 = append(s2, 3)
+	SlienceRise(s1)
+	fmt.Println(&s1[0])
+	SlienceRise(s2)
+
+	fmt.Println(s1, s2)
+}
+func Test_Extend(t *testing.T) {
+	var slice []int
+	s1 := append(slice, 1, 2, 3)
+	s2 := append(s1, 4)
+	fmt.Println(&s1[0])
+	fmt.Println(&s2[0])
+	fmt.Println(&s1[0] == &s2[0])
+}

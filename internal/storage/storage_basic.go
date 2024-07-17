@@ -13,7 +13,6 @@ import (
 
 // 将StorageManager保存到文件中
 func SaveStorageManager(storageManager *StorageManager, filePath string) error {
-	fmt.Println(filePath)
 	file, err := os.Create(filePath)
 	if err != nil {
 		return err
@@ -57,7 +56,7 @@ func LoadStorageManager(filePath string) (*StorageManager, error) {
 		// 其他错误情况
 		return nil, err
 	}
-	fmt.Println("1233")
+
 	// 文件已存在或已创建，继续打开文件
 	file, err := os.OpenFile(filePath, os.O_RDWR, 0644)
 	if err != nil {
