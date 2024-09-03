@@ -40,14 +40,14 @@ func NewXcDB(name string) (*XcDB, error) {
 	//}()
 
 	path, err := os.Getwd()
+
 	if err != nil {
 		return nil, err
 	}
 	// 初始化 Viper
 	v := viper.New()
-
 	// 设置配置文件名
-	v.SetConfigFile(path + "/../../config/config.yaml")
+	v.SetConfigFile(path + "/config/config.yaml")
 
 	// 读取配置文件
 	if err := v.ReadInConfig(); err != nil {

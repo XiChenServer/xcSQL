@@ -78,55 +78,52 @@ func getCurrentFileNumber(storagePath string) (uint, error) {
 // StoreData 将数据存储到指定位置
 func (sm *StorageManager) StoreData(data *model.KeyValue) (StorageLocation, error) {
 	// 压缩数据
+	fmt.Println(data)
 	compressedData, err := sm.compressData(*data)
+
 	if err != nil {
 		return StorageLocation{}, err
 	}
-	// 获取当前文件的偏移量和大小
-	sm.FileLock.Lock()
-	offset := int64(sm.CurrentSize)
+
 	size := int64(len(compressedData))
-	sm.FileLock.Unlock()
-	fmt.Println(offset+size, sm.MaxFileSize)
+
+	// 锁定以检查和更新文件状态
+	sm.FileLock.Lock()
+
+	// 获取当前文件的偏移量
+	offset := int64(sm.CurrentSize)
+
 	// 如果当前文件大小超过最大限制，则创建新文件
 	if offset+size > int64(sm.MaxFileSize) {
-		sm.FileLock.Lock()
 		sm.CurrentFile.Close()
 		sm.FileNumber++
 		file, err := os.OpenFile(filepath.Join(string(sm.StoragePath), "data_"+strconv.Itoa(int(sm.FileNumber))+".gz"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
-		//if err != nil {
-		//	return nil, err
-		//}
-		//
-		//fileName := filepath.Join(string(sm.StoragePath), "data_"+strconv.Itoa(int(sm.FileNumber))+".gz")
-		//file, err := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 		if err != nil {
-			fmt.Println("sdfs", string(sm.StoragePath))
 			sm.FileLock.Unlock()
 			return StorageLocation{}, err
 		}
 		sm.CurrentFile = file
 		sm.CurrentSize = 0
-		sm.FileLock.Unlock()
 		offset = 0
 	}
 
-	// 写入数据
-	sm.FileLock.Lock()
-	defer sm.FileLock.Unlock() // 确保在函数返回之前释放锁
-
-	// 移动文件指针到正确的位置
+	// 移动文件指针到正确的位置并写入数据
 	_, err = sm.CurrentFile.Seek(offset, 0)
-	if err != nil {
-		return StorageLocation{}, err
-	}
-	_, err = sm.CurrentFile.Write(compressedData)
-	if err != nil {
-		return StorageLocation{}, err
+	if err == nil {
+		_, err = sm.CurrentFile.Write(compressedData)
 	}
 
-	// 更新当前文件大小
-	sm.CurrentSize += uint64(size)
+	// 如果写入成功，更新当前文件大小
+	if err == nil {
+		sm.CurrentSize += uint64(size)
+	}
+
+	sm.FileLock.Unlock()
+
+	// 检查是否有错误发生
+	if err != nil {
+		return StorageLocation{}, err
+	}
 	return StorageLocation{
 		FileName: []byte(sm.CurrentFile.Name()),
 		Offset:   offset,

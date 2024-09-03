@@ -5,6 +5,7 @@ import (
 	"SQL/internal/database"
 	"SQL/internal/lsm"
 	"SQL/internal/storage"
+	"time"
 
 	"log"
 	"net"
@@ -19,7 +20,12 @@ import (
 func main() {
 	// 初始化日志记录器
 	//logs.InitLogger()
-
+	// 获取当前工作目录
+	pwd, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("获取工作目录失败: %v", err)
+	}
+	log.Println("当前工作目录:", pwd)
 	// 设置 TCP 监听器
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
@@ -31,11 +37,16 @@ func main() {
 	s := grpc.NewServer()
 
 	// 初始化哈希数据库
-	db := database.NewXcDB()
+	db := database.NewConnectionPool(2, 10, 30*time.Minute)
 
+	driver, err := db.GetConnection("123")
+	if err != nil {
+		log.Fatalf("无法获取数据库连接: %v", err)
+	}
+	defer db.ReleaseConnection(driver) // 确保释放连接
 	// 将哈希数据库服务器注册到 gRPC 服务器
 	db_hash.RegisterHashDatabaseServer(s, &db_grpc.Server{
-		DB: db,
+		DB: driver.DB,
 	})
 
 	// 打印服务器启动消息
@@ -60,10 +71,10 @@ func main() {
 	s.GracefulStop()
 
 	// 在退出时保存活动数据到磁盘并将磁盘数据打印到文件中以供 LSM 树使用
-	saveAndPrintDiskData(db.Lsm)
+	saveAndPrintDiskData(driver.DB.Lsm)
 
 	// 将存储管理器配置保存到文件
-	storage.SaveStorageManager(db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	storage.SaveStorageManager(driver.DB.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 	log.Println("服务器优雅关闭")
 }
 

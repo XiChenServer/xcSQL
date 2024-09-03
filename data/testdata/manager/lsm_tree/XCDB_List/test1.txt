@@ -1,2 +1,0 @@
-Key: hz8DMpJB51, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/manager/disk/data_0.gz, Offset: 0, Size: 270
-Key: wAUA23ZgF1, Extra: XCDB_String, TTL: 0s, FileName: ../../data/testdata/manager/disk/data_0.gz, Offset: 270, Size: 271

@@ -33,7 +33,7 @@ func NewBinlogFile(name string) (*BinlogFile, error) {
 	v := viper.New()
 
 	// 设置配置文件名
-	v.SetConfigFile(path + "/../../config/config.yaml")
+	v.SetConfigFile(path + "/config/config.yaml")
 
 	// 读取配置文件
 	if err := v.ReadInConfig(); err != nil {

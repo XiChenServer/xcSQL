@@ -7,8 +7,6 @@ import (
 	"encoding/gob"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"log"
 	"os"
 )
 
@@ -18,111 +16,53 @@ func (sm *StorageManager) compressData(data model.KeyValue) ([]byte, error) {
 	var buffer bytes.Buffer
 	encoder := gob.NewEncoder(&buffer)
 	if err := encoder.Encode(data); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to encode data: %v", err)
 	}
 
+	// 使用 gzip 压缩编码后的数据
 	var compressedData bytes.Buffer
 	gzipWriter := gzip.NewWriter(&compressedData)
 
-	// 写入数据
-	_, err := gzipWriter.Write(buffer.Bytes())
-	if err != nil {
-		return nil, err
+	if _, err := gzipWriter.Write(buffer.Bytes()); err != nil {
+		return nil, fmt.Errorf("failed to write compressed data: %v", err)
 	}
 
-	// 关闭压缩器
+	// 关闭 gzipWriter 并确保所有数据都被写入
 	if err := gzipWriter.Close(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to close gzip writer: %v", err)
 	}
 
 	return compressedData.Bytes(), nil
 }
 
-func DecompressData1(fileName string, offset, size int64) ([]byte, error) {
-	// 打开文件
-	file, err := os.OpenFile(fileName, os.O_RDONLY, 0)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	// 获取文件大小
-	fileInfo, err := file.Stat()
-	if err != nil {
-		return nil, err
-	}
-	fileSize := fileInfo.Size()
-
-	// 设置读取范围
-	_, err = file.Seek(offset, 0)
-	if err != nil {
-		return nil, err
-	}
-
-	// 如果指定了大小，则计算实际读取的大小
-	if size > 0 && offset+size <= fileSize {
-		fileSize = size
-	}
-	// 创建gzip.Reader
-	reader, err := gzip.NewReader(io.LimitReader(file, fileSize))
-	if err != nil {
-		// 记录错误日志
-		log.Println("Error creating gzip reader:", err)
-		return nil, err
-	}
-	defer reader.Close()
-
-	// 读取解压后的数据
-	decompressedData, err := ioutil.ReadAll(reader)
-	if err != nil {
-		// 记录错误日志
-		log.Println("Error reading decompressed data:", err)
-		return nil, err
-	}
-
-	return decompressedData, nil
-}
-
-func (sm *StorageManager) DecompressAndFillData1(fileName string, offset, size int64) (*model.KeyValue, error) {
-	// 解压数据
-	decompressedData, err := DecompressData(fileName, offset, size)
-	if err != nil {
-		return nil, err
-	}
-	// 解码数据到 KeyValue 结构体
-	var keyValue model.KeyValue
-	err = gob.NewDecoder(bytes.NewReader(decompressedData)).Decode(&keyValue)
-	if err != nil {
-		return nil, err
-	}
-	return &keyValue, nil
-}
-
 func DecompressData(fileName string, offset, size int64) ([]byte, error) {
 	// 打开文件
-	file, err := os.OpenFile(fileName, os.O_RDONLY, 0)
+	file, err := os.Open(fileName)
 	if err != nil {
-		fmt.Printf("无法打开文件 '%s': %v\n", fileName, err)
-		return nil, err
+		return nil, fmt.Errorf("无法打开文件 '%s': %v", fileName, err)
 	}
 	defer file.Close()
 
 	// 创建一个 SectionReader 来读取指定范围的数据
 	sectionReader := io.NewSectionReader(file, offset, size)
 
+	// 读取原始数据
+	var compressedData bytes.Buffer
+	if _, err := io.Copy(&compressedData, sectionReader); err != nil {
+		return nil, fmt.Errorf("读取压缩数据失败: %v", err)
+	}
+
 	// 创建 gzip.Reader
-	reader, err := gzip.NewReader(sectionReader)
+	reader, err := gzip.NewReader(bytes.NewReader(compressedData.Bytes()))
 	if err != nil {
-		fmt.Printf("创建 gzip 读取器失败: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("创建 gzip 读取器失败: %v", err)
 	}
 	defer reader.Close()
 
 	// 读取解压后的数据
-	decompressedData, err := ioutil.ReadAll(reader)
+	decompressedData, err := io.ReadAll(reader)
 	if err != nil {
-		fmt.Printf("读取解压后的数据失败: %v\n", err)
-		return nil, err
+		return nil, fmt.Errorf("读取解压后的数据失败: %v", err)
 	}
 
 	return decompressedData, nil

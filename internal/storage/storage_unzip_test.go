@@ -7,9 +7,9 @@ import (
 
 // TestDecompressData 测试解压数据函数
 func TestDecompressData(t *testing.T) {
-	fileName := "../../data/testdata/string_test/data_0.gz" // 你的存储位置文件名
-	offset := int64(734)                                    // 偏移量
-	size := int64(245)                                      // 数据大小
+	fileName := "../../data/testdata1/data_0.gz" // 你的存储位置文件名
+	offset := int64(1680)                        // 偏移量
+	size := int64(279)                           // 数据大小
 
 	// 解压数据
 	decompressedData, err := DecompressData(fileName, offset, size)
@@ -18,7 +18,7 @@ func TestDecompressData(t *testing.T) {
 	}
 
 	// 打印解压后的数据
-	fmt.Println("Decompressed Data:", decompressedData)
+	fmt.Println("Decompressed Data:", string(decompressedData))
 
 }
 

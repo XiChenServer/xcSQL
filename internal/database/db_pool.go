@@ -22,7 +22,7 @@ type ConnectionPool struct {
 
 type driverConn struct {
 	dbName      string
-	db          *XcDB
+	DB          *XcDB
 	createdAt   time.Time
 	ci          Conn
 	closed      bool
@@ -64,7 +64,7 @@ func NewDriverConn(name string) *driverConn {
 	}
 	return &driverConn{
 		dbName:      name,
-		db:          db,
+		DB:          db,
 		createdAt:   time.Now(),
 		ci:          nil, // 这里需要在实际使用时初始化
 		closed:      false,

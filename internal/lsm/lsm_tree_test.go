@@ -16,7 +16,7 @@ func TestConcurrentInsertData(t *testing.T) {
 
 	maxActiveSize := uint32(16) // 增加最大活跃内存表的大小
 	maxDiskTableSize := uint32(10000)
-	lsm := NewLSMTree(maxActiveSize, maxDiskTableSize, 1)
+	lsm := NewLSMTree(maxActiveSize, maxDiskTableSize, 1, "1")
 
 	// 并发插入的总数量
 	numInserts := 1000
@@ -34,10 +34,8 @@ func TestConcurrentInsertData(t *testing.T) {
 			value := &DataInfo{
 				DataMeta: model.DataMeta{
 					Key:       key,
-					Value:     []byte(fmt.Sprintf("value%d", i)),
 					Extra:     []byte(fmt.Sprintf("extra%d", i)),
 					KeySize:   uint32(len(key)),
-					ValueSize: uint32(len(fmt.Sprintf("value%d", i))),
 					ExtraSize: uint32(len(fmt.Sprintf("extra%d", i))),
 					TTL:       time.Duration(rand.Intn(3600)) * time.Second,
 				},
@@ -74,7 +72,7 @@ func TestInsertSingleData(t *testing.T) {
 	}
 	maxActiveSize := uint32(16)
 	maxDiskTableSize := uint32(10000)
-	lsm := NewLSMTree(maxActiveSize, maxDiskTableSize, 1)
+	lsm := NewLSMTree(maxActiveSize, maxDiskTableSize, 1, "1")
 	dataNum := 100
 	// 创建要插入的数据
 	for i := 0; i < dataNum; i++ {
@@ -110,7 +108,7 @@ func TestLoadFromDisk(t *testing.T) {
 
 	maxActiveSize := uint32(16) // 增加最大活跃内存表的大小
 	maxDiskTableSize := uint32(10000)
-	lsmTree := NewLSMTree(maxActiveSize, maxDiskTableSize, 1)
+	lsmTree := NewLSMTree(maxActiveSize, maxDiskTableSize, 1, "1")
 
 	// 定义模拟数据文件路径
 	dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
@@ -130,7 +128,7 @@ func TestLoadOneData(t *testing.T) {
 
 	maxActiveSize := uint32(16) // 增加最大活跃内存表的大小
 	maxDiskTableSize := uint32(10000)
-	lsmTree := NewLSMTree(maxActiveSize, maxDiskTableSize, 1)
+	lsmTree := NewLSMTree(maxActiveSize, maxDiskTableSize, 1, "1")
 
 	// 定义模拟数据文件路径
 	dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
@@ -145,7 +143,7 @@ func TestLoadOneData(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error loading data fatal: %v", err)
 	}
-	fmt.Println(string(data.Key), string(data.FileName), string(data.Value))
+	fmt.Println(string(data.Key), string(data.FileName))
 	defer lsmTree.PrintDiskDataToFile("../../data/testdata/lsm_tree/test2.txt")
 	defer lsmTree.SaveActiveToDiskOnExit()
 
@@ -157,9 +155,9 @@ func generateTestData() model.KeyValue {
 
 	// generateRandomKeyValuePair 生成随机的 KeyValue 结构体实例
 	// 生成随机的键、值和额外信息
-	key := generateRandomData(10)   // 生成长度为10的随机字节切片作为键
-	value := generateRandomData(20) // 生成长度为20的随机字节切片作为值
-	extra := generateRandomData(5)  // 生成长度为5的随机字节切片作为额外信息
+	key := generateRandomData(10) // 生成长度为10的随机字节切片作为键
+	// 生成长度为20的随机字节切片作为值
+	extra := generateRandomData(5) // 生成长度为5的随机字节切片作为额外信息
 
 	// 生成随机的 TTL、版本号和时间
 	ttl := time.Duration(rand.Intn(3600)) * time.Second // 生成0到3600秒之间的随机 TTL
@@ -177,12 +175,12 @@ func generateTestData() model.KeyValue {
 	// 返回生成的随机 KeyValue 结构体实例
 	one := model.KeyValue{
 		DataMeta: &model.DataMeta{
-			TTL:       ttl,
-			Key:       key,
-			Value:     value,
-			Extra:     extra,
-			KeySize:   uint32(len(key)),
-			ValueSize: uint32(len(value)),
+			TTL: ttl,
+			Key: key,
+
+			Extra:   extra,
+			KeySize: uint32(len(key)),
+
 			ExtraSize: uint32(len(extra)),
 		},
 		Version:    version,

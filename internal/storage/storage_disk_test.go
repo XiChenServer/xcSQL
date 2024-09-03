@@ -2,7 +2,10 @@ package storage
 
 import (
 	"SQL/internal/model"
+	"fmt"
+	"github.com/magiconair/properties/assert"
 	"math/rand"
+	"os"
 	"sync"
 	"testing"
 	"time"
@@ -17,13 +20,6 @@ func TestConcurrentStoreData(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create storage manager: %v", err)
 	}
-	//defer func() {
-	//	// 清理测试数据
-	//	err := os.RemoveAll("testdata")
-	//	if err != nil {
-	//		t.Fatalf("failed to clean up test data: %v", err)
-	//	}
-	//}()
 
 	// 并发写入测试数据
 	var wg sync.WaitGroup
@@ -43,17 +39,67 @@ func TestConcurrentStoreData(t *testing.T) {
 	}
 	wg.Wait()
 
-	//// 检查存储结果
-	//fileInfo, err := storageManager.CurrentFile.Stat()
-	//if err != nil {
-	//	t.Fatalf("failed to get file info: %v", err)
-	//}
-	//fmt.Printf("Total data stored: %d bytes\n", fileInfo.Size())
+}
+
+func TestConcurrentStoreData1(t *testing.T) {
+
+	// 创建存储管理器
+	storageManager, err := NewStorageManager("../../data/testdata1", 4*1024) // 1MB 文件大小限制
+	if err != nil {
+		t.Fatalf("failed to create storage manager: %v", err)
+	}
+
+	data := generateTestData(1)
+	for i := 0; i < len(data); i++ {
+		p, err := storageManager.StoreData(&data[i])
+		fmt.Println(p.Offset, string(p.FileName), p.Size)
+		if err != nil {
+			t.Errorf("failed to store data: %v", err)
+		}
+	}
+
+}
+
+// TestStoreData 测试 StoreData 方法
+func TestStoreData(t *testing.T) {
+	// 创建存储管理器
+	storageManager, err := NewStorageManager("../../data/testdata1", 4*1024) // 4KB 文件大小限制
+	if err != nil {
+		t.Fatalf("Failed to create storage manager: %v", err)
+	}
+
+	// 生成测试数据
+	data := generateTestData(1)
+	var sm StorageManager
+	for _, v := range data {
+		// 存储数据
+		p, err := storageManager.StoreData(&v)
+		if err != nil {
+			t.Errorf("StoreData failed: %v", err)
+			continue
+		}
+
+		// 解压数据
+		decompressedData, err := (&sm).DecompressAndFillData(string(p.FileName), int64(p.Offset), int64(p.Size))
+		if err != nil {
+			t.Errorf("DecompressData failed: %v", err)
+			continue
+		}
+		fmt.Println(decompressedData)
+		// 断言数据一致性
+		assert.Equal(t, v, decompressedData, "Stored and decompressed data should match")
+
+		// 打印解压后的数据用于调试
+		// fmt.Printf("Decompressed data: %s\n", decompressedData)
+	}
+
+	// 清理测试文件
+	os.RemoveAll("../../data/testdata1")
 }
 
 // generateTestData 生成测试数据
 func generateTestData(size int) []model.KeyValue {
-	data := make([]model.KeyValue, size)
+	data := make([]model.KeyValue, 0, size)
 	for i := 0; i < size; i++ {
 
 		// generateRandomKeyValuePair 生成随机的 KeyValue 结构体实例
@@ -71,7 +117,6 @@ func generateTestData(size int) []model.KeyValue {
 
 		// 生成随机的标签、数据类型、权限控制信息和存储位置
 
-		dataType := uint16(rand.Intn(100))   // 生成0到100之间的随机数据类型
 		permission := uint16(rand.Intn(100)) // 生成0到100之间的随机权限控制信息
 		//storageLocation := uint16(rand.Intn(100)) // 生成0到100之间的随机存储位置
 
@@ -90,7 +135,7 @@ func generateTestData(size int) []model.KeyValue {
 			CreateTime: createTime,
 			UpdateTime: updateTime,
 			AccessTime: accessTime,
-			DataType:   dataType,
+			DataType:   model.XCDB_String,
 			DataMark:   permission,
 		}
 		data = append(data, one)
@@ -100,11 +145,14 @@ func generateTestData(size int) []model.KeyValue {
 }
 
 // generateRandomData 生成指定长度的随机字节切片
+// generateRandomData 生成指定长度的随机字节切片，包含数字 0-9 和字母 a-A
 func generateRandomData(size int) []byte {
 	rand.Seed(time.Now().UnixNano())
 	data := make([]byte, size)
+	charset := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 	for i := range data {
-		data[i] = byte(rand.Intn(256)) // 生成0到255之间的随机字节
+		data[i] = charset[rand.Intn(len(charset))]
 	}
 	return data
 }

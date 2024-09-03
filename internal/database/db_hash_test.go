@@ -5,6 +5,8 @@ import (
 	"SQL/internal/storage"
 	"SQL/logs"
 	"fmt"
+	"math/rand"
+	"sync"
 	"testing"
 	"time"
 )
@@ -23,10 +25,13 @@ import (
 
 func Test_HSET(t *testing.T) {
 	logs.InitLogger("")
+
 	dbPool := NewConnectionPool(2, 10, 30*time.Minute)
+
 	driver, _ := dbPool.GetConnection("123")
+	fmt.Println(123)
 	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
-	lsmMap := *driver.db.Lsm
+	lsmMap := *driver.DB.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]
 	// 加载模拟的数据文件到 LSM 树中
 	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
@@ -44,15 +49,97 @@ func Test_HSET(t *testing.T) {
 		"address": "123 Main St",
 	}
 
-	err := driver.db.HSet(key, myMap)
+	err := driver.DB.HSet(key, myMap)
 	if err != nil {
 		return
 	}
 
-	fmt.Println("HSET ok")
+	fmt.Println("SET ok")
+
+	p, _ := driver.DB.HGet([]byte("people"), "name")
+	fmt.Println(string(p))
 	lsmType.SaveActiveToDiskOnExit()
 	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
-	storage.SaveStorageManager(driver.db.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+	storage.SaveStorageManager(driver.DB.StorageManager, "../../data/testdata/lsm_tree/config.txt")
+}
+
+// generateRandomString 生成指定长度的随机字符串
+func generateRandomString(length int) string {
+	chars := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	result := make([]byte, length)
+	for i := range result {
+		result[i] = chars[rand.Intn(len(chars))]
+	}
+	return string(result)
+}
+
+// generateRandomMap 生成随机的键值对映射
+func generateRandomMap(size, valueLength int) map[string]string {
+	result := make(map[string]string, size)
+	for i := 0; i < size; i++ {
+		key := generateRandomString(8)
+		value := generateRandomString(valueLength)
+		result[key] = value
+	}
+	return result
+}
+
+func Test_HSET12(t *testing.T) {
+	logs.InitLogger("")
+
+	dbPool := NewConnectionPool(2, 10, 30*time.Minute)
+
+	driver, err := dbPool.GetConnection("123")
+	if err != nil {
+		t.Fatalf("failed to get connection: %v", err)
+	}
+	defer driver.DB.Close()
+
+	lsmMap := *driver.DB.Lsm
+	lsmType := lsmMap[model.XCDB_Hash]
+
+	var wg sync.WaitGroup
+	concurrencyLevel := 10 // 设置并发级别
+
+	// 启动多个 goroutine 进行并发写入
+	for i := 0; i < concurrencyLevel; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			key := []byte(generateRandomString(10))
+			valueMap := generateRandomMap(5, 10) // 生成一个包含5个键值对的随机 map
+			err := driver.DB.HSet(key, valueMap)
+			if err != nil {
+				t.Errorf("Goroutine %d: failed to set value: %v", i, err)
+			} else {
+				fmt.Printf("Goroutine %d: SET ok for key: %s\n", i, key)
+			}
+		}(i)
+	}
+
+	// 启动多个 goroutine 进行并发读取
+	for i := 0; i < concurrencyLevel; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			key := []byte(generateRandomString(10))
+			field := generateRandomString(5)
+			p, err := driver.DB.HGet(key, field)
+			if err != nil {
+				t.Errorf("Goroutine %d: failed to get value: %v", i, err)
+			} else {
+				fmt.Printf("Goroutine %d: GET value: %s for key: %s, field: %s\n", i, p, key, field)
+			}
+		}(i)
+	}
+
+	// 等待所有 goroutine 完成
+	wg.Wait()
+
+	// 保存数据并关闭数据库
+	lsmType.SaveActiveToDiskOnExit()
+	lsmType.PrintDiskDataToFile(string(lsmType.LsmPath))
+	storage.SaveStorageManager(driver.DB.StorageManager, "../../data/testdata/lsm_tree/config.txt")
 }
 
 //func Test_HGET(t *testing.T) {

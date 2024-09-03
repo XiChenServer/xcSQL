@@ -1,1 +1,0 @@
-StoragePath: ../../data/testdata/manager/123/disk, MaxFileSize: 10240, CurrentFile: ../../data/testdata/manager/123/disk/data_0.gz, CurrentSize: 2818, FileNumber: 0

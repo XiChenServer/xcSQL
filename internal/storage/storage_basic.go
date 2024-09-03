@@ -64,14 +64,6 @@ func LoadStorageManager(filePath string) (*StorageManager, error) {
 	}
 	defer file.Close()
 
-	//file, err := os.Open(filePath)
-	//if err != nil {
-	//	if os.IsNotExist(err) {
-	//		return nil, err // 其他错误情况
-	//	}
-	//	return nil, err // 其他错误情况
-	//}
-	//defer file.Close()
 	scanner := bufio.NewScanner(file)
 	var storageManager StorageManager
 
