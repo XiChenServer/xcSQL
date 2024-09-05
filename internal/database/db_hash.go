@@ -6,7 +6,6 @@ import (
 	"SQL/logs"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"time"
 )
 
@@ -22,9 +21,6 @@ func (db *XcDB) doHset(key []byte, value map[string]string, ttl ...uint64) error
 	var timeSlice []time.Duration
 	for _, t := range ttl {
 		timeSlice = append(timeSlice, time.Duration(t)*time.Second)
-	}
-	for k := range *db.Lsm {
-		fmt.Println(k)
 	}
 	lsmMap := *db.Lsm
 

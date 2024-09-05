@@ -29,18 +29,9 @@ func Test_HSET(t *testing.T) {
 	dbPool := NewConnectionPool(2, 10, 30*time.Minute)
 
 	driver, _ := dbPool.GetConnection("123")
-	fmt.Println(123)
-	//dataFilePath := "../../data/testdata/lsm_tree/test1.txt"
+
 	lsmMap := *driver.DB.Lsm
 	lsmType := lsmMap[model.XCDB_Hash]
-	// 加载模拟的数据文件到 LSM 树中
-	//err := lsmType.LoadDataFromFile(string(lsmType.LsmPath))
-	//if err != nil {
-	//	t.Fatalf("Error loading data from disk: %v", err)
-	//}
-	//key := []byte("UDVGKnSAsp")
-	//key := []byte(generateRandomKey())
-	//value := generateRandomMap(4, 5)
 
 	key := []byte("people")
 	myMap := map[string]string{
