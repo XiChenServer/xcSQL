@@ -24,6 +24,7 @@ type WAL struct {
 	stopChan      chan struct{}
 	filePath      string
 	flushInterval time.Duration
+	CommandChan   chan string
 }
 
 // CreateWalFile 创建 WAL 文件
@@ -44,6 +45,7 @@ func CreateWalFile(filePath string, flushInterval time.Duration) (*WAL, error) {
 		stopChan:      make(chan struct{}),
 		filePath:      filePath,
 		flushInterval: flushInterval,
+		CommandChan:   make(chan string, 1000),
 	}
 
 	if flushInterval == Never {
@@ -58,7 +60,7 @@ func CreateWalFile(filePath string, flushInterval time.Duration) (*WAL, error) {
 	if err := wal.checkAndReadCommands(); err != nil {
 		return nil, fmt.Errorf("failed to read WAL file: %w", err)
 	}
-
+	close(wal.CommandChan)
 	return wal, nil
 }
 
@@ -130,7 +132,6 @@ func (w *WAL) checkAndReadCommands() error {
 
 // 读取 WAL 文件中的所有命令
 func (w *WAL) readCommands() error {
-	var commands []string
 	for {
 		line, err := w.reader.ReadString('\n')
 		if err != nil {
@@ -140,13 +141,7 @@ func (w *WAL) readCommands() error {
 			return fmt.Errorf("failed to read from WAL file: %w", err)
 		}
 		line = strings.TrimSpace(line) // 去除行尾的换行符
-		if line != "" {
-			commands = append(commands, line)
-		}
-	}
-	// 处理读取到的命令（例如，将其应用到数据库）
-	for _, cmd := range commands {
-		fmt.Println("Recovered Command:", cmd)
+		w.CommandChan <- line
 	}
 	return nil
 }
@@ -166,6 +161,10 @@ func (w *WAL) Close() error {
 		if err := w.Flush(); err != nil {
 			return err
 		}
+		err := DeleteWalFile(w.filePath)
+		if err != nil {
+			return err
+		}
 	}
 	if w.file != nil {
 		err := w.file.Close()
@@ -176,5 +175,6 @@ func (w *WAL) Close() error {
 	if w.stopChan != nil {
 		close(w.stopChan)
 	}
+
 	return nil
 }

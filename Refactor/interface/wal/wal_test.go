@@ -1,6 +1,7 @@
 package wal
 
 import (
+	"fmt"
 	"strconv"
 	"testing"
 	"time"
@@ -71,4 +72,14 @@ func TestDeleteWalFile(t *testing.T) {
 	}
 }
 
-//读取文件
+// 读取文件
+func TestReadWalFile(t *testing.T) {
+	w, err := CreateWalFile("test.txt", 0)
+	if err != nil {
+		t.Error(err)
+	}
+	for v := range w.CommandChan {
+		fmt.Println(v)
+	}
+
+}
